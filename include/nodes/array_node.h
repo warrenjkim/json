@@ -1,7 +1,8 @@
 #pragma once
 
+#include <vector>
+
 #include "node.h"
-#include "utils/typedefs.h"  // ArrayType
 
 namespace json {
 
@@ -10,16 +11,16 @@ class ArrayNode : public Node {
   void accept(JsonVisitor& visitor) const override;
 
  public:
-  ArrayNode(ArrayType arr);
+  void add(Node* element);
 
  public:
-  const ArrayType& get() const;
+  const std::vector<Node*>& get() const;
 
  private:
-  ArrayType arr_;
+  std::vector<Node*> array_;
 
  public:
-  ArrayNode() = delete;
+  ArrayNode() = default;
   ~ArrayNode() = default;
 };
 

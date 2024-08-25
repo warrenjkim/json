@@ -1,7 +1,10 @@
 #pragma once
 
+#include <cstddef>
+#include <vector>
+
 #include "node.h"
-#include "utils/typedefs.h"  // ObjectType
+#include "nodes/key_value_node.h"
 
 namespace json {
 
@@ -10,16 +13,16 @@ class ObjectNode : public Node {
   void accept(JsonVisitor& visitor) const override;
 
  public:
-  ObjectNode(ObjectType map);
+  void add(KeyValueNode&& property);
 
  public:
-  const ObjectType& get() const;
+  const std::vector<KeyValueNode>& get() const;
 
  private:
-  ObjectType map_;
+  std::vector<KeyValueNode> properties_;
 
  public:
-  ObjectNode() = delete;
+  ObjectNode() = default;
   ~ObjectNode() = default;
 };
 

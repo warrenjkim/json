@@ -1,16 +1,18 @@
 #include "nodes/object_node.h"
 
-#include <utility>  // move
+#include <vector>
 
-#include "utils/typedefs.h"  // ObjectType
+#include "nodes/key_value_node.h"
 #include "visitors/visitor.h"
 
 namespace json {
 
 void ObjectNode::accept(JsonVisitor& visitor) const { visitor.visit(*this); }
 
-ObjectNode::ObjectNode(ObjectType map) : map_(std::move(map)) {}
+void ObjectNode::add(KeyValueNode&& property) {
+  properties_.push_back(std::move(property));
+}
 
-const ObjectType& ObjectNode::get() const { return map_; }
+const std::vector<KeyValueNode>& ObjectNode::get() const { return properties_; }
 
 }  // namespace json

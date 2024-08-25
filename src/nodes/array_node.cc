@@ -1,16 +1,16 @@
 #include "nodes/array_node.h"
 
-#include <utility>  // move
+#include <vector>
 
-#include "utils/typedefs.h"  // ArrayType
+#include "nodes/node.h"
 #include "visitors/visitor.h"
 
 namespace json {
 
 void ArrayNode::accept(JsonVisitor& visitor) const { visitor.visit(*this); }
 
-ArrayNode::ArrayNode(ArrayType arr) : arr_(std::move(arr)) {}
+void ArrayNode::add(Node* element) { array_.push_back(element); }
 
-const ArrayType& ArrayNode::get() const { return arr_; }
+const std::vector<Node*>& ArrayNode::get() const { return array_; }
 
 }  // namespace json
