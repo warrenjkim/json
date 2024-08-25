@@ -8,7 +8,7 @@
 namespace json {
 
 class Tokenizer {
- private:
+ public:
   enum TokenType : char {
     L_BRACE = '{',
     R_BRACE = '}',
