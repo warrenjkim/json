@@ -1,44 +1,19 @@
-name: C++ Format Check
-
-on:
-  pull_request:
-    paths:
-      - '**/*.cpp'
-      - '**/*.h'
-      - '**/*.hpp'
-      - '**/*.cc'
-
+name: clang-format Check
+on: [push, pull_request]
 jobs:
-  format:
+  formatting-check:
+    name: Formatting Check
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        path:
+          - '**/*.cc'
+          - '**/*.h'
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
-
-    - name: Download clang-format 18.1.4
-      run: |
-        wget https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.4/clang+llvm-18.1.4-x86_64-linux-gnu-ubuntu-22.04.tar.xz
-        tar xf clang+llvm-18.1.4-x86_64-linux-gnu-ubuntu-22.04.tar.xz
-        sudo mv clang+llvm-18.1.4-x86_64-linux-gnu-ubuntu-22.04 /usr/local/clang-18.1.4
-
-    - name: Check C++ Format
-      id: check_format
-      run: |
-        files=$(find . \( -name '*.cpp' -o -name '*.h' -o -name '*.hpp' -o -name '*.cc' \) \
-          -not -path "*/generated/*")
-        not_formatted=""
-        for file in $files; do
-          if ! /usr/local/clang-18.1.4/bin/clang-format -n --style=Google "$file"; then
-            not_formatted="$not_formatted $file"
-          fi
-        done
-        if [ -n "$not_formatted" ]; then
-          echo "$not_formatted" > not_formatted.txt
-          exit 1
-        fi
-
-    - name: List incorrectly formatted files
-      if: failure()
-      run: |
-        echo "The following files are not correctly formatted:"
-        cat not_formatted.txt
+    - uses: actions/checkout@v4
+    - name: Run clang-format style check for C/C++/Protobuf programs.
+      uses: jidicula/clang-format-action@v4.13.0
+      with:
+        clang-format-version: '13'
+        check-path: ${{ matrix.path }}
+        fallback-style: 'Google'
