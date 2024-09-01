@@ -14,8 +14,7 @@ class NumberNode : public Node {
   void accept(JsonVisitor& visitor) const override;
 
  public:
-  NumberNode(const int64_t value);
-  NumberNode(const double value);
+  NumberNode(std::variant<int64_t, double> value);
 
  public:
   const std::variant<int64_t, double> get() const;
