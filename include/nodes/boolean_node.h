@@ -12,6 +12,7 @@ class BooleanNode : public Node {
 
  public:
   BooleanNode(const bool value);
+  bool operator==(const Node& other) const override;
 
  public:
   const bool get() const;

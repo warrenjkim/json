@@ -10,6 +10,7 @@ class JsonVisitor;
 class NullNode : public Node {
  public:
   void accept(JsonVisitor& visitor) const override;
+  bool operator==(const Node& other) const override;
 
  public:
   NullNode() = default;

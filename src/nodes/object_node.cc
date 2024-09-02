@@ -1,5 +1,6 @@
 #include "nodes/object_node.h"
 
+#include <typeinfo>
 #include <vector>
 
 #include "nodes/key_value_node.h"
@@ -15,6 +16,13 @@ ObjectNode::~ObjectNode() {
 
 void ObjectNode::accept(JsonVisitor& visitor) const { visitor.visit(*this); }
 
+bool ObjectNode::operator==(const Node& other) const {
+  return typeid(*this) == typeid(other) &&
+         std::equal(properties_.begin(), properties_.end(),
+                    static_cast<const ObjectNode&>(other).properties_.begin(),
+                    [](const Node* a, const Node* b) { return *a == *b; });
+}
+
 void ObjectNode::add(KeyValueNode* property) {
   properties_.push_back(property);
 }
@@ -23,27 +31,8 @@ const std::vector<KeyValueNode*>& ObjectNode::get() const {
   return properties_;
 }
 
-const size_t ObjectNode::size() const {
-  return properties_.size();
-}
+const size_t ObjectNode::size() const { return properties_.size(); }
 
-const bool ObjectNode::empty() const {
-  return properties_.empty();
-}
-
-ObjectNode::ObjectNode(ObjectNode&& other) noexcept
-    : properties_(std::move(other.properties_)) {}
-
-ObjectNode& ObjectNode::operator=(ObjectNode&& other) noexcept {
-  if (this != &other) {
-    for (KeyValueNode* property : properties_) {
-      delete property;
-    }
-
-    properties_ = std::move(other.properties_);
-  }
-
-  return *this;
-}
+const bool ObjectNode::empty() const { return properties_.empty(); }
 
 }  // namespace json

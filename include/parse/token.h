@@ -15,7 +15,7 @@ struct Token {
   Token(char value = '\0', TokenType type = TokenType::UNKNOWN)
       : type(type), value(1, value) {}
 
-  const bool operator==(const Token& other) const {
+  bool operator==(const Token& other) const {
     return value == other.value && type == other.type;
   }
 };
