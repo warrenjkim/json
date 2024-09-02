@@ -16,6 +16,7 @@ class ObjectNode : public Node {
 
  public:
   void accept(JsonVisitor& visitor) const override;
+  bool operator==(const Node& other) const override;
 
  public:
   void add(KeyValueNode* property);
@@ -28,14 +29,12 @@ class ObjectNode : public Node {
 
  private:
   ObjectNode(const ObjectNode&) = delete;
+  ObjectNode(ObjectNode&&) = delete;
+  ObjectNode& operator=(ObjectNode&&) = delete;
   ObjectNode& operator=(const ObjectNode&) = delete;
 
  public:
   ObjectNode() = default;
-
- public:
-  ObjectNode(ObjectNode&& other) noexcept;
-  ObjectNode& operator=(ObjectNode&& other) noexcept;
 };
 
 }  // namespace json
