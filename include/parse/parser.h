@@ -2,6 +2,7 @@
 
 #include <optional>
 #include <queue>
+#include <string_view>
 
 #include "nodes/array_node.h"
 #include "nodes/boolean_node.h"

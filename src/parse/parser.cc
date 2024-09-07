@@ -5,6 +5,7 @@
 #include <optional>
 #include <queue>
 #include <string>
+#include <string_view>
 
 #include "nodes/key_value_node.h"
 #include "nodes/node.h"
