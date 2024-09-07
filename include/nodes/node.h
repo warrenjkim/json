@@ -13,7 +13,7 @@ class Node {
   bool operator!=(const Node& other) const = default;
 
  public:
-  virtual ~Node() = default;
+  virtual ~Node() noexcept = default;
 };
 
 }  // namespace json
