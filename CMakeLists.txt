@@ -71,12 +71,26 @@ endfunction()
 
 # parse libraries
 create_lib(tokenizer "src/parse")
+create_lib(parser "src/parse")
 
 # util libraries
 create_lib(logger "src/utils")
 
+# node libraries
+add_library(nodes STATIC
+  src/nodes/array_node.cc
+  src/nodes/boolean_node.cc
+  src/nodes/key_value_node.cc
+  src/nodes/null_node.cc
+  src/nodes/number_node.cc
+  src/nodes/object_node.cc
+  src/nodes/string_node.cc
+)
+target_include_directories(nodes PUBLIC src/nodes)
+
 # link the logger library to the necessary targets
 target_link_libraries(tokenizer PRIVATE logger)
+target_link_libraries(parser PRIVATE logger tokenizer nodes)
 
 # ===== EXECUTABLES =====
 
@@ -102,9 +116,11 @@ endfunction()
 
 # Create test executables
 create_test_executable(tokenizer_test "tests/parse" tokenizer)
+create_test_executable(parser_test "tests/parse" parser)
 
 # Link the logger library to the test executable
 target_link_libraries(tokenizer_test PRIVATE logger)
+target_link_libraries(parser_test PRIVATE tokenizer logger nodes)
 
 # ===== CODE COVERAGE =====
 
@@ -112,7 +128,9 @@ include(cmake/CodeCoverageReportConfig.cmake)
 generate_coverage_report(
   TARGETS
   tokenizer
+  parser
 
   TESTS
   tokenizer_test
+  parser_test
 )
