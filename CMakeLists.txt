@@ -75,6 +75,7 @@ create_lib(parser "src/parse")
 
 # util libraries
 create_lib(logger "src/utils")
+create_lib(rbt "src/utils")
 
 # node libraries
 add_library(nodes STATIC
@@ -91,6 +92,7 @@ target_include_directories(nodes PUBLIC src/nodes)
 # link the logger library to the necessary targets
 target_link_libraries(tokenizer PRIVATE logger)
 target_link_libraries(parser PRIVATE logger tokenizer nodes)
+target_link_libraries(rbt PRIVATE logger)
 
 # ===== EXECUTABLES =====
 
@@ -118,11 +120,13 @@ endfunction()
 create_test_executable(tokenizer_test "tests/parse" tokenizer)
 create_test_executable(parser_test "tests/parse" parser)
 create_test_executable(trie_test "tests/utils" logger)
+create_test_executable(rbt_test "tests/utils" logger)
 
 # Link the logger library to the test executable
 target_link_libraries(tokenizer_test PRIVATE logger)
 target_link_libraries(parser_test PRIVATE tokenizer logger nodes)
 target_link_libraries(trie_test PRIVATE logger)
+target_link_libraries(rbt_test PRIVATE rbt logger nodes)
 
 # ===== CODE COVERAGE =====
 
@@ -131,9 +135,11 @@ generate_coverage_report(
   TARGETS
   tokenizer
   parser
+  rbt
 
   TESTS
   tokenizer_test
   parser_test
   trie_test
+  rbt_test
 )
