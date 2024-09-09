@@ -5,14 +5,12 @@
 #include <boost/log/trivial.hpp>
 #include <string>
 
-#include "nodes/node.h"
-#include "nodes/object_node.h"
 #include "utils/logger.h"
 
 class RBTreeVerifier {
  public:
-  static bool verify_rb_tree_properties(const json::utils::RBTree& tree) {
-    const json::utils::RBTree::Node* root = tree.root();
+  static bool verify_rb_tree_properties(const json::utils::RBTree<int>& tree) {
+    const json::utils::RBTree<int>::Node* root = tree.root();
     if (!root) {
       return true;
     }
@@ -23,11 +21,11 @@ class RBTreeVerifier {
   }
 
  private:
-  static bool verify_root_property(const json::utils::RBTree::Node* root) {
+  static bool verify_root_property(const json::utils::RBTree<int>::Node* root) {
     return (!root || root->color == json::utils::rbt::Color::BLACK);
   }
 
-  static bool verify_red_property(const json::utils::RBTree::Node* node) {
+  static bool verify_red_property(const json::utils::RBTree<int>::Node* node) {
     if (node) {
       return true;
     }
@@ -42,7 +40,7 @@ class RBTreeVerifier {
     return verify_red_property(node->left) && verify_red_property(node->right);
   }
 
-  static bool verify_black_height(const json::utils::RBTree::Node* node,
+  static bool verify_black_height(const json::utils::RBTree<int>::Node* node,
                                   int& black_height) {
     if (!node) {
       black_height = 1;
@@ -65,7 +63,7 @@ class RBTreeVerifier {
     return true;
   }
 
-  static bool verify_bst_property(const json::utils::RBTree::Node* node) {
+  static bool verify_bst_property(const json::utils::RBTree<int>::Node* node) {
     if (!node) {
       return true;
     }
@@ -94,12 +92,12 @@ class RBTreeTest : public ::testing::Test {
     ASSERT_TRUE(RBTreeVerifier::verify_rb_tree_properties(tree));
   }
 
-  json::utils::RBTree tree;
+  json::utils::RBTree<int> tree;
 };
 
 TEST_F(RBTreeTest, InsertAndFind) {
-  json::Node* node1 = new json::ObjectNode();
-  json::Node* node2 = new json::ObjectNode();
+  int* node1 = new int(1);
+  int* node2 = new int(1);
 
   tree.insert("key1", node1);
   validate_tree();
@@ -113,7 +111,7 @@ TEST_F(RBTreeTest, InsertAndFind) {
 }
 
 TEST_F(RBTreeTest, RemoveExistingKey) {
-  json::Node* node = new json::ObjectNode();
+  int* node = new int(1);
   tree.insert("key", node);
   validate_tree();
   ASSERT_EQ(tree.size(), 1);
@@ -125,7 +123,7 @@ TEST_F(RBTreeTest, RemoveExistingKey) {
 }
 
 TEST_F(RBTreeTest, RemoveNonExistentKey) {
-  json::Node* node = new json::ObjectNode();
+  int* node = new int(1);
   tree.insert("key", node);
   validate_tree();
   ASSERT_EQ(tree.size(), 1);
@@ -137,8 +135,8 @@ TEST_F(RBTreeTest, RemoveNonExistentKey) {
 }
 
 TEST_F(RBTreeTest, InsertDuplicateKey) {
-  json::Node* node1 = new json::ObjectNode();
-  json::Node* node2 = new json::ObjectNode();
+  int* node1 = new int(1);
+  int* node2 = new int(1);
 
   tree.insert("key", node1);
   validate_tree();
@@ -163,7 +161,7 @@ TEST_F(RBTreeTest, EmptyTreeOperations) {
 
 TEST_F(RBTreeTest, LargeKeyInsertion) {
   std::string large_key(1000, 'a');
-  json::Node* node = new json::ObjectNode();
+  int* node = new int(1);
 
   tree.insert(large_key, node);
   validate_tree();
@@ -174,7 +172,7 @@ TEST_F(RBTreeTest, LargeKeyInsertion) {
 TEST_F(RBTreeTest, Clear) {
   const int N = 10000;
   for (int i = 0; i < N; i++) {
-    tree.insert(std::to_string(i), new json::ObjectNode());
+    tree.insert(std::to_string(i), new int(1));
     validate_tree();
   }
   ASSERT_EQ(tree.size(), N);
@@ -206,7 +204,7 @@ TEST_F(RBTreeTest, InsertAndRemoveAll) {
   }
 
   for (int i = 0; i < N; i++) {
-    tree.insert(std::to_string(numbers[i]), new json::ObjectNode());
+    tree.insert(std::to_string(numbers[i]), new int(1));
     validate_tree();
     ASSERT_EQ(tree.size(), i + 1);
   }
@@ -230,7 +228,7 @@ TEST_F(RBTreeTest, AlternatingInsertAndRemove) {
   const int N = 10000;
   int expected_size = 0;
   for (int i = 0; i < N; i++) {
-    tree.insert(std::to_string(i), new json::ObjectNode());
+    tree.insert(std::to_string(i), new int(1));
     expected_size++;
     validate_tree();
     ASSERT_EQ(tree.size(), expected_size);
@@ -257,19 +255,13 @@ TEST_F(RBTreeTest, StressTestRandomOperations) {
 
   std::set<std::string> unique_keys;
   for (int i = 0; i < N; i++) {
-    int operation = next_pseudo_random() % 3;  // 0: insert, 1: remove, 2: find
+    int operation = next_pseudo_random() % 3;
     std::string key = std::to_string(next_pseudo_random() % (N / 10));
 
     switch (operation) {
-      case 0:  // insert
-      {
+      case 0: {  // insert
         auto [_, inserted] = unique_keys.insert(key);
-        if (inserted) {
-          tree.insert(key, new json::ObjectNode());
-        } else {
-          // Key already exists, replace the value
-          tree.insert(key, new json::ObjectNode());
-        }
+        tree.insert(key, new int(1));
       } break;
       case 1:  // remove
         if (!unique_keys.empty()) {
