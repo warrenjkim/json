@@ -12,6 +12,9 @@ class TrieTest : public ::testing::Test {
 
 TEST_F(TrieTest, InsertAndGet) {
   json::utils::Trie<int> trie;
+
+  ASSERT_FALSE(trie.root());
+
   int* value1 = new int(10);
   int* value2 = new int(20);
 
