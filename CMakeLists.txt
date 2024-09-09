@@ -117,10 +117,12 @@ endfunction()
 # Create test executables
 create_test_executable(tokenizer_test "tests/parse" tokenizer)
 create_test_executable(parser_test "tests/parse" parser)
+create_test_executable(trie_test "tests/utils" logger)
 
 # Link the logger library to the test executable
 target_link_libraries(tokenizer_test PRIVATE logger)
 target_link_libraries(parser_test PRIVATE tokenizer logger nodes)
+target_link_libraries(trie_test PRIVATE logger)
 
 # ===== CODE COVERAGE =====
 
@@ -133,4 +135,5 @@ generate_coverage_report(
   TESTS
   tokenizer_test
   parser_test
+  trie_test
 )
