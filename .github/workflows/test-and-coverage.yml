@@ -10,40 +10,40 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: 'recursive'
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y cmake make g++ libboost-all-dev gcovr
-    - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
-    - name: Build
-      run: cmake --build ${{github.workspace}}/build
-    - name: Run tests
-      working-directory: ${{github.workspace}}/build
-      run: ctest --output-on-failure --force-new-ctest-process --verbose
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake make g++ libboost-all-dev gcovr
+      - name: Configure CMake
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build
+      - name: Run tests
+        working-directory: ${{github.workspace}}/build
+        run: ctest --output-on-failure --force-new-ctest-process --verbose
 
   coverage:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: 'recursive'
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y cmake make g++ libboost-all-dev gcovr
-    - name: Configure CMake with coverage
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Coverage
-    - name: Build
-      run: cmake --build ${{github.workspace}}/build
-    - name: Run coverage
-      working-directory: ${{github.workspace}}/build
-      run: make coverage
-    - name: Upload coverage report
-      uses: actions/upload-artifact@v2
-      with:
-        name: coverage-report
-        path: ${{github.workspace}}/build/report
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake make g++ libboost-all-dev gcovr
+      - name: Configure CMake with coverage
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Coverage
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build
+      - name: Run coverage
+        working-directory: ${{github.workspace}}/build
+        run: make coverage
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: ${{github.workspace}}/build/report
