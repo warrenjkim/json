@@ -46,6 +46,11 @@ message(STATUS "Boost lib: ${Boost_LIBRARY_DIRS}")
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-fno-elide-constructors" COMPILER_SUPPORTS_NO_ELIDE)
 
+# Set optimization flags based on build type
+set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0")
+set(CMAKE_CXX_FLAGS_COVERAGE "-O0 -fno-elide-constructors")
+
 # ===== DIRECTORIES =====
 
 # Add directory containing header files
