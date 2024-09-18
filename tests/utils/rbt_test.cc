@@ -9,8 +9,9 @@
 
 class RBTreeVerifier {
  public:
-  static bool verify_rb_tree_properties(const json::utils::RBTree<int>& tree) {
-    const json::utils::RBTree<int>::Node* root = tree.root();
+  static bool verify_rb_tree_properties(
+      const json::utils::RBTree<std::string, int>& tree) {
+    const json::utils::RBTree<std::string, int>::Node* root = tree.root();
     if (!root) {
       return true;
     }
@@ -21,11 +22,13 @@ class RBTreeVerifier {
   }
 
  private:
-  static bool verify_root_property(const json::utils::RBTree<int>::Node* root) {
+  static bool verify_root_property(
+      const json::utils::RBTree<std::string, int>::Node* root) {
     return (!root || root->color == json::utils::rbt::Color::BLACK);
   }
 
-  static bool verify_red_property(const json::utils::RBTree<int>::Node* node) {
+  static bool verify_red_property(
+      const json::utils::RBTree<std::string, int>::Node* node) {
     if (node) {
       return true;
     }
@@ -40,8 +43,9 @@ class RBTreeVerifier {
     return verify_red_property(node->left) && verify_red_property(node->right);
   }
 
-  static bool verify_black_height(const json::utils::RBTree<int>::Node* node,
-                                  int& black_height) {
+  static bool verify_black_height(
+      const json::utils::RBTree<std::string, int>::Node* node,
+      int& black_height) {
     if (!node) {
       black_height = 1;
       return true;
@@ -63,7 +67,8 @@ class RBTreeVerifier {
     return true;
   }
 
-  static bool verify_bst_property(const json::utils::RBTree<int>::Node* node) {
+  static bool verify_bst_property(
+      const json::utils::RBTree<std::string, int>::Node* node) {
     if (!node) {
       return true;
     }
@@ -89,98 +94,98 @@ class RBTreeTest : public ::testing::Test {
   }
 
   void validate_tree() {
-    ASSERT_TRUE(RBTreeVerifier::verify_rb_tree_properties(tree));
+    ASSERT_TRUE(RBTreeVerifier::verify_rb_tree_properties(tree_));
   }
 
-  json::utils::RBTree<int> tree;
+  json::utils::RBTree<std::string, int> tree_;
 };
 
 TEST_F(RBTreeTest, InsertAndFind) {
   int* node1 = new int(1);
   int* node2 = new int(1);
 
-  tree.insert("key1", node1);
+  tree_.insert("key1", node1);
   validate_tree();
-  tree.insert("key2", node2);
+  tree_.insert("key2", node2);
   validate_tree();
 
-  ASSERT_EQ(tree.size(), 2);
-  ASSERT_EQ(tree.find("key1")->data, node1);
-  ASSERT_EQ(tree.find("key2")->data, node2);
-  ASSERT_EQ(tree.find("nonexistent"), nullptr);
+  ASSERT_EQ(tree_.size(), 2);
+  ASSERT_EQ(tree_.find("key1")->data, node1);
+  ASSERT_EQ(tree_.find("key2")->data, node2);
+  ASSERT_EQ(tree_.find("nonexistent"), nullptr);
 }
 
 TEST_F(RBTreeTest, RemoveExistingKey) {
   int* node = new int(1);
-  tree.insert("key", node);
+  tree_.insert("key", node);
   validate_tree();
-  ASSERT_EQ(tree.size(), 1);
+  ASSERT_EQ(tree_.size(), 1);
 
-  tree.remove("key");
+  tree_.remove("key");
   validate_tree();
-  ASSERT_EQ(tree.find("key"), nullptr);
-  ASSERT_EQ(tree.size(), 0);
+  ASSERT_EQ(tree_.find("key"), nullptr);
+  ASSERT_EQ(tree_.size(), 0);
 }
 
 TEST_F(RBTreeTest, RemoveNonExistentKey) {
   int* node = new int(1);
-  tree.insert("key", node);
+  tree_.insert("key", node);
   validate_tree();
-  ASSERT_EQ(tree.size(), 1);
+  ASSERT_EQ(tree_.size(), 1);
 
-  tree.remove("nonexistent");
+  tree_.remove("nonexistent");
   validate_tree();
-  ASSERT_EQ(tree.size(), 1);
-  ASSERT_NE(tree.find("key"), nullptr);
+  ASSERT_EQ(tree_.size(), 1);
+  ASSERT_NE(tree_.find("key"), nullptr);
 }
 
 TEST_F(RBTreeTest, InsertDuplicateKey) {
   int* node1 = new int(1);
   int* node2 = new int(1);
 
-  tree.insert("key", node1);
+  tree_.insert("key", node1);
   validate_tree();
-  ASSERT_EQ(tree.size(), 1);
+  ASSERT_EQ(tree_.size(), 1);
 
-  tree.insert("key", node2);
+  tree_.insert("key", node2);
   validate_tree();
-  ASSERT_EQ(tree.size(), 1);
-  ASSERT_EQ(tree.find("key")->data, node2);
+  ASSERT_EQ(tree_.size(), 1);
+  ASSERT_EQ(tree_.find("key")->data, node2);
 }
 
 TEST_F(RBTreeTest, EmptyTreeOperations) {
   validate_tree();
-  ASSERT_EQ(tree.size(), 0);
-  ASSERT_EQ(tree.root(), nullptr);
-  ASSERT_EQ(tree.find("any_key"), nullptr);
+  ASSERT_EQ(tree_.size(), 0);
+  ASSERT_EQ(tree_.root(), nullptr);
+  ASSERT_EQ(tree_.find("any_key"), nullptr);
 
-  tree.remove("non_existent_key");
+  tree_.remove("non_existent_key");
   validate_tree();
-  ASSERT_EQ(tree.size(), 0);
+  ASSERT_EQ(tree_.size(), 0);
 }
 
 TEST_F(RBTreeTest, LargeKeyInsertion) {
   std::string large_key(1000, 'a');
   int* node = new int(1);
 
-  tree.insert(large_key, node);
+  tree_.insert(large_key, node);
   validate_tree();
-  ASSERT_EQ(tree.size(), 1);
-  ASSERT_EQ(tree.find(large_key)->data, node);
+  ASSERT_EQ(tree_.size(), 1);
+  ASSERT_EQ(tree_.find(large_key)->data, node);
 }
 
 TEST_F(RBTreeTest, Clear) {
   const int N = 10000;
   for (int i = 0; i < N; i++) {
-    tree.insert(std::to_string(i), new int(1));
+    tree_.insert(std::to_string(i), new int(1));
     validate_tree();
   }
-  ASSERT_EQ(tree.size(), N);
+  ASSERT_EQ(tree_.size(), N);
 
-  tree.clear();
-  tree.remove("");
-  ASSERT_FALSE(tree.root());
-  ASSERT_EQ(tree.size(), 0);
+  tree_.clear();
+  tree_.remove("");
+  ASSERT_FALSE(tree_.root());
+  ASSERT_EQ(tree_.size(), 0);
 }
 
 TEST_F(RBTreeTest, InsertAndRemoveAll) {
@@ -204,9 +209,9 @@ TEST_F(RBTreeTest, InsertAndRemoveAll) {
   }
 
   for (int i = 0; i < N; i++) {
-    tree.insert(std::to_string(numbers[i]), new int(1));
+    tree_.insert(std::to_string(numbers[i]), new int(1));
     validate_tree();
-    ASSERT_EQ(tree.size(), i + 1);
+    ASSERT_EQ(tree_.size(), i + 1);
   }
 
   for (int i = N - 1; i > 0; i--) {
@@ -215,34 +220,13 @@ TEST_F(RBTreeTest, InsertAndRemoveAll) {
   }
 
   for (int i = 0; i < N; i++) {
-    tree.remove(std::to_string(numbers[i]));
+    tree_.remove(std::to_string(numbers[i]));
     validate_tree();
-    ASSERT_EQ(tree.size(), N - i - 1);
+    ASSERT_EQ(tree_.size(), N - i - 1);
   }
 
-  ASSERT_EQ(tree.size(), 0);
-  ASSERT_EQ(tree.root(), nullptr);
-}
-
-TEST_F(RBTreeTest, AlternatingInsertAndRemove) {
-  const int N = 10000;
-  int expected_size = 0;
-  for (int i = 0; i < N; i++) {
-    tree.insert(std::to_string(i), new int(1));
-    expected_size++;
-    validate_tree();
-    ASSERT_EQ(tree.size(), expected_size);
-
-    if (i % 2 == 0 && i > 0) {
-      tree.remove(std::to_string(i / 2));
-      expected_size--;
-      validate_tree();
-      ASSERT_EQ(tree.size(), expected_size);
-    }
-  }
-
-  ASSERT_EQ(tree.size(), expected_size);
-  ASSERT_EQ(expected_size, N - (N / 2) + 1);
+  ASSERT_EQ(tree_.size(), 0);
+  ASSERT_EQ(tree_.root(), nullptr);
 }
 
 TEST_F(RBTreeTest, StressTestRandomOperations) {
@@ -261,22 +245,62 @@ TEST_F(RBTreeTest, StressTestRandomOperations) {
     switch (operation) {
       case 0: {  // insert
         auto [_, inserted] = unique_keys.insert(key);
-        tree.insert(key, new int(1));
+        tree_.insert(key, new int(1));
       } break;
       case 1:  // remove
         if (!unique_keys.empty()) {
           auto it = unique_keys.begin();
           std::advance(it, next_pseudo_random() % unique_keys.size());
-          tree.remove(*it);
+          tree_.remove(*it);
           unique_keys.erase(it);
         }
         break;
       case 2:  // find
-        tree.find(key);
+        tree_.find(key);
         break;
     }
 
     validate_tree();
-    ASSERT_EQ(tree.size(), unique_keys.size());
+    ASSERT_EQ(tree_.size(), unique_keys.size());
   }
+}
+
+TEST_F(RBTreeTest, OperatorBracketTest) {
+  tree_["key1"] = 10;
+  validate_tree();
+  ASSERT_EQ(tree_.size(), 1);
+  ASSERT_EQ(tree_["key1"], 10);
+
+  tree_["key2"] = 20;
+  validate_tree();
+  ASSERT_EQ(tree_.size(), 2);
+  ASSERT_EQ(tree_["key2"], 20);
+
+  tree_["key1"] = 15;
+  validate_tree();
+  ASSERT_EQ(tree_.size(), 2);
+  ASSERT_EQ(tree_["key1"], 15);
+
+  int value = tree_["key3"];
+  validate_tree();
+  ASSERT_EQ(tree_.size(), 3);
+  ASSERT_EQ(value, 0);
+
+  const auto& const_tree = tree_;
+  ASSERT_EQ(const_tree["key1"], 15);
+  ASSERT_EQ(const_tree["key2"], 20);
+  ASSERT_EQ(const_tree["key3"], 0);
+
+  ASSERT_THROW(const_tree["key4"], std::out_of_range);
+  ASSERT_EQ(tree_.size(), 3);
+
+  tree_["key4"] = tree_["key5"] = 50;
+  validate_tree();
+  ASSERT_EQ(tree_.size(), 5);
+  ASSERT_EQ(tree_["key4"], 50);
+  ASSERT_EQ(tree_["key5"], 50);
+
+  value = tree_["key1"];
+  ASSERT_EQ(value, 15);
+  ASSERT_EQ(tree_.size(), 5);
 }

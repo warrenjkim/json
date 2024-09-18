@@ -1,7 +1,8 @@
 #pragma once
 
 #include <cstddef>
-#include <string>
+#include <stdexcept>
+#include <utility>  // move
 
 namespace json {
 
@@ -14,19 +15,19 @@ enum class Structure { LEFT_LEFT, RIGHT_RIGHT, LEFT_RIGHT, RIGHT_LEFT };
 
 }  // namespace rbt
 
-template <typename T>
+template <typename K, typename V>
 class RBTree {
  public:
   struct Node {
-    std::string key;
-    T* data;
+    K key;
+    V* data;
     Node* left;
     Node* right;
 
     rbt::Color color;
     Node* parent;
 
-    Node(std::string key, T* data)
+    Node(K key, V* data)
         : key(std::move(key)),
           data(data),
           color(rbt::Color::RED),
@@ -52,7 +53,7 @@ class RBTree {
   const size_t size() const { return size_; }
 
  public:
-  void insert(const std::string& key, T* data) {
+  void insert(const K& key, V* data) {
     Node* z = nullptr;
     size_t size = size_;
     root_ = recursive_insert(root_, key, data, z);
@@ -63,7 +64,7 @@ class RBTree {
     root_ = double_red_fixup(z);
   }
 
-  void remove(const std::string& target) {
+  void remove(const K& target) {
     Node* del = find(target);
     if (!del) {
       return;
@@ -73,9 +74,7 @@ class RBTree {
     size_--;
   }
 
-  Node* find(const std::string& target) const {
-    return recursive_find(root_, target);
-  }
+  Node* find(const K& target) const { return recursive_find(root_, target); }
 
   void clear() {
     clear(root_);
@@ -83,9 +82,28 @@ class RBTree {
     size_ = 0;
   }
 
+  V& operator[](const K& key) {
+    Node* node = find(key);
+    if (!node) {
+      V* new_value = new V();
+      insert(key, new_value);
+      node = find(key);
+    }
+
+    return *(node->data);
+  }
+
+  const V& operator[](const K& key) const {
+    const Node* node = find(key);
+    if (!node) {
+      throw std::out_of_range("Key not found");
+    }
+
+    return *(node->data);
+  }
+
  private:
-  Node* recursive_insert(Node* root, const std::string& key, T* data,
-                         Node*& z) {
+  Node* recursive_insert(Node* root, const K& key, V* data, Node*& z) {
     if (!root) {
       size_++;
       z = new Node(key, data);
@@ -157,7 +175,7 @@ class RBTree {
     return root_;
   }
 
-  Node* recursive_find(Node* root, const std::string& target) const {
+  Node* recursive_find(Node* root, const K& target) const {
     if (!root) {
       return nullptr;
     }
