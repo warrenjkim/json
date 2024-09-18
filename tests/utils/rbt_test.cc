@@ -11,7 +11,7 @@ class RBTreeVerifier {
  public:
   static bool verify_rb_tree_properties(
       const json::utils::RBTree<std::string, int>& tree) {
-    const json::utils::RBTree<std::string, int>::Node* root = tree.root();
+    const json::utils::rbt::Node<std::string, int>* root = tree.root();
     if (!root) {
       return true;
     }
@@ -23,12 +23,12 @@ class RBTreeVerifier {
 
  private:
   static bool verify_root_property(
-      const json::utils::RBTree<std::string, int>::Node* root) {
+      const json::utils::rbt::Node<std::string, int>* root) {
     return (!root || root->color == json::utils::rbt::Color::BLACK);
   }
 
   static bool verify_red_property(
-      const json::utils::RBTree<std::string, int>::Node* node) {
+      const json::utils::rbt::Node<std::string, int>* node) {
     if (node) {
       return true;
     }
@@ -44,8 +44,7 @@ class RBTreeVerifier {
   }
 
   static bool verify_black_height(
-      const json::utils::RBTree<std::string, int>::Node* node,
-      int& black_height) {
+      const json::utils::rbt::Node<std::string, int>* node, int& black_height) {
     if (!node) {
       black_height = 1;
       return true;
@@ -68,7 +67,7 @@ class RBTreeVerifier {
   }
 
   static bool verify_bst_property(
-      const json::utils::RBTree<std::string, int>::Node* node) {
+      const json::utils::rbt::Node<std::string, int>* node) {
     if (!node) {
       return true;
     }

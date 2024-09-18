@@ -11,33 +11,34 @@ namespace utils {
 namespace rbt {
 
 enum class Color { RED, BLACK };
+
 enum class Structure { LEFT_LEFT, RIGHT_RIGHT, LEFT_RIGHT, RIGHT_LEFT };
+
+template <typename K, typename V>
+struct Node {
+  K key;
+  V* data;
+  Node* left;
+  Node* right;
+
+  rbt::Color color;
+  Node* parent;
+
+  Node(K key, V* data)
+      : key(std::move(key)),
+        data(data),
+        color(rbt::Color::RED),
+        left(nullptr),
+        right(nullptr),
+        parent(nullptr) {}
+
+  ~Node() = default;
+};
 
 }  // namespace rbt
 
 template <typename K, typename V>
 class RBTree {
- public:
-  struct Node {
-    K key;
-    V* data;
-    Node* left;
-    Node* right;
-
-    rbt::Color color;
-    Node* parent;
-
-    Node(K key, V* data)
-        : key(std::move(key)),
-          data(data),
-          color(rbt::Color::RED),
-          left(nullptr),
-          right(nullptr),
-          parent(nullptr) {}
-
-    ~Node() = default;
-  };
-
  public:
   RBTree() : root_(nullptr), size_(0) {}
 
@@ -48,13 +49,13 @@ class RBTree {
   }
 
  public:
-  const Node* root() const { return root_; }
+  const rbt::Node<K, V>* root() const { return root_; }
 
   const size_t size() const { return size_; }
 
  public:
   void insert(const K& key, V* data) {
-    Node* z = nullptr;
+    rbt::Node<K, V>* z = nullptr;
     size_t size = size_;
     root_ = recursive_insert(root_, key, data, z);
     if (size_ == size) {
@@ -65,7 +66,7 @@ class RBTree {
   }
 
   void remove(const K& target) {
-    Node* del = find(target);
+    rbt::Node<K, V>* del = find(target);
     if (!del) {
       return;
     }
@@ -74,7 +75,9 @@ class RBTree {
     size_--;
   }
 
-  Node* find(const K& target) const { return recursive_find(root_, target); }
+  rbt::Node<K, V>* find(const K& target) const {
+    return recursive_find(root_, target);
+  }
 
   void clear() {
     clear(root_);
@@ -83,7 +86,7 @@ class RBTree {
   }
 
   V& operator[](const K& key) {
-    Node* node = find(key);
+    rbt::Node<K, V>* node = find(key);
     if (!node) {
       V* new_value = new V();
       insert(key, new_value);
@@ -94,7 +97,7 @@ class RBTree {
   }
 
   const V& operator[](const K& key) const {
-    const Node* node = find(key);
+    const rbt::Node<K, V>* node = find(key);
     if (!node) {
       throw std::out_of_range("Key not found");
     }
@@ -103,10 +106,11 @@ class RBTree {
   }
 
  private:
-  Node* recursive_insert(Node* root, const K& key, V* data, Node*& z) {
+  rbt::Node<K, V>* recursive_insert(rbt::Node<K, V>* root, const K& key,
+                                    V* data, rbt::Node<K, V>*& z) {
     if (!root) {
       size_++;
-      z = new Node(key, data);
+      z = new rbt::Node<K, V>(key, data);
       return z;
     }
 
@@ -128,16 +132,16 @@ class RBTree {
     return root;
   }
 
-  Node* recursive_remove(Node* target) {
+  rbt::Node<K, V>* recursive_remove(rbt::Node<K, V>* target) {
     if (target->left && target->right) {
-      Node* replacement = successor(target);
+      rbt::Node<K, V>* replacement = successor(target);
       std::swap(target->key, replacement->key);
       std::swap(target->data, replacement->data);
       return recursive_remove(replacement);
     }
 
-    Node* replacement = target->left ? target->left : target->right;
-    Node* parent = target->parent;
+    rbt::Node<K, V>* replacement = target->left ? target->left : target->right;
+    rbt::Node<K, V>* parent = target->parent;
     rbt::Color target_color = target->color;
 
     // relink parent to point to replacement
@@ -163,7 +167,7 @@ class RBTree {
       if (replacement && replacement->color == rbt::Color::RED) {
         replacement->color = rbt::Color::BLACK;
       } else {
-        Node* z = double_black_fixup(replacement, parent);
+        rbt::Node<K, V>* z = double_black_fixup(replacement, parent);
         while (z && z->parent) {
           z = z->parent;
         }
@@ -175,7 +179,8 @@ class RBTree {
     return root_;
   }
 
-  Node* recursive_find(Node* root, const K& target) const {
+  rbt::Node<K, V>* recursive_find(rbt::Node<K, V>* root,
+                                  const K& target) const {
     if (!root) {
       return nullptr;
     }
@@ -189,18 +194,20 @@ class RBTree {
     return root;
   }
 
-  void clear(Node* node) {
+  void clear(rbt::Node<K, V>* node) {
     if (node == nullptr) {
       return;
     }
+
     clear(node->left);
     clear(node->right);
+
     delete node->data;
     delete node;
   }
 
-  Node* successor(Node* node) {
-    Node* successor = node->right;
+  rbt::Node<K, V>* successor(rbt::Node<K, V>* node) {
+    rbt::Node<K, V>* successor = node->right;
     while (successor->left) {
       successor = successor->left;
     }
@@ -209,7 +216,7 @@ class RBTree {
   }
 
  private:
-  Node* double_red_fixup(Node* z) {
+  rbt::Node<K, V>* double_red_fixup(rbt::Node<K, V>* z) {
     if (!z->parent) {
       z->color = rbt::Color::BLACK;
       return z;
@@ -219,7 +226,7 @@ class RBTree {
       return double_red_fixup(z->parent);
     }
 
-    Node* u = uncle(z);
+    rbt::Node<K, V>* u = uncle(z);
     if (is_black(u)) {
       z = restructure(z);
       z->color = rbt::Color::BLACK;
@@ -231,17 +238,19 @@ class RBTree {
     return double_red_fixup(recolor(z));
   }
 
-  Node* double_black_fixup(Node* replacement, Node* parent) {
+  rbt::Node<K, V>* double_black_fixup(rbt::Node<K, V>* replacement,
+                                      rbt::Node<K, V>* parent) {
     if (!parent) {
       return replacement;
     }
 
-    Node* sibling =
+    rbt::Node<K, V>* sibling =
         (parent->left == replacement) ? parent->right : parent->left;
 
     // case 1: red sibling
     if (is_red(sibling)) {
-      Node* z = (parent->left == sibling) ? sibling->left : sibling->right;
+      rbt::Node<K, V>* z =
+          (parent->left == sibling) ? sibling->left : sibling->right;
       z = restructure(z);
       z->color = rbt::Color::BLACK;
       parent->color = rbt::Color::RED;
@@ -261,7 +270,7 @@ class RBTree {
     }
 
     // case 3: black sibling with at least one red child
-    Node* z = nullptr;
+    rbt::Node<K, V>* z = nullptr;
     if (is_red(sibling->left) && is_red(sibling->right)) {
       z = (parent->left == sibling) ? sibling->left : sibling->right;
     } else {
@@ -276,7 +285,7 @@ class RBTree {
     return z;
   }
 
-  Node* recolor(Node* z) {
+  rbt::Node<K, V>* recolor(rbt::Node<K, V>* z) {
     z->parent->color = rbt::Color::BLACK;
     uncle(z)->color = rbt::Color::BLACK;
     grandparent(z)->color = rbt::Color::RED;
@@ -284,7 +293,7 @@ class RBTree {
     return grandparent(z);
   }
 
-  Node* restructure(Node* z) {
+  rbt::Node<K, V>* restructure(rbt::Node<K, V>* z) {
     rbt::Structure structure;
     if (grandparent(z)->left == z->parent) {
       structure = z->parent->left == z ? rbt::Structure::LEFT_LEFT
@@ -313,8 +322,8 @@ class RBTree {
   }
 
  private:
-  Node* left_rotate(Node* node) {
-    Node* new_root = node->right;
+  rbt::Node<K, V>* left_rotate(rbt::Node<K, V>* node) {
+    rbt::Node<K, V>* new_root = node->right;
     node->right = new_root->left;
     if (new_root->left) {
       new_root->left->parent = node;
@@ -335,8 +344,8 @@ class RBTree {
     return new_root;
   }
 
-  Node* right_rotate(Node* node) {
-    Node* new_root = node->left;
+  rbt::Node<K, V>* right_rotate(rbt::Node<K, V>* node) {
+    rbt::Node<K, V>* new_root = node->left;
 
     node->left = new_root->right;
     if (new_root->right) {
@@ -359,24 +368,26 @@ class RBTree {
   }
 
  private:
-  Node* grandparent(Node* node) { return node->parent->parent; }
+  rbt::Node<K, V>* grandparent(rbt::Node<K, V>* node) {
+    return node->parent->parent;
+  }
 
-  Node* uncle(Node* z) {
-    Node* gp = grandparent(z);
+  rbt::Node<K, V>* uncle(rbt::Node<K, V>* z) {
+    rbt::Node<K, V>* gp = grandparent(z);
     return gp->left == z->parent ? gp->right : gp->left;
   }
 
  private:
-  bool is_black(const Node* node) const {
+  bool is_black(const rbt::Node<K, V>* node) const {
     return !node || node->color == rbt::Color::BLACK;
   }
 
-  bool is_red(const Node* node) const {
+  bool is_red(const rbt::Node<K, V>* node) const {
     return node && node->color == rbt::Color::RED;
   }
 
  private:
-  Node* root_;
+  rbt::Node<K, V>* root_;
   size_t size_;
 };
 
