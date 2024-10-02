@@ -23,8 +23,8 @@ struct Pair {
 
   Pair& operator=(const Pair& other) {
     if (this != &other) {
-      first = other.first;
-      second = other.second;
+      const_cast<K&>(first) = other.first;
+      const_cast<V&>(second) = other.second;
     }
 
     return *this;
@@ -32,8 +32,8 @@ struct Pair {
 
   Pair& operator=(Pair&& other) noexcept {
     if (this != &other) {
-      first = std::move(other.first);
-      second = std::move(other.second);
+      const_cast<K&>(first) = std::move(other.first);
+      const_cast<V&>(second) = std::move(other.second);
     }
 
     return *this;
@@ -45,6 +45,16 @@ struct Pair {
 
   bool operator!=(const Pair& other) const { return !(*this == other); }
 };
+
+template <typename K, typename V>
+bool operator==(const Pair<K, V>& lhs, const Pair<const K, const V>& rhs) {
+  return lhs.first == rhs.first && lhs.second == rhs.second;
+}
+
+template <typename K, typename V>
+bool operator==(const Pair<const K, const V>& lhs, const Pair<K, V>& rhs) {
+  return operator==(rhs, lhs);
+}
 
 }  // namespace utils
 

@@ -125,8 +125,7 @@ create_test_executable(parser_test "tests/parse" parser)
 create_test_executable(trie_test "tests/utils" logger)
 create_test_executable(stack_test "tests/utils" logger)
 create_test_executable(pair_test "tests/utils" logger)
-# create_test_executable(rbt_test "tests/utils" logger)
-# create_test_executable(rbt_iterator_test "tests/utils" logger)
+create_test_executable(rbt_test "tests/utils" logger)
 
 # Link the logger library to the test executable
 target_link_libraries(tokenizer_test PRIVATE logger)
@@ -134,8 +133,7 @@ target_link_libraries(parser_test PRIVATE tokenizer logger nodes)
 target_link_libraries(trie_test PRIVATE logger)
 target_link_libraries(stack_test PRIVATE logger)
 target_link_libraries(pair_test PRIVATE logger)
-# target_link_libraries(rbt_test PRIVATE logger)
-# target_link_libraries(rbt_iterator_test PRIVATE logger)
+target_link_libraries(rbt_test PRIVATE logger)
 
 # ===== CODE COVERAGE =====
 
@@ -151,6 +149,5 @@ generate_coverage_report(
   trie_test
   stack_test
   pair_test
-  # rbt_test
-  # rbt_iterator_test
+  rbt_test
 )
