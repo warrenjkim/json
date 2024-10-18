@@ -86,6 +86,7 @@ add_library(nodes STATIC
   src/nodes/array_node.cc
   src/nodes/boolean_node.cc
   src/nodes/key_value_node.cc
+  src/nodes/node.cc
   src/nodes/null_node.cc
   src/nodes/number_node.cc
   src/nodes/object_node.cc
@@ -93,9 +94,16 @@ add_library(nodes STATIC
 )
 target_include_directories(nodes PUBLIC src/nodes)
 
+# visitor libraries
+add_library(visitors STATIC
+  src/visitors/cmp_visitor.cc
+)
+target_include_directories(visitors PUBLIC src/visitors)
+
 # link the logger library to the necessary targets
 target_link_libraries(tokenizer PRIVATE logger)
 target_link_libraries(parser PRIVATE logger tokenizer nodes)
+target_link_libraries(visitors PRIVATE logger nodes)
 
 # ===== EXECUTABLES =====
 
@@ -126,14 +134,16 @@ create_test_executable(trie_test "tests/utils" logger)
 create_test_executable(stack_test "tests/utils" logger)
 create_test_executable(pair_test "tests/utils" logger)
 create_test_executable(rbt_test "tests/utils" logger)
+create_test_executable(cmp_visitor_test "tests/visitors" visitors)
 
 # Link the logger library to the test executable
 target_link_libraries(tokenizer_test PRIVATE logger)
-target_link_libraries(parser_test PRIVATE tokenizer logger nodes)
+target_link_libraries(parser_test PRIVATE tokenizer logger visitors nodes)
 target_link_libraries(trie_test PRIVATE logger)
 target_link_libraries(stack_test PRIVATE logger)
 target_link_libraries(pair_test PRIVATE logger)
 target_link_libraries(rbt_test PRIVATE logger)
+target_link_libraries(cmp_visitor_test PRIVATE logger visitors nodes)
 
 # ===== CODE COVERAGE =====
 
@@ -142,6 +152,7 @@ generate_coverage_report(
   TARGETS
   tokenizer
   parser
+  visitors
 
   TESTS
   tokenizer_test
@@ -150,4 +161,5 @@ generate_coverage_report(
   stack_test
   pair_test
   rbt_test
+  cmp_visitor_test
 )

@@ -2,13 +2,12 @@
 
 namespace json {
 
-class JsonNode;
+class Node;
 class ArrayNode;
 class BooleanNode;
 class NullNode;
 class NumberNode;
 class ObjectNode;
-class KeyValueNode;
 class StringNode;
 
 class JsonVisitor {
@@ -18,7 +17,6 @@ class JsonVisitor {
   virtual void visit(const NullNode& node) = 0;
   virtual void visit(const NumberNode& node) = 0;
   virtual void visit(const ObjectNode& node) = 0;
-  virtual void visit(const KeyValueNode& node) = 0;
   virtual void visit(const StringNode& node) = 0;
 };
 

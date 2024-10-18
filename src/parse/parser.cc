@@ -65,7 +65,8 @@ ObjectNode* Parser::parse_object(std::queue<Token>& tokens,
       return nullptr;
     }
 
-    object->add(key_value);
+    object->add(key_value->key(), key_value->value());
+    delete key_value;
 
     std::optional<Token> token = next(tokens);
     if (!token.has_value()) {

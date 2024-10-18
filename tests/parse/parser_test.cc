@@ -8,7 +8,6 @@
 
 #include "nodes/array_node.h"
 #include "nodes/boolean_node.h"
-#include "nodes/key_value_node.h"
 #include "nodes/node.h"
 #include "nodes/null_node.h"
 #include "nodes/number_node.h"
@@ -16,7 +15,6 @@
 #include "nodes/string_node.h"
 #include "parse/token.h"
 #include "utils/logger.h"
-#include "visitors/visitor.h"
 
 class JsonParserTest : public ::testing::Test {
  protected:
@@ -24,7 +22,7 @@ class JsonParserTest : public ::testing::Test {
     json::utils::init_logging(boost::log::trivial::debug);
   }
   void assert_parse(const std::string_view input, json::Node* expected_ast) {
-    std::unique_ptr<json::Node> result(json::Parser::parse(input));
+    json::Node* result = json::Parser::parse(input);
     ASSERT_TRUE(result) << "Parser returned nullptr for valid input";
     ASSERT_EQ(*result, *expected_ast)
         << "Parsed result does not match expected AST";
@@ -53,7 +51,7 @@ TEST_F(JsonParserTest, EmptyObject) {
 
 TEST_F(JsonParserTest, SimpleObject) {
   json::ObjectNode* obj = new json::ObjectNode();
-  obj->add(new json::KeyValueNode("key", new json::StringNode("value")));
+  obj->add("key", new json::StringNode("value"));
   assert_parse("{\"key\": \"value\"}", obj);
 }
 
@@ -79,7 +77,7 @@ TEST_F(JsonParserTest, LogicalValues) {
 
 TEST_F(JsonParserTest, NullValue) {
   json::ObjectNode* obj = new json::ObjectNode();
-  obj->add(new json::KeyValueNode("key", new json::NullNode()));
+  obj->add("key", new json::NullNode());
   assert_parse("{\"key\": null}", obj);
 
   json::ArrayNode* arr = new json::ArrayNode();
@@ -149,18 +147,18 @@ TEST_F(JsonParserTest, EscapedString) {
 TEST_F(JsonParserTest, ComplexStructure) {
   json::ObjectNode* obj = new json::ObjectNode();
   json::ObjectNode* inner_obj = new json::ObjectNode();
-  inner_obj->add(new json::KeyValueNode("first", new json::StringNode("John")));
-  inner_obj->add(new json::KeyValueNode("last", new json::StringNode("Doe")));
-  obj->add(new json::KeyValueNode("name", inner_obj));
-  obj->add(new json::KeyValueNode("age", new json::NumberNode(30)));
-  obj->add(new json::KeyValueNode("isStudent", new json::BooleanNode(false)));
+  inner_obj->add("first", new json::StringNode("John"));
+  inner_obj->add("last", new json::StringNode("Doe"));
+  obj->add("name", inner_obj);
+  obj->add("age", new json::NumberNode(30));
+  obj->add("isStudent", new json::BooleanNode(false));
 
   json::ArrayNode* hobbies = new json::ArrayNode();
   hobbies->add(new json::StringNode("reading"));
   hobbies->add(new json::StringNode("cycling"));
 
-  obj->add(new json::KeyValueNode("hobbies", hobbies));
-  obj->add(new json::KeyValueNode("address", new json::NullNode()));
+  obj->add("hobbies", hobbies);
+  obj->add("address", new json::NullNode());
 
   assert_parse(R"({
     "name": {
