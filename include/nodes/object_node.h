@@ -1,14 +1,12 @@
 #pragma once
 
 #include <cstddef>
-#include <vector>
+#include <string>
 
 #include "node.h"
-#include "nodes/key_value_node.h"
+#include "utils/rbt.h"
 
 namespace json {
-
-class JsonVisitor;
 
 class ObjectNode : public Node {
  public:
@@ -16,16 +14,15 @@ class ObjectNode : public Node {
 
  public:
   void accept(JsonVisitor& visitor) const override;
-  bool operator==(const Node& other) const override;
 
  public:
-  void add(KeyValueNode* property);
-  const std::vector<KeyValueNode*>& get() const;
+  void add(const std::string& key, Node* value);
+  const utils::Map<std::string, Node*>& get() const;
   const size_t size() const;
   const bool empty() const;
 
  private:
-  std::vector<KeyValueNode*> properties_;
+  utils::Map<std::string, Node*> properties_;
 
  public:
   ObjectNode() = default;

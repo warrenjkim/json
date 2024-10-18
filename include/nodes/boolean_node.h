@@ -4,15 +4,12 @@
 
 namespace json {
 
-class JsonVisitor;
-
 class BooleanNode : public Node {
  public:
   void accept(JsonVisitor& visitor) const override;
 
  public:
   BooleanNode(const bool value);
-  bool operator==(const Node& other) const override;
 
  public:
   const bool get() const;

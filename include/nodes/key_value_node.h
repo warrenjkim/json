@@ -6,19 +6,16 @@
 
 namespace json {
 
-class JsonVisitor;
-
 class KeyValueNode : public Node {
  public:
   void accept(JsonVisitor& visitor) const override;
-  bool operator==(const Node& other) const override;
 
  public:
   KeyValueNode(std::string key, Node* value);
 
  public:
   const std::string& key() const;
-  const Node* value() const;
+  Node* value();
 
  private:
   std::string key_;

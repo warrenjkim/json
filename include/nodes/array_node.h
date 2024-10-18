@@ -6,12 +6,9 @@
 
 namespace json {
 
-class JsonVisitor;
-
 class ArrayNode : public Node {
  public:
   void accept(JsonVisitor& visitor) const override;
-  bool operator==(const Node& other) const override;
 
  public:
   void add(Node* element);

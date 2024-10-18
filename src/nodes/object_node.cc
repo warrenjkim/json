@@ -1,33 +1,19 @@
 #include "nodes/object_node.h"
 
-#include <typeinfo>
-#include <vector>
-
-#include "nodes/key_value_node.h"
+#include "utils/rbt.h"
 #include "visitors/visitor.h"
 
 namespace json {
 
-ObjectNode::~ObjectNode() {
-  for (KeyValueNode* property : properties_) {
-    delete property;
-  }
-}
+ObjectNode::~ObjectNode() {}
 
 void ObjectNode::accept(JsonVisitor& visitor) const { visitor.visit(*this); }
 
-bool ObjectNode::operator==(const Node& other) const {
-  return typeid(*this) == typeid(other) &&
-         std::equal(properties_.begin(), properties_.end(),
-                    static_cast<const ObjectNode&>(other).properties_.begin(),
-                    [](const Node* a, const Node* b) { return *a == *b; });
+void ObjectNode::add(const std::string& key, Node* value) {
+  properties_[key] = value;
 }
 
-void ObjectNode::add(KeyValueNode* property) {
-  properties_.push_back(property);
-}
-
-const std::vector<KeyValueNode*>& ObjectNode::get() const {
+const utils::Map<std::string, Node*>& ObjectNode::get() const {
   return properties_;
 }
 

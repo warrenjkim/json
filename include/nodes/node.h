@@ -9,11 +9,19 @@ class Node {
   virtual void accept(JsonVisitor& visitor) const = 0;
 
  public:
-  virtual bool operator==(const Node& other) const = 0;
-  bool operator!=(const Node& other) const = default;
+  const bool operator==(const Node& other) const;
+  const bool operator!=(const Node& other) const;
 
  public:
   virtual ~Node() noexcept = default;
 };
+
+class ArrayNode;
+class BooleanNode;
+class NullNode;
+class NumberNode;
+class ObjectNode;
+class KeyValueNode;
+class StringNode;
 
 }  // namespace json
