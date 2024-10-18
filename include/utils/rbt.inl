@@ -74,6 +74,16 @@ size_t RBTree<K, V>::size() const {
 }
 
 template <typename K, typename V>
+bool RBTree<K, V>::empty() const {
+  return size_ == 0;
+}
+
+template <typename K, typename V>
+bool RBTree<K, V>::contains(const K& key) const {
+  return find(key) != end();
+}
+
+template <typename K, typename V>
 std::optional<V> RBTree<K, V>::get(const K& key) {
   Node* node = recursive_get(root_, key);
   if (!node) {

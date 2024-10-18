@@ -102,6 +102,14 @@ class RBTreeTest : public ::testing::Test {
   json::utils::RBTree<std::string, int> tree_;
 };
 
+TEST_F(RBTreeTest, EmptyAndContains) {
+  ASSERT_TRUE(tree_.empty());
+  tree_.insert("key", 1);
+  ASSERT_FALSE(tree_.empty());
+  ASSERT_TRUE(tree_.contains("key"));
+  ASSERT_FALSE(tree_.contains("key2"));
+}
+
 TEST_F(RBTreeTest, RemoveRootNode) {
   tree_.insert("key2", 2);
   tree_.insert("key1", 1);
