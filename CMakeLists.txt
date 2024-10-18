@@ -138,12 +138,12 @@ create_test_executable(cmp_visitor_test "tests/visitors" visitors)
 
 # Link the logger library to the test executable
 target_link_libraries(tokenizer_test PRIVATE logger)
-target_link_libraries(parser_test PRIVATE tokenizer logger visitors nodes)
+target_link_libraries(parser_test PRIVATE tokenizer logger nodes visitors)
 target_link_libraries(trie_test PRIVATE logger)
 target_link_libraries(stack_test PRIVATE logger)
 target_link_libraries(pair_test PRIVATE logger)
 target_link_libraries(rbt_test PRIVATE logger)
-target_link_libraries(cmp_visitor_test PRIVATE logger visitors nodes)
+target_link_libraries(cmp_visitor_test PRIVATE logger nodes visitors)
 
 # ===== CODE COVERAGE =====
 
