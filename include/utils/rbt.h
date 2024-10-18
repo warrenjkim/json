@@ -66,6 +66,8 @@ class RBTree {
   const Node* root() const;
 
   size_t size() const;
+  bool empty() const;
+  bool contains(const K& key) const;
 
   std::optional<V> get(const K& key);
   const std::optional<V> get(const K& key) const;
@@ -212,3 +214,14 @@ class RBTree {
 }  // namespace json
 
 #include "rbt.inl"
+
+namespace json {
+
+namespace utils {
+
+template <typename K, typename V>
+using Map = RBTree<K, V>;
+
+}  // namespace utils
+
+}  // namespace json
