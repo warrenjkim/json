@@ -3,14 +3,14 @@
 #include <optional>
 #include <string_view>
 
-#include "nodes/array_node.h"
-#include "nodes/boolean_node.h"
-#include "nodes/key_value_node.h"
-#include "nodes/node.h"
-#include "nodes/null_node.h"
-#include "nodes/number_node.h"
-#include "nodes/object_node.h"
-#include "nodes/string_node.h"
+#include "types/array.h"
+#include "types/boolean.h"
+#include "types/key_value.h"
+#include "types/type.h"
+#include "types/null.h"
+#include "types/number.h"
+#include "types/object.h"
+#include "types/string.h"
 #include "utils/queue.h"
 
 namespace json {
@@ -19,27 +19,27 @@ class Token;
 
 class Parser {
  public:
-  static Node* parse(const std::string_view json);
-  static Node* parse(json::utils::Queue<Token>& tokens);
+  static Type* parse(const std::string_view json);
+  static Type* parse(json::utils::Queue<Token>& tokens);
 
  private:
-  static ObjectNode* parse_object(json::utils::Queue<Token>& tokens,
+  static Object* parse_object(json::utils::Queue<Token>& tokens,
                                   const size_t indent_level = 0);
-  static ArrayNode* parse_array(json::utils::Queue<Token>& tokens,
+  static Array* parse_array(json::utils::Queue<Token>& tokens,
                                 const size_t indent_level = 0);
 
  private:
-  static Node* parse_value(json::utils::Queue<Token>& tokens,
+  static Type* parse_value(json::utils::Queue<Token>& tokens,
                            const size_t indent_level = 0);
-  static StringNode* parse_string(json::utils::Queue<Token>& tokens,
+  static String* parse_string(json::utils::Queue<Token>& tokens,
                                   const size_t indent_level = 0);
-  static NumberNode* parse_number(json::utils::Queue<Token>& tokens,
+  static Number* parse_number(json::utils::Queue<Token>& tokens,
                                   const size_t indent_level = 0);
-  static KeyValueNode* parse_key_value(json::utils::Queue<Token>& tokens,
+  static KeyValue* parse_key_value(json::utils::Queue<Token>& tokens,
                                        const size_t indent_level = 0);
-  static BooleanNode* parse_boolean(json::utils::Queue<Token>& tokens,
+  static Boolean* parse_boolean(json::utils::Queue<Token>& tokens,
                                     const size_t indent_level = 0);
-  static NullNode* parse_null(json::utils::Queue<Token>& tokens,
+  static Null* parse_null(json::utils::Queue<Token>& tokens,
                               const size_t indent_level = 0);
 
  private:

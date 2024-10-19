@@ -6,13 +6,13 @@
 #include <cstdint>
 #include <string_view>
 
-#include "nodes/array_node.h"
-#include "nodes/boolean_node.h"
-#include "nodes/node.h"
-#include "nodes/null_node.h"
-#include "nodes/number_node.h"
-#include "nodes/object_node.h"
-#include "nodes/string_node.h"
+#include "types/array.h"
+#include "types/boolean.h"
+#include "types/type.h"
+#include "types/null.h"
+#include "types/number.h"
+#include "types/object.h"
+#include "types/string.h"
 #include "parse/token.h"
 #include "utils/logger.h"
 #include "utils/queue.h"
@@ -22,8 +22,8 @@ class JsonParserTest : public ::testing::Test {
   void SetUp() override {
     json::utils::init_logging(boost::log::trivial::debug);
   }
-  void assert_parse(const std::string_view input, json::Node* expected_ast) {
-    json::Node* result = json::Parser::parse(input);
+  void assert_parse(const std::string_view input, json::Type* expected_ast) {
+    json::Type* result = json::Parser::parse(input);
     ASSERT_TRUE(result) << "Parser returned nullptr for valid input";
     ASSERT_EQ(*result, *expected_ast)
         << "Parsed result does not match expected AST";
@@ -31,12 +31,12 @@ class JsonParserTest : public ::testing::Test {
   }
 
   void assert_parse_failure(const std::string_view input) {
-    std::unique_ptr<json::Node> result(json::Parser::parse(input));
+    std::unique_ptr<json::Type> result(json::Parser::parse(input));
     ASSERT_FALSE(result) << "Parser did not fail for invalid input";
   }
 
   void assert_parse_failure(json::utils::Queue<json::Token> input) {
-    std::unique_ptr<json::Node> result(json::Parser::parse(input));
+    std::unique_ptr<json::Type> result(json::Parser::parse(input));
     ASSERT_FALSE(result) << "Parser did not fail for invalid input";
   }
 
@@ -51,119 +51,119 @@ class JsonParserTest : public ::testing::Test {
 };
 
 TEST_F(JsonParserTest, EmptyObject) {
-  assert_parse("{}", new json::ObjectNode());
+  assert_parse("{}", new json::Object());
 }
 
 TEST_F(JsonParserTest, SimpleObject) {
-  json::ObjectNode* obj = new json::ObjectNode();
-  obj->add("key", new json::StringNode("value"));
+  json::Object* obj = new json::Object();
+  obj->add("key", new json::String("value"));
   assert_parse("{\"key\": \"value\"}", obj);
 }
 
 TEST_F(JsonParserTest, EmptyArray) {
-  assert_parse("[]", new json::ArrayNode());
+  assert_parse("[]", new json::Array());
 }
 
 TEST_F(JsonParserTest, SimpleArray) {
-  json::ArrayNode* arr = new json::ArrayNode();
-  arr->add(new json::NumberNode(1));
-  arr->add(new json::NumberNode(2));
-  arr->add(new json::NumberNode(3));
+  json::Array* arr = new json::Array();
+  arr->add(new json::Number(1));
+  arr->add(new json::Number(2));
+  arr->add(new json::Number(3));
   assert_parse("[1, 2, 3]", arr);
 }
 
 TEST_F(JsonParserTest, LogicalValues) {
-  json::ArrayNode* arr = new json::ArrayNode();
-  arr->add(new json::BooleanNode(true));
-  arr->add(new json::BooleanNode(false));
-  arr->add(new json::NullNode());
+  json::Array* arr = new json::Array();
+  arr->add(new json::Boolean(true));
+  arr->add(new json::Boolean(false));
+  arr->add(new json::Null());
   assert_parse("[true, false, null]", arr);
 }
 
 TEST_F(JsonParserTest, NullValue) {
-  json::ObjectNode* obj = new json::ObjectNode();
-  obj->add("key", new json::NullNode());
+  json::Object* obj = new json::Object();
+  obj->add("key", new json::Null());
   assert_parse("{\"key\": null}", obj);
 
-  json::ArrayNode* arr = new json::ArrayNode();
-  arr->add(new json::NullNode());
+  json::Array* arr = new json::Array();
+  arr->add(new json::Null());
   assert_parse("[null]", arr);
 }
 
 TEST_F(JsonParserTest, IntegerNumbers) {
-  json::ArrayNode* arr = new json::ArrayNode();
-  arr->add(new json::NumberNode(0));
-  arr->add(new json::NumberNode(42));
-  arr->add(new json::NumberNode(0));
-  arr->add(new json::NumberNode(-42));
+  json::Array* arr = new json::Array();
+  arr->add(new json::Number(0));
+  arr->add(new json::Number(42));
+  arr->add(new json::Number(0));
+  arr->add(new json::Number(-42));
   assert_parse("[0,42,-0,-42]", arr);
 }
 
 TEST_F(JsonParserTest, FloatingPointNumbers) {
-  json::ArrayNode* arr = new json::ArrayNode();
-  arr->add(new json::NumberNode(3.14));
-  arr->add(new json::NumberNode(-3.14));
+  json::Array* arr = new json::Array();
+  arr->add(new json::Number(3.14));
+  arr->add(new json::Number(-3.14));
   assert_parse("[3.14,-3.14]", arr);
 }
 
 TEST_F(JsonParserTest, ScientificNotationNumbers) {
-  json::ArrayNode* arr = new json::ArrayNode();
-  arr->add(new json::NumberNode(static_cast<int64_t>(1e10)));
-  arr->add(new json::NumberNode(1e-10));
-  arr->add(new json::NumberNode(1.23e10));
-  arr->add(new json::NumberNode(-1.23e-10));
+  json::Array* arr = new json::Array();
+  arr->add(new json::Number(static_cast<int64_t>(1e10)));
+  arr->add(new json::Number(1e-10));
+  arr->add(new json::Number(1.23e10));
+  arr->add(new json::Number(-1.23e-10));
   assert_parse("[1e10,1e-10,1.23e+10,-1.23E-10]", arr);
 }
 
 TEST_F(JsonParserTest, ZeroWithExponent) {
-  json::ArrayNode* arr = new json::ArrayNode();
-  arr->add(new json::NumberNode(0));  // 0e0
-  arr->add(new json::NumberNode(0));  // -0e-0
+  json::Array* arr = new json::Array();
+  arr->add(new json::Number(0));  // 0e0
+  arr->add(new json::Number(0));  // -0e-0
   assert_parse("[0e0,-0e-0]", arr);
 }
 
 TEST_F(JsonParserTest, LargeExponents) {
-  json::ArrayNode* arr = new json::ArrayNode();
-  arr->add(new json::NumberNode(1e-123));
-  arr->add(new json::NumberNode(1e123));
-  arr->add(new json::NumberNode(1e308));
+  json::Array* arr = new json::Array();
+  arr->add(new json::Number(1e-123));
+  arr->add(new json::Number(1e123));
+  arr->add(new json::Number(1e308));
   assert_parse("[1e-123,1e+123,1e308]", arr);
 }
 
 TEST_F(JsonParserTest, VerySmallAndLargeNumbers) {
-  json::ArrayNode* arr = new json::ArrayNode();
-  arr->add(new json::NumberNode(0.0000000000000000000001));
-  arr->add(new json::NumberNode(9999999999999999999999.0));
+  json::Array* arr = new json::Array();
+  arr->add(new json::Number(0.0000000000000000000001));
+  arr->add(new json::Number(9999999999999999999999.0));
   assert_parse("[0.0000000000000000000001,9999999999999999999999]", arr);
 }
 
 TEST_F(JsonParserTest, SimpleString) {
-  json::ArrayNode* arr = new json::ArrayNode();
-  arr->add(new json::StringNode("Hello, World!"));
+  json::Array* arr = new json::Array();
+  arr->add(new json::String("Hello, World!"));
   assert_parse("[\"Hello, World!\"]", arr);
 }
 
 TEST_F(JsonParserTest, EscapedString) {
-  json::ArrayNode* arr = new json::ArrayNode();
-  arr->add(new json::StringNode("Escaped \\\"Quote\\\""));
+  json::Array* arr = new json::Array();
+  arr->add(new json::String("Escaped \\\"Quote\\\""));
   assert_parse("[\"Escaped \\\"Quote\\\"\"]", arr);
 }
 
 TEST_F(JsonParserTest, ComplexStructure) {
-  json::ObjectNode* obj = new json::ObjectNode();
-  json::ObjectNode* inner_obj = new json::ObjectNode();
-  inner_obj->add("first", new json::StringNode("John"));
-  inner_obj->add("last", new json::StringNode("Doe"));
+  json::Object* obj = new json::Object();
+  json::Object* inner_obj = new json::Object();
+  inner_obj->add("first", new json::String("John"));
+  inner_obj->add("last", new json::String("Doe"));
   obj->add("name", inner_obj);
-  obj->add("age", new json::NumberNode(30));
-  obj->add("isStudent", new json::BooleanNode(false));
+  obj->add("age", new json::Number(30));
+  obj->add("isStudent", new json::Boolean(false));
 
-  json::ArrayNode* hobbies = new json::ArrayNode();
-  hobbies->add(new json::StringNode("reading"));
-  hobbies->add(new json::StringNode("cycling"));
+  json::Array* hobbies = new json::Array();
+  hobbies->add(new json::String("reading"));
+  hobbies->add(new json::String("cycling"));
 
   obj->add("hobbies", hobbies);
-  obj->add("address", new json::NullNode());
+  obj->add("address", new json::Null());
 
   assert_parse(R"({
     "name": {
