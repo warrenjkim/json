@@ -106,7 +106,6 @@ create_lib(json_utils "src/utils")
 target_link_libraries(tokenizer PRIVATE logger)
 target_link_libraries(parser PRIVATE logger tokenizer types)
 target_link_libraries(visitors PRIVATE logger types)
-target_link_libraries(json PRIVATE tokenizer parser logger json_utils types visitors)
 
 # ===== EXECUTABLES =====
 
