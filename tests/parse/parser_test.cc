@@ -1,5 +1,3 @@
-#include "parse/parser.h"
-
 #include <gtest/gtest.h>
 
 #include <boost/log/trivial.hpp>
@@ -13,8 +11,10 @@
 #include "nodes/number_node.h"
 #include "nodes/object_node.h"
 #include "nodes/string_node.h"
+#include "parse/parser.h"
 #include "parse/token.h"
 #include "utils/logger.h"
+#include "utils/queue.h"
 
 class JsonParserTest : public ::testing::Test {
  protected:
@@ -34,14 +34,18 @@ class JsonParserTest : public ::testing::Test {
     ASSERT_FALSE(result) << "Parser did not fail for invalid input";
   }
 
-  void assert_parse_failure(std::queue<json::Token> input) {
+  void assert_parse_failure(json::utils::Queue<json::Token> input) {
     std::unique_ptr<json::Node> result(json::Parser::parse(input));
     ASSERT_FALSE(result) << "Parser did not fail for invalid input";
   }
 
-  std::queue<json::Token> make_token_queue(
+  json::utils::Queue<json::Token> make_token_queue(
       std::initializer_list<json::Token> tokens) {
-    return std::queue<json::Token>(std::deque<json::Token>(tokens));
+    json::utils::Queue<json::Token> queue;
+    for (const auto& token : tokens) {
+      queue.enqueue(token);
+    }
+    return queue;
   }
 };
 

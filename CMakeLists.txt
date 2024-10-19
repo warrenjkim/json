@@ -132,6 +132,7 @@ create_test_executable(tokenizer_test "tests/parse" tokenizer)
 create_test_executable(parser_test "tests/parse" parser)
 create_test_executable(trie_test "tests/utils" logger)
 create_test_executable(stack_test "tests/utils" logger)
+create_test_executable(queue_test "tests/utils" logger)
 create_test_executable(pair_test "tests/utils" logger)
 create_test_executable(rbt_test "tests/utils" logger)
 create_test_executable(cmp_visitor_test "tests/visitors" visitors)
@@ -141,6 +142,7 @@ target_link_libraries(tokenizer_test PRIVATE logger)
 target_link_libraries(parser_test PRIVATE tokenizer logger nodes visitors)
 target_link_libraries(trie_test PRIVATE logger)
 target_link_libraries(stack_test PRIVATE logger)
+target_link_libraries(queue_test PRIVATE logger)
 target_link_libraries(pair_test PRIVATE logger)
 target_link_libraries(rbt_test PRIVATE logger)
 target_link_libraries(cmp_visitor_test PRIVATE logger nodes visitors)
@@ -159,6 +161,7 @@ generate_coverage_report(
   parser_test
   trie_test
   stack_test
+  queue_test
   pair_test
   rbt_test
   cmp_visitor_test
