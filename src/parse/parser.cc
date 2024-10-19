@@ -6,11 +6,11 @@
 #include <string>
 #include <string_view>
 
-#include "types/key_value.h"
-#include "types/type.h"
-#include "types/object.h"
 #include "parse/token.h"
 #include "parse/tokenizer.h"
+#include "types/key_value.h"
+#include "types/object.h"
+#include "types/type.h"
 #include "utils/macros.h"
 #include "utils/queue.h"
 #include "utils/typedefs.h"
@@ -42,7 +42,7 @@ Type* Parser::parse(json::utils::Queue<Token>& tokens) {
 }
 
 Object* Parser::parse_object(json::utils::Queue<Token>& tokens,
-                                 const size_t indent_level) {
+                             const size_t indent_level) {
   if (!expect_next(tokens, Token('{', TokenType::OBJECT_START))) {
     return nullptr;
   }
@@ -97,7 +97,7 @@ Object* Parser::parse_object(json::utils::Queue<Token>& tokens,
 }
 
 Array* Parser::parse_array(json::utils::Queue<Token>& tokens,
-                               const size_t indent_level) {
+                           const size_t indent_level) {
   if (!expect_next(tokens, Token('[', TokenType::ARRAY_START))) {
     return nullptr;
   }
@@ -175,7 +175,7 @@ Type* Parser::parse_value(json::utils::Queue<Token>& tokens,
 }
 
 String* Parser::parse_string(json::utils::Queue<Token>& tokens,
-                                 const size_t indent_level) {
+                             const size_t indent_level) {
   if (!expect_next(tokens, Token('"', TokenType::QUOTE))) {
     return nullptr;
   }
@@ -196,7 +196,7 @@ String* Parser::parse_string(json::utils::Queue<Token>& tokens,
 }
 
 Number* Parser::parse_number(json::utils::Queue<Token>& tokens,
-                                 const size_t indent_level) {
+                             const size_t indent_level) {
   std::string number_string = next(tokens)->value;
   size_t exponent_index = number_string.find_first_of("eE");
   double base = 0.0;
@@ -218,7 +218,7 @@ Number* Parser::parse_number(json::utils::Queue<Token>& tokens,
 }
 
 KeyValue* Parser::parse_key_value(json::utils::Queue<Token>& tokens,
-                                      const size_t indent_level) {
+                                  const size_t indent_level) {
   String* string = parse_string(tokens, indent_level);
   if (!string) {
     return nullptr;
@@ -240,7 +240,7 @@ KeyValue* Parser::parse_key_value(json::utils::Queue<Token>& tokens,
 }
 
 Boolean* Parser::parse_boolean(json::utils::Queue<Token>& tokens,
-                                   const size_t indent_level) {
+                               const size_t indent_level) {
   std::optional<Token> token = next(tokens);
   if (token->value != "true" && token->value != "false") {
     return nullptr;
@@ -250,7 +250,7 @@ Boolean* Parser::parse_boolean(json::utils::Queue<Token>& tokens,
 }
 
 Null* Parser::parse_null(json::utils::Queue<Token>& tokens,
-                             const size_t indent_level) {
+                         const size_t indent_level) {
   if (!expect_next(tokens, Token("null", TokenType::JSON_NULL))) {
     return nullptr;
   }

@@ -6,11 +6,11 @@
 
 #include "types/array.h"
 #include "types/boolean.h"
-#include "types/type.h"
 #include "types/null.h"
 #include "types/number.h"
 #include "types/object.h"
 #include "types/string.h"
+#include "types/type.h"
 #include "utils/logger.h"
 
 class CmpVisitorTest : public ::testing::Test {
