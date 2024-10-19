@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "types/visitors/visitor.h"
+#include "visitors/visitor.h"
 
 namespace json {
 

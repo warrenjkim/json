@@ -1,6 +1,6 @@
 #include "types/type.h"
 
-#include "types/visitors/cmp_visitor.h"
+#include "visitors/cmp_visitor.h"
 
 namespace json {
 

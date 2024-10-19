@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "types/type.h"
-#include "types/visitors/visitor.h"
+#include "visitors/visitor.h"
 
 namespace json {
 

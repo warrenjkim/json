@@ -1,6 +1,6 @@
 #include "types/boolean.h"
 
-#include "types/visitors/visitor.h"
+#include "visitors/visitor.h"
 
 namespace json {
 
