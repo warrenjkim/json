@@ -1,3 +1,5 @@
+#include "parse/parser.h"
+
 #include <gtest/gtest.h>
 
 #include <boost/log/trivial.hpp>
@@ -11,7 +13,6 @@
 #include "nodes/number_node.h"
 #include "nodes/object_node.h"
 #include "nodes/string_node.h"
-#include "parse/parser.h"
 #include "parse/token.h"
 #include "utils/logger.h"
 #include "utils/queue.h"
