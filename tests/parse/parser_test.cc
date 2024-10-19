@@ -6,14 +6,14 @@
 #include <cstdint>
 #include <string_view>
 
+#include "parse/token.h"
 #include "types/array.h"
 #include "types/boolean.h"
-#include "types/type.h"
 #include "types/null.h"
 #include "types/number.h"
 #include "types/object.h"
 #include "types/string.h"
-#include "parse/token.h"
+#include "types/type.h"
 #include "utils/logger.h"
 #include "utils/queue.h"
 
@@ -50,9 +50,7 @@ class JsonParserTest : public ::testing::Test {
   }
 };
 
-TEST_F(JsonParserTest, EmptyObject) {
-  assert_parse("{}", new json::Object());
-}
+TEST_F(JsonParserTest, EmptyObject) { assert_parse("{}", new json::Object()); }
 
 TEST_F(JsonParserTest, SimpleObject) {
   json::Object* obj = new json::Object();
@@ -60,9 +58,7 @@ TEST_F(JsonParserTest, SimpleObject) {
   assert_parse("{\"key\": \"value\"}", obj);
 }
 
-TEST_F(JsonParserTest, EmptyArray) {
-  assert_parse("[]", new json::Array());
-}
+TEST_F(JsonParserTest, EmptyArray) { assert_parse("[]", new json::Array()); }
 
 TEST_F(JsonParserTest, SimpleArray) {
   json::Array* arr = new json::Array();
