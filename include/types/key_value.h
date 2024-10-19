@@ -2,28 +2,28 @@
 
 #include <string>
 
-#include "node.h"
+#include "type.h"
 
 namespace json {
 
-class KeyValueNode : public Node {
+class KeyValue : public Type {
  public:
   void accept(Visitor& visitor) const override;
 
  public:
-  KeyValueNode(std::string key, Node* value);
+  KeyValue(std::string key, Type* value);
 
  public:
   const std::string& key() const;
-  Node* value();
+  Type* value();
 
  private:
   std::string key_;
-  Node* value_;
+  Type* value_;
 
  public:
-  KeyValueNode() = delete;
-  ~KeyValueNode() = default;
+  KeyValue() = delete;
+  ~KeyValue() = default;
 };
 
 }  // namespace json

@@ -1,15 +1,15 @@
 #pragma once
 
-#include "node.h"
+#include "type.h"
 
 namespace json {
 
-class NumberNode : public Node {
+class Number : public Type {
  public:
   void accept(Visitor& visitor) const override;
 
  public:
-  NumberNode(const double value);
+  Number(const double value);
 
  public:
   const double get() const;
@@ -18,8 +18,8 @@ class NumberNode : public Node {
   double value_;
 
  public:
-  NumberNode() = delete;
-  ~NumberNode() = default;
+  Number() = delete;
+  ~Number() = default;
 };
 
 }  // namespace json

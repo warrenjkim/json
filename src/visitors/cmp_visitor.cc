@@ -1,30 +1,28 @@
-#include "nodes/visitors/cmp_visitor.h"
+#include "visitors/cmp_visitor.h"
 
 #include <cmath>
 
-#include "nodes/array_node.h"
-#include "nodes/boolean_node.h"
-#include "nodes/null_node.h"
-#include "nodes/number_node.h"
-#include "nodes/object_node.h"
-#include "nodes/string_node.h"
+#include "types/array.h"
+#include "types/boolean.h"
+#include "types/null.h"
+#include "types/number.h"
+#include "types/object.h"
+#include "types/string.h"
 
 namespace json {
 
-namespace nodes {
-
 namespace visitors {
 
-CmpVisitor::CmpVisitor(Node* root) : expected_(root), result_(true) {}
+CmpVisitor::CmpVisitor(Type* root) : expected_(root), result_(true) {}
 
-CmpVisitor::CmpVisitor(const Node* root)
-    : expected_(const_cast<Node*>(root)), result_(true) {}
+CmpVisitor::CmpVisitor(const Type* root)
+    : expected_(const_cast<Type*>(root)), result_(true) {}
 
-void CmpVisitor::visit(const ArrayNode& node) {
+void CmpVisitor::visit(const Array& node) {
   if (!result_) {
     return;
   }
-  auto expected = dynamic_cast<ArrayNode*>(expected_);
+  auto expected = dynamic_cast<Array*>(expected_);
   if (!expected || expected->size() != node.size()) {
     result_ = false;
     return;
@@ -41,41 +39,41 @@ void CmpVisitor::visit(const ArrayNode& node) {
   }
 }
 
-void CmpVisitor::visit(const BooleanNode& node) {
+void CmpVisitor::visit(const Boolean& node) {
   if (!result_) {
     return;
   }
-  auto expected = dynamic_cast<BooleanNode*>(expected_);
+  auto expected = dynamic_cast<Boolean*>(expected_);
   if (!expected || expected->get() != node.get()) {
     result_ = false;
   }
 }
 
-void CmpVisitor::visit(const NullNode& node) {
+void CmpVisitor::visit(const Null& node) {
   if (!result_) {
     return;
   }
-  auto expected = dynamic_cast<NullNode*>(expected_);
+  auto expected = dynamic_cast<Null*>(expected_);
   if (!expected) {
     result_ = false;
   }
 }
 
-void CmpVisitor::visit(const NumberNode& node) {
+void CmpVisitor::visit(const Number& node) {
   if (!result_) {
     return;
   }
-  auto expected = dynamic_cast<NumberNode*>(expected_);
+  auto expected = dynamic_cast<Number*>(expected_);
   if (!expected || std::abs(expected->get() - node.get()) > 1e-10) {
     result_ = false;
   }
 }
 
-void CmpVisitor::visit(const ObjectNode& node) {
+void CmpVisitor::visit(const Object& node) {
   if (!result_) {
     return;
   }
-  auto expected = dynamic_cast<ObjectNode*>(expected_);
+  auto expected = dynamic_cast<Object*>(expected_);
   if (!expected || expected->size() != node.size()) {
     result_ = false;
     return;
@@ -95,11 +93,11 @@ void CmpVisitor::visit(const ObjectNode& node) {
   }
 }
 
-void CmpVisitor::visit(const StringNode& node) {
+void CmpVisitor::visit(const String& node) {
   if (!result_) {
     return;
   }
-  auto expected = dynamic_cast<StringNode*>(expected_);
+  auto expected = dynamic_cast<String*>(expected_);
   if (!expected || expected->get() != node.get()) {
     result_ = false;
   }
@@ -107,15 +105,13 @@ void CmpVisitor::visit(const StringNode& node) {
 
 bool CmpVisitor::result() const { return result_; }
 
-bool operator==(const Node& lhs, const Node& rhs) {
-  CmpVisitor cmp_visitor(const_cast<Node*>(&lhs));
+bool operator==(const Type& lhs, const Type& rhs) {
+  CmpVisitor cmp_visitor(const_cast<Type*>(&lhs));
   rhs.accept(cmp_visitor);
 
   return cmp_visitor.result();
 }
 
 }  // namespace visitors
-
-}  // namespace nodes
 
 }  // namespace json

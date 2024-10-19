@@ -1,16 +1,16 @@
 #pragma once
 
-#include "node.h"
+#include "type.h"
 
 namespace json {
 
-class NullNode : public Node {
+class Null : public Type {
  public:
   void accept(Visitor& visitor) const override;
 
  public:
-  NullNode() = default;
-  ~NullNode() = default;
+  Null() = default;
+  ~Null() = default;
 };
 
 }  // namespace json

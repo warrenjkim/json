@@ -1,15 +1,15 @@
 #pragma once
 
-#include "node.h"
+#include "type.h"
 
 namespace json {
 
-class BooleanNode : public Node {
+class Boolean : public Type {
  public:
   void accept(Visitor& visitor) const override;
 
  public:
-  BooleanNode(const bool value);
+  Boolean(const bool value);
 
  public:
   const bool get() const;
@@ -18,8 +18,8 @@ class BooleanNode : public Node {
   bool value_;
 
  public:
-  BooleanNode() = delete;
-  ~BooleanNode() = default;
+  Boolean() = delete;
+  ~Boolean() = default;
 };
 
 }  // namespace json

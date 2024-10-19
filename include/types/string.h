@@ -2,16 +2,16 @@
 
 #include <string>
 
-#include "node.h"
+#include "type.h"
 
 namespace json {
 
-class StringNode : public Node {
+class String : public Type {
  public:
   void accept(Visitor& visitor) const override;
 
  public:
-  StringNode(std::string value);
+  String(std::string value);
 
  public:
   const std::string& get() const;
@@ -20,8 +20,8 @@ class StringNode : public Node {
   std::string value_;
 
  public:
-  StringNode() = delete;
-  ~StringNode() = default;
+  String() = delete;
+  ~String() = default;
 };
 
 }  // namespace json

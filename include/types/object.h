@@ -3,29 +3,29 @@
 #include <cstddef>
 #include <string>
 
-#include "node.h"
+#include "type.h"
 #include "utils/rbt.h"
 
 namespace json {
 
-class ObjectNode : public Node {
+class Object : public Type {
  public:
-  ~ObjectNode();
+  ~Object();
 
  public:
   void accept(Visitor& visitor) const override;
 
  public:
-  void add(const std::string& key, Node* value);
-  const utils::Map<std::string, Node*>& get() const;
+  void add(const std::string& key, Type* value);
+  const utils::Map<std::string, Type*>& get() const;
   const size_t size() const;
   const bool empty() const;
 
  private:
-  utils::Map<std::string, Node*> properties_;
+  utils::Map<std::string, Type*> properties_;
 
  public:
-  ObjectNode() = default;
+  Object() = default;
 };
 
 }  // namespace json

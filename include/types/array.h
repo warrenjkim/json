@@ -2,28 +2,28 @@
 
 #include <vector>
 
-#include "node.h"
+#include "type.h"
 
 namespace json {
 
-class ArrayNode : public Node {
+class Array : public Type {
  public:
   void accept(Visitor& visitor) const override;
 
  public:
-  void add(Node* element);
+  void add(Type* element);
   const size_t size() const;
   const bool empty() const;
 
  public:
-  const std::vector<Node*>& get() const;
+  const std::vector<Type*>& get() const;
 
  private:
-  std::vector<Node*> array_;
+  std::vector<Type*> array_;
 
  public:
-  ArrayNode() = default;
-  ~ArrayNode() = default;
+  Array() = default;
+  ~Array() = default;
 };
 
 }  // namespace json
