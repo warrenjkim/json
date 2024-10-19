@@ -1,7 +1,7 @@
 #include "types/object.h"
 
-#include "visitors/visitor.h"
 #include "utils/rbt.h"
+#include "visitors/visitor.h"
 
 namespace json {
 
