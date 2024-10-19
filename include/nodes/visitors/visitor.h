@@ -10,7 +10,7 @@ class NumberNode;
 class ObjectNode;
 class StringNode;
 
-class JsonVisitor {
+class Visitor {
  public:
   virtual void visit(const ArrayNode& node) = 0;
   virtual void visit(const BooleanNode& node) = 0;

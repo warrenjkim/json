@@ -8,7 +8,7 @@ namespace json {
 
 class StringNode : public Node {
  public:
-  void accept(JsonVisitor& visitor) const override;
+  void accept(Visitor& visitor) const override;
 
  public:
   StringNode(std::string value);

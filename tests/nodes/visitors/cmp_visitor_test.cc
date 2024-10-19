@@ -1,4 +1,4 @@
-#include "visitors/cmp_visitor.h"
+#include "nodes/visitors/cmp_visitor.h"
 
 #include <gtest/gtest.h>
 
@@ -20,7 +20,7 @@ class CmpVisitorTest : public ::testing::Test {
   }
 
   void assert_equal(json::Node* ast_1, json::Node* ast_2) {
-    json::CmpVisitor visitor(ast_2);
+    json::nodes::visitors::CmpVisitor visitor(ast_2);
     ast_1->accept(visitor);
     ASSERT_TRUE(visitor.result()) << "ASTs are not equal";
     delete ast_1;
@@ -28,7 +28,7 @@ class CmpVisitorTest : public ::testing::Test {
   }
 
   void assert_not_equal(json::Node* ast_1, json::Node* ast_2) {
-    json::CmpVisitor visitor(ast_2);
+    json::nodes::visitors::CmpVisitor visitor(ast_2);
     ast_1->accept(visitor);
     ASSERT_FALSE(visitor.result()) << "ASTs are unexpectedly equal";
     delete ast_1;

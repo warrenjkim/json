@@ -1,10 +1,10 @@
 #include "nodes/boolean_node.h"
 
-#include "visitors/visitor.h"
+#include "nodes/visitors/visitor.h"
 
 namespace json {
 
-void BooleanNode::accept(JsonVisitor& visitor) const { visitor.visit(*this); }
+void BooleanNode::accept(Visitor& visitor) const { visitor.visit(*this); }
 
 BooleanNode::BooleanNode(const bool value) : value_(value) {}
 

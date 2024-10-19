@@ -1,13 +1,13 @@
 #include "nodes/object_node.h"
 
 #include "utils/rbt.h"
-#include "visitors/visitor.h"
+#include "nodes/visitors/visitor.h"
 
 namespace json {
 
 ObjectNode::~ObjectNode() {}
 
-void ObjectNode::accept(JsonVisitor& visitor) const { visitor.visit(*this); }
+void ObjectNode::accept(Visitor& visitor) const { visitor.visit(*this); }
 
 void ObjectNode::add(const std::string& key, Node* value) {
   properties_[key] = value;

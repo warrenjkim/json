@@ -2,11 +2,11 @@
 
 #include <string>
 
-#include "visitors/visitor.h"
+#include "nodes/visitors/visitor.h"
 
 namespace json {
 
-void StringNode::accept(JsonVisitor& visitor) const { visitor.visit(*this); }
+void StringNode::accept(Visitor& visitor) const { visitor.visit(*this); }
 
 StringNode::StringNode(std::string value) : value_(std::move(value)) {}
 

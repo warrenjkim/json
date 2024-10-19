@@ -1,10 +1,10 @@
 #include "nodes/number_node.h"
 
-#include "visitors/visitor.h"
+#include "nodes/visitors/visitor.h"
 
 namespace json {
 
-void NumberNode::accept(JsonVisitor& visitor) const { visitor.visit(*this); }
+void NumberNode::accept(Visitor& visitor) const { visitor.visit(*this); }
 
 NumberNode::NumberNode(double value) : value_(value) {}
 

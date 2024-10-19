@@ -8,7 +8,7 @@ namespace json {
 
 class ArrayNode : public Node {
  public:
-  void accept(JsonVisitor& visitor) const override;
+  void accept(Visitor& visitor) const override;
 
  public:
   void add(Node* element);

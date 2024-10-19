@@ -6,7 +6,7 @@ namespace json {
 
 class NullNode : public Node {
  public:
-  void accept(JsonVisitor& visitor) const override;
+  void accept(Visitor& visitor) const override;
 
  public:
   NullNode() = default;

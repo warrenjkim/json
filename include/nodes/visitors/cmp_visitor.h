@@ -1,11 +1,15 @@
 #pragma once
 
 #include "nodes/node.h"
-#include "visitors/visitor.h"
+#include "visitor.h"
 
 namespace json {
 
-class CmpVisitor : public JsonVisitor {
+namespace nodes {
+
+namespace visitors {
+
+class CmpVisitor : public Visitor {
  public:
   CmpVisitor(Node* root);
   CmpVisitor(const Node* root);
@@ -21,5 +25,9 @@ class CmpVisitor : public JsonVisitor {
   bool result_;
   Node* expected_;
 };
+
+}  // namespace visitors
+
+}  // namespace nodes
 
 }  // namespace json

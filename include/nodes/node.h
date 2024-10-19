@@ -2,11 +2,11 @@
 
 namespace json {
 
-class JsonVisitor;
+class Visitor;
 
 class Node {
  public:
-  virtual void accept(JsonVisitor& visitor) const = 0;
+  virtual void accept(Visitor& visitor) const = 0;
 
  public:
   const bool operator==(const Node& other) const;

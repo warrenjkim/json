@@ -8,7 +8,7 @@ namespace json {
 
 class KeyValueNode : public Node {
  public:
-  void accept(JsonVisitor& visitor) const override;
+  void accept(Visitor& visitor) const override;
 
  public:
   KeyValueNode(std::string key, Node* value);

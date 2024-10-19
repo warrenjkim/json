@@ -94,25 +94,24 @@ add_library(nodes STATIC
 )
 target_include_directories(nodes PUBLIC src/nodes)
 
-# visitor libraries
-add_library(visitors STATIC
-  src/visitors/cmp_visitor.cc
+# node visitor libraries
+add_library(node_visitors STATIC
+  src/nodes/visitors/cmp_visitor.cc
 )
-target_include_directories(visitors PUBLIC src/visitors)
+target_include_directories(node_visitors PUBLIC src/node/visitors)
 
 # link the logger library to the necessary targets
 target_link_libraries(tokenizer PRIVATE logger)
 target_link_libraries(parser PRIVATE logger tokenizer nodes)
-target_link_libraries(visitors PRIVATE logger nodes)
+target_link_libraries(node_visitors PRIVATE logger nodes)
 
 # ===== EXECUTABLES =====
 
 # function to create an executable test
-function(create_test_executable test_name test_dir)
-  add_executable(${test_name} ${test_dir}/${test_name}.cc)
+function(create_test_executable test_name file_name test_dir)
+  add_executable(${test_name} ${test_dir}/${file_name}.cc)
   target_link_libraries(${test_name} PRIVATE gtest_main Boost::log Boost::log_setup ${ARGN})
 
-  # Add coverage flags if building for coverage
   if(CMAKE_BUILD_TYPE STREQUAL "Coverage")
     target_compile_options(${test_name} PRIVATE -g --coverage -O0)
     target_link_options(${test_name} PRIVATE -g --coverage)
@@ -128,24 +127,24 @@ function(create_test_executable test_name test_dir)
 endfunction()
 
 # Create test executables
-create_test_executable(tokenizer_test "tests/parse" tokenizer)
-create_test_executable(parser_test "tests/parse" parser)
-create_test_executable(trie_test "tests/utils" logger)
-create_test_executable(stack_test "tests/utils" logger)
-create_test_executable(queue_test "tests/utils" logger)
-create_test_executable(pair_test "tests/utils" logger)
-create_test_executable(rbt_test "tests/utils" logger)
-create_test_executable(cmp_visitor_test "tests/visitors" visitors)
+create_test_executable(tokenizer_test "tokenizer_test" "tests/parse" tokenizer)
+create_test_executable(parser_test "parser_test" "tests/parse" parser)
+create_test_executable(trie_test "trie_test" "tests/utils" logger)
+create_test_executable(stack_test "stack_test" "tests/utils" logger)
+create_test_executable(queue_test "queue_test" "tests/utils" logger)
+create_test_executable(pair_test "pair_test" "tests/utils" logger)
+create_test_executable(rbt_test "rbt_test" "tests/utils" logger)
+create_test_executable(node_cmp_visitor_test "cmp_visitor_test" "tests/nodes/visitors" node_visitors)
 
 # Link the logger library to the test executable
 target_link_libraries(tokenizer_test PRIVATE logger)
-target_link_libraries(parser_test PRIVATE tokenizer logger nodes visitors)
+target_link_libraries(parser_test PRIVATE tokenizer logger nodes node_visitors)
 target_link_libraries(trie_test PRIVATE logger)
 target_link_libraries(stack_test PRIVATE logger)
 target_link_libraries(queue_test PRIVATE logger)
 target_link_libraries(pair_test PRIVATE logger)
 target_link_libraries(rbt_test PRIVATE logger)
-target_link_libraries(cmp_visitor_test PRIVATE logger nodes visitors)
+target_link_libraries(node_cmp_visitor_test PRIVATE logger nodes node_visitors)
 
 # ===== CODE COVERAGE =====
 
@@ -154,7 +153,7 @@ generate_coverage_report(
   TARGETS
   tokenizer
   parser
-  visitors
+  node_visitors
 
   TESTS
   tokenizer_test
@@ -164,5 +163,5 @@ generate_coverage_report(
   queue_test
   pair_test
   rbt_test
-  cmp_visitor_test
+  node_cmp_visitor_test
 )

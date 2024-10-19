@@ -1,4 +1,4 @@
-#include "visitors/cmp_visitor.h"
+#include "nodes/visitors/cmp_visitor.h"
 
 #include <cmath>
 
@@ -10,6 +10,10 @@
 #include "nodes/string_node.h"
 
 namespace json {
+
+namespace nodes {
+
+namespace visitors {
 
 CmpVisitor::CmpVisitor(Node* root) : expected_(root), result_(true) {}
 
@@ -109,5 +113,9 @@ bool operator==(const Node& lhs, const Node& rhs) {
 
   return cmp_visitor.result();
 }
+
+}  // namespace visitors
+
+}  // namespace nodes
 
 }  // namespace json

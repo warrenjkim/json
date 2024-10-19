@@ -6,7 +6,7 @@
 
 namespace json {
 
-void KeyValueNode::accept(JsonVisitor& visitor) const { return; }
+void KeyValueNode::accept(Visitor& visitor) const { return; }
 
 KeyValueNode::KeyValueNode(std::string key, Node* value)
     : key_(std::move(key)), value_(value) {}

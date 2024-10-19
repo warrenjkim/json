@@ -1,9 +1,9 @@
 #include "nodes/null_node.h"
 
-#include "visitors/visitor.h"
+#include "nodes/visitors/visitor.h"
 
 namespace json {
 
-void NullNode::accept(JsonVisitor& visitor) const { visitor.visit(*this); }
+void NullNode::accept(Visitor& visitor) const { visitor.visit(*this); }
 
 }  // namespace json
