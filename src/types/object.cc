@@ -13,12 +13,16 @@ void Object::add(const std::string& key, Type* value) {
   properties_[key] = value;
 }
 
+const size_t Object::size() const { return properties_.size(); }
+
+const bool Object::empty() const { return properties_.empty(); }
+
 utils::Map<std::string, Type*>& Object::get() {
   return properties_;
 }
 
-const size_t Object::size() const { return properties_.size(); }
-
-const bool Object::empty() const { return properties_.empty(); }
+const utils::Map<std::string, Type*>& Object::get() const {
+  return properties_;
+}
 
 }  // namespace json

@@ -22,6 +22,7 @@ class Object : public Type {
 
  public:
   utils::Map<std::string, Type*>& get();
+  const utils::Map<std::string, Type*>& get() const;
 
  private:
   utils::Map<std::string, Type*> properties_;

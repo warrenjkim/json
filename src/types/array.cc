@@ -17,4 +17,6 @@ const bool Array::empty() const { return array_.empty(); }
 
 std::vector<Type*>& Array::get() { return array_; }
 
+const std::vector<Type*>& Array::get() const { return array_; }
+
 }  // namespace json

@@ -17,6 +17,7 @@ class Array : public Type {
 
  public:
   std::vector<Type*>& get();
+  const std::vector<Type*>& get() const;
 
  private:
   std::vector<Type*> array_;
