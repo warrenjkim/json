@@ -15,6 +15,6 @@ const size_t Array::size() const { return array_.size(); }
 
 const bool Array::empty() const { return array_.empty(); }
 
-const std::vector<Type*>& Array::get() const { return array_; }
+std::vector<Type*>& Array::get() const { return array_; }
 
 }  // namespace json

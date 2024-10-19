@@ -13,7 +13,7 @@ void Object::add(const std::string& key, Type* value) {
   properties_[key] = value;
 }
 
-const utils::Map<std::string, Type*>& Object::get() const {
+utils::Map<std::string, Type*>& Object::get() {
   return properties_;
 }
 

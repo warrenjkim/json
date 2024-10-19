@@ -17,7 +17,7 @@ class Object : public Type {
 
  public:
   void add(const std::string& key, Type* value);
-  const utils::Map<std::string, Type*>& get() const;
+  utils::Map<std::string, Type*>& get();
   const size_t size() const;
   const bool empty() const;
 

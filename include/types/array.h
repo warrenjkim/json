@@ -16,7 +16,7 @@ class Array : public Type {
   const bool empty() const;
 
  public:
-  const std::vector<Type*>& get() const;
+  std::vector<Type*>& get();
 
  private:
   std::vector<Type*> array_;
