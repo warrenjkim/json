@@ -85,7 +85,6 @@ create_lib(logger "src/utils")
 add_library(types STATIC
   src/types/array.cc
   src/types/boolean.cc
-  src/types/key_value.cc
   src/types/type.cc
   src/types/null.cc
   src/types/number.cc

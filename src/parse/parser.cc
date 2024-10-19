@@ -8,10 +8,10 @@
 
 #include "parse/token.h"
 #include "parse/tokenizer.h"
-#include "types/key_value.h"
 #include "types/object.h"
 #include "types/type.h"
 #include "utils/macros.h"
+#include "utils/pair.h"
 #include "utils/queue.h"
 #include "utils/typedefs.h"
 
@@ -59,14 +59,13 @@ Object* Parser::parse_object(json::utils::Queue<Token>& tokens,
       return nullptr;
     }
 
-    KeyValue* key_value = parse_key_value(tokens);
+    auto key_value = parse_key_value(tokens);
     if (!key_value) {
       delete object;
       return nullptr;
     }
 
-    object->add(key_value->key(), key_value->value());
-    delete key_value;
+    object->add(key_value->first, key_value->second);
 
     std::optional<Token> token = next(tokens);
     if (!token.has_value()) {
@@ -217,26 +216,26 @@ Number* Parser::parse_number(json::utils::Queue<Token>& tokens,
   }
 }
 
-KeyValue* Parser::parse_key_value(json::utils::Queue<Token>& tokens,
-                                  const size_t indent_level) {
+std::optional<utils::Pair<std::string, Type*>> Parser::parse_key_value(
+    json::utils::Queue<Token>& tokens, const size_t indent_level) {
   String* string = parse_string(tokens, indent_level);
   if (!string) {
-    return nullptr;
+    return std::nullopt;
   }
 
   std::string key = string->get();
   delete string;
 
   if (!expect_next(tokens, Token(':', TokenType::COLON))) {
-    return nullptr;
+    return std::nullopt;
   }
 
   Type* value = parse_value(tokens, indent_level + 1);
   if (!value) {
-    return nullptr;
+    return std::nullopt;
   }
 
-  return new KeyValue(key, value);
+  return utils::Pair(key, value);
 }
 
 Boolean* Parser::parse_boolean(json::utils::Queue<Token>& tokens,
