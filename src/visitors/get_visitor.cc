@@ -1,6 +1,7 @@
 #include "visitors/get_visitor.h"
 
 #include <optional>
+#include <stdexcept>
 #include <string>
 
 #include "types/array.h"
