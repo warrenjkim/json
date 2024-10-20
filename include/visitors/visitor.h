@@ -18,6 +18,9 @@ class Visitor {
   virtual void visit(const Number& node) = 0;
   virtual void visit(const Object& node) = 0;
   virtual void visit(const String& node) = 0;
+
+ public:
+  ~Visitor() = default;
 };
 
 }  // namespace json
