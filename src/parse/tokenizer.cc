@@ -38,7 +38,7 @@ std::optional<json::utils::Queue<Token>> Tokenizer::tokenize(
       return std::nullopt;
   }
 
-  if (!new_index.has_value()) {
+  if (!new_index) {
     return std::nullopt;
   }
 
@@ -80,7 +80,7 @@ std::optional<size_t> Tokenizer::tokenize_object(
   while (true) {
     std::optional<size_t> new_index =
         tokenize_key_value(json, index, tokens, indent_level + 1);
-    if (!new_index.has_value()) {
+    if (!new_index) {
       ERROR("tokenize_object", "Error tokenizing key value.", indent_level);
 
       return std::nullopt;
@@ -146,7 +146,7 @@ std::optional<size_t> Tokenizer::tokenize_array(
   while (true) {
     std::optional<size_t> new_index =
         tokenize_value(json, index, tokens, indent_level + 1);
-    if (!new_index.has_value()) {
+    if (!new_index) {
       ERROR("tokenize_array", "Error tokenizing value.", indent_level);
       return std::nullopt;
     }
@@ -234,7 +234,7 @@ std::optional<size_t> Tokenizer::tokenize_string(
     if (c == '\\') {
       auto ctrl_char_result =
           tokenize_control_character(json, index, tokens, indent_level + 1);
-      if (!ctrl_char_result.has_value()) {
+      if (!ctrl_char_result) {
         ERROR("tokenize_string", "Error tokenizing control character (\\c).",
               indent_level);
 
@@ -329,7 +329,7 @@ std::optional<size_t> Tokenizer::tokenize_key_value(
 
   std::optional<size_t> new_index =
       tokenize_string(json, index, tokens, indent_level + 1);
-  if (!new_index.has_value()) {
+  if (!new_index) {
     return std::nullopt;
   }
 
@@ -351,7 +351,7 @@ std::optional<size_t> Tokenizer::tokenize_key_value(
   }
 
   new_index = tokenize_value(json, index, tokens, indent_level + 1);
-  if (!new_index.has_value()) {
+  if (!new_index) {
     return std::nullopt;
   }
 

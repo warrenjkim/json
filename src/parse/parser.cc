@@ -19,7 +19,7 @@ namespace json {
 
 Type* Parser::parse(const std::string_view json) {
   std::optional<json::utils::Queue<Token>> tokens = Tokenizer::tokenize(json);
-  if (!tokens.has_value() || tokens->empty()) {
+  if (!tokens || tokens->empty()) {
     return nullptr;
   }
 
@@ -67,8 +67,8 @@ Object* Parser::parse_object(json::utils::Queue<Token>& tokens,
 
     object->add(key_value->first, key_value->second);
 
-    std::optional<Token> token = next(tokens);
-    if (!token.has_value()) {
+    std::optional<Token> token = tokens.dequeue();
+    if (!token) {
       delete object;
       return nullptr;
     }
@@ -121,8 +121,8 @@ Array* Parser::parse_array(json::utils::Queue<Token>& tokens,
 
     array->add(value);
 
-    std::optional<Token> token = next(tokens);
-    if (!token.has_value()) {
+    std::optional<Token> token = tokens.dequeue();
+    if (!token) {
       delete array;
       return nullptr;
     }
@@ -179,8 +179,8 @@ String* Parser::parse_string(json::utils::Queue<Token>& tokens,
     return nullptr;
   }
 
-  std::optional<Token> token = next(tokens);
-  if (!token.has_value() || token->type != TokenType::STRING) {
+  std::optional<Token> token = tokens.dequeue();
+  if (!token || token->type != TokenType::STRING) {
     return nullptr;
   }
 
@@ -196,7 +196,7 @@ String* Parser::parse_string(json::utils::Queue<Token>& tokens,
 
 Number* Parser::parse_number(json::utils::Queue<Token>& tokens,
                              const size_t indent_level) {
-  std::string number_string = next(tokens)->value;
+  std::string number_string = tokens.dequeue()->value;
   size_t exponent_index = number_string.find_first_of("eE");
   double base = 0.0;
   int exponent = 0;
@@ -240,7 +240,7 @@ std::optional<utils::Pair<std::string, Type*>> Parser::parse_key_value(
 
 Boolean* Parser::parse_boolean(json::utils::Queue<Token>& tokens,
                                const size_t indent_level) {
-  std::optional<Token> token = next(tokens);
+  std::optional<Token> token = tokens.dequeue();
   if (token->value != "true" && token->value != "false") {
     return nullptr;
   }
@@ -257,18 +257,11 @@ Null* Parser::parse_null(json::utils::Queue<Token>& tokens,
   return new Null();
 }
 
-std::optional<Token> Parser::next(json::utils::Queue<Token>& tokens) {
-  return tokens.dequeue();
-}
-
 const bool Parser::expect_next(json::utils::Queue<Token>& tokens,
                                const Token& expected) {
-  std::optional<Token> token = next(tokens);
-  if (!token.has_value() || *token != expected) {
-    return false;
-  }
+  std::optional<Token> token = tokens.dequeue();
 
-  return true;
+  return token && (*token == expected);
 }
 
 }  // namespace json

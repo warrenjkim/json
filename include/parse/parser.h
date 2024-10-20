@@ -42,7 +42,6 @@ class Parser {
                           const size_t indent_level = 0);
 
  private:
-  static std::optional<Token> next(utils::Queue<Token>& tokens);
   static const bool expect_next(utils::Queue<Token>& tokens,
                                 const Token& expected);
 

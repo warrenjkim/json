@@ -14,7 +14,6 @@ enum class TokenType {
   NUMBER,
   BOOLEAN,
   JSON_NULL,
-  SOLIDUS,
   UNKNOWN,
   END_OF_JSON
 };
