@@ -51,128 +51,23 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0")
 set(CMAKE_CXX_FLAGS_COVERAGE "-O0 -fno-elide-constructors")
 
-# ===== DIRECTORIES =====
-
-# Add directory containing header files
-include_directories(include)
-
-# ===== LIBRARIES =====
-
-# function to create a library
-function(create_lib src_name src_dir)
- cmake_parse_arguments(PARSE_ARGV 1 ARG "" "NO_COVERAGE" "SOURCES")
-
- if(ARG_SOURCES)
-   add_library(${src_name} STATIC ${ARG_SOURCES})
- else()
-   add_library(${src_name} STATIC ${src_dir}/${src_name}.cc)
- endif()
-
- target_include_directories(${src_name} PUBLIC ${src_dir})
- target_link_libraries(${src_name} PRIVATE Boost::log Boost::log_setup)
-
- if(CMAKE_BUILD_TYPE STREQUAL "Coverage" AND NOT ARG_NO_COVERAGE)
-   target_compile_options(${src_name} PRIVATE -g --coverage -O0)
-   target_link_options(${src_name} PRIVATE -g --coverage)
-   if(COMPILER_SUPPORTS_NO_ELIDE)
-     target_compile_options(${src_name} PRIVATE -fno-elide-constructors)
-   endif()
- endif()
-endfunction()
-
-# parse libraries
-create_lib(tokenizer "src/parse")
-create_lib(parser "src/parse")
-
-# util libraries
-create_lib(logger "src/utils")
-
-# node libraries
-create_lib(types "src/types" NO_COVERAGE SOURCES
-  src/types/array.cc
-  src/types/boolean.cc
-  src/types/type.cc
-  src/types/null.cc
-  src/types/number.cc
-  src/types/object.cc
-  src/types/string.cc
-)
-
-# visitor libraries
-create_lib(visitors "src/visitors" SOURCES
-  src/visitors/cmp_visitor.cc
-  src/visitors/get_visitor.cc
-)
-
-# json libraries
-create_lib(json_utils "src/utils")
-
-# dependencies
-target_link_libraries(tokenizer PRIVATE logger)
-target_link_libraries(parser PRIVATE logger tokenizer types)
-target_link_libraries(visitors PRIVATE logger types)
-target_link_libraries(json_utils PRIVATE logger types tokenizer parser)
-
-# ===== EXECUTABLES =====
-
-# function to create an executable test
-function(create_test_executable test_name file_name test_dir)
-  add_executable(${test_name} ${test_dir}/${file_name}.cc)
-  target_link_libraries(${test_name} PRIVATE gtest_main Boost::log Boost::log_setup ${ARGN})
-
-  if(CMAKE_BUILD_TYPE STREQUAL "Coverage")
-    target_compile_options(${test_name} PRIVATE -g --coverage -O0)
-    target_link_options(${test_name} PRIVATE -g --coverage)
-    if(COMPILER_SUPPORTS_NO_ELIDE)
-      target_compile_options(${test_name} PRIVATE -fno-elide-constructors)
-    endif()
-  endif()
-
-  gtest_discover_tests(${test_name}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${test_dir}
-    PROPERTIES ENVIRONMENT "GTEST_COLOR=1"
-  )
-endfunction()
-
-# Create test executables
-create_test_executable(tokenizer_test "tokenizer_test" "tests/parse" tokenizer)
-create_test_executable(parser_test "parser_test" "tests/parse" parser)
-create_test_executable(trie_test "trie_test" "tests/utils" logger)
-create_test_executable(stack_test "stack_test" "tests/utils" logger)
-create_test_executable(queue_test "queue_test" "tests/utils" logger)
-create_test_executable(pair_test "pair_test" "tests/utils" logger)
-create_test_executable(rbt_test "rbt_test" "tests/utils" logger)
-create_test_executable(cmp_visitor_test "cmp_visitor_test" "tests/visitors" logger visitors)
-create_test_executable(get_visitor_test "get_visitor_test" "tests/visitors" logger visitors)
-
-# dependencies
-target_link_libraries(tokenizer_test PRIVATE logger)
-target_link_libraries(parser_test PRIVATE tokenizer logger types visitors)
-target_link_libraries(trie_test PRIVATE logger)
-target_link_libraries(stack_test PRIVATE logger)
-target_link_libraries(queue_test PRIVATE logger)
-target_link_libraries(pair_test PRIVATE logger)
-target_link_libraries(rbt_test PRIVATE logger)
-target_link_libraries(cmp_visitor_test PRIVATE logger types visitors)
-target_link_libraries(get_visitor_test PRIVATE logger types visitors)
-
-# ===== CODE COVERAGE =====
+add_subdirectory(src)
+add_subdirectory(tests)
 
 include(cmake/CodeCoverageReportConfig.cmake)
 generate_coverage_report(
   TARGETS
-  tokenizer
-  parser
-  visitors
-
+    tokenizer
+    parser
+    visitors
   TESTS
-  tokenizer_test
-  parser_test
-  trie_test
-  stack_test
-  queue_test
-  pair_test
-  rbt_test
-  cmp_visitor_test
-  get_visitor_test
+    tokenizer_test
+    parser_test
+    trie_test
+    stack_test
+    queue_test
+    pair_test
+    rbt_test
+    cmp_visitor_test
+    get_visitor_test
 )

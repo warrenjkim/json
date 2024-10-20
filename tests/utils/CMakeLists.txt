@@ -1,0 +1,5 @@
+create_test(trie_test logger)
+create_test(stack_test logger)
+create_test(queue_test logger)
+create_test(pair_test logger)
+create_test(rbt_test logger)
