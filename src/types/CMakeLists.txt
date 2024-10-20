@@ -11,6 +11,7 @@ add_library(types STATIC
 target_link_libraries(types PRIVATE
   Boost::log
   Boost::log_setup
+  visitors
 )
 
 add_coverage_options(types)
