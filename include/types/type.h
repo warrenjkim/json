@@ -3,10 +3,12 @@
 namespace json {
 
 class Visitor;
+class ReturnVisitor;
 
 class Type {
  public:
   virtual void accept(Visitor& visitor) const = 0;
+  virtual Type* accept(ReturnVisitor& visitor) const = 0;
 
  public:
   template <typename T>

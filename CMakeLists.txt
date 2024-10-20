@@ -60,18 +60,24 @@ include_directories(include)
 
 # function to create a library
 function(create_lib src_name src_dir)
-  add_library(${src_name} STATIC ${src_dir}/${src_name}.cc)
-  target_include_directories(${src_name} PUBLIC ${src_dir})
-  target_link_libraries(${src_name} PRIVATE Boost::log Boost::log_setup)
+ cmake_parse_arguments(PARSE_ARGV 1 ARG "" "NO_COVERAGE" "SOURCES")
 
-  # Add coverage flags if building for coverage
-  if(CMAKE_BUILD_TYPE STREQUAL "Coverage")
-    target_compile_options(${src_name} PRIVATE -g --coverage -O0)
-    target_link_options(${src_name} PRIVATE -g --coverage)
-    if(COMPILER_SUPPORTS_NO_ELIDE)
-      target_compile_options(${src_name} PRIVATE -fno-elide-constructors)
-    endif()
-  endif()
+ if(ARG_SOURCES)
+   add_library(${src_name} STATIC ${ARG_SOURCES})
+ else()
+   add_library(${src_name} STATIC ${src_dir}/${src_name}.cc)
+ endif()
+
+ target_include_directories(${src_name} PUBLIC ${src_dir})
+ target_link_libraries(${src_name} PRIVATE Boost::log Boost::log_setup)
+
+ if(CMAKE_BUILD_TYPE STREQUAL "Coverage" AND NOT ARG_NO_COVERAGE)
+   target_compile_options(${src_name} PRIVATE -g --coverage -O0)
+   target_link_options(${src_name} PRIVATE -g --coverage)
+   if(COMPILER_SUPPORTS_NO_ELIDE)
+     target_compile_options(${src_name} PRIVATE -fno-elide-constructors)
+   endif()
+ endif()
 endfunction()
 
 # parse libraries
@@ -82,7 +88,7 @@ create_lib(parser "src/parse")
 create_lib(logger "src/utils")
 
 # node libraries
-add_library(types STATIC
+create_lib(types "src/types" NO_COVERAGE SOURCES
   src/types/array.cc
   src/types/boolean.cc
   src/types/type.cc
@@ -91,21 +97,21 @@ add_library(types STATIC
   src/types/object.cc
   src/types/string.cc
 )
-target_include_directories(types PUBLIC src/types)
 
 # visitor libraries
-add_library(visitors STATIC
+create_lib(visitors "src/visitors" SOURCES
   src/visitors/cmp_visitor.cc
+  src/visitors/get_visitor.cc
 )
-target_include_directories(visitors PUBLIC src/node/visitors)
 
-#json libraries
+# json libraries
 create_lib(json_utils "src/utils")
 
-# link the logger library to the necessary targets
+# dependencies
 target_link_libraries(tokenizer PRIVATE logger)
 target_link_libraries(parser PRIVATE logger tokenizer types)
 target_link_libraries(visitors PRIVATE logger types)
+target_link_libraries(json_utils PRIVATE logger types tokenizer parser)
 
 # ===== EXECUTABLES =====
 
@@ -136,9 +142,10 @@ create_test_executable(stack_test "stack_test" "tests/utils" logger)
 create_test_executable(queue_test "queue_test" "tests/utils" logger)
 create_test_executable(pair_test "pair_test" "tests/utils" logger)
 create_test_executable(rbt_test "rbt_test" "tests/utils" logger)
-create_test_executable(cmp_visitor_test "cmp_visitor_test" "tests/visitors" visitors)
+create_test_executable(cmp_visitor_test "cmp_visitor_test" "tests/visitors" logger visitors)
+create_test_executable(get_visitor_test "get_visitor_test" "tests/visitors" logger visitors)
 
-# Link the logger library to the test executable
+# dependencies
 target_link_libraries(tokenizer_test PRIVATE logger)
 target_link_libraries(parser_test PRIVATE tokenizer logger types visitors)
 target_link_libraries(trie_test PRIVATE logger)
@@ -147,6 +154,7 @@ target_link_libraries(queue_test PRIVATE logger)
 target_link_libraries(pair_test PRIVATE logger)
 target_link_libraries(rbt_test PRIVATE logger)
 target_link_libraries(cmp_visitor_test PRIVATE logger types visitors)
+target_link_libraries(get_visitor_test PRIVATE logger types visitors)
 
 # ===== CODE COVERAGE =====
 
@@ -166,4 +174,5 @@ generate_coverage_report(
   pair_test
   rbt_test
   cmp_visitor_test
+  get_visitor_test
 )
