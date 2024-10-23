@@ -4,11 +4,11 @@
 
 #include "nodes/array.h"
 #include "nodes/boolean.h"
+#include "nodes/node.h"
 #include "nodes/null.h"
 #include "nodes/number.h"
 #include "nodes/object.h"
 #include "nodes/string.h"
-#include "nodes/node.h"
 
 namespace json {
 
