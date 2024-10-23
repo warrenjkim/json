@@ -2,14 +2,15 @@
 
 #include <string>
 
+#include "node.h"
 #include "type.h"
 
 namespace json {
 
-class String : public Type {
+class String : public Node {
  public:
   void accept(Visitor& visitor) const override;
-  Type* accept(ReturnVisitor& visitor) const override;
+  Node* accept(ReturnVisitor& visitor) const override;
 
  public:
   String(std::string value);
@@ -17,12 +18,14 @@ class String : public Type {
  public:
   const std::string& get() const;
 
+ public:
+  const Type type() const override;
+
  private:
   std::string value_;
 
  public:
   String() = delete;
-  ~String() = default;
 };
 
 }  // namespace json

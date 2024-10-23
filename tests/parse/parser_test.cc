@@ -6,14 +6,14 @@
 #include <cstdint>
 #include <string_view>
 
+#include "nodes/array.h"
+#include "nodes/boolean.h"
+#include "nodes/node.h"
+#include "nodes/null.h"
+#include "nodes/number.h"
+#include "nodes/object.h"
+#include "nodes/string.h"
 #include "parse/token.h"
-#include "types/array.h"
-#include "types/boolean.h"
-#include "types/null.h"
-#include "types/number.h"
-#include "types/object.h"
-#include "types/string.h"
-#include "types/type.h"
 #include "utils/logger.h"
 #include "utils/queue.h"
 
@@ -22,8 +22,8 @@ class JsonParserTest : public ::testing::Test {
   void SetUp() override {
     json::utils::init_logging(boost::log::trivial::debug);
   }
-  void assert_parse(const std::string_view input, json::Type* expected_ast) {
-    json::Type* result = json::Parser::parse(input);
+  void assert_parse(const std::string_view input, json::Node* expected_ast) {
+    json::Node* result = json::Parser::parse(input);
     ASSERT_TRUE(result) << "Parser returned nullptr for valid input";
     ASSERT_EQ(*result, *expected_ast)
         << "Parsed result does not match expected AST";
@@ -31,12 +31,12 @@ class JsonParserTest : public ::testing::Test {
   }
 
   void assert_parse_failure(const std::string_view input) {
-    std::unique_ptr<json::Type> result(json::Parser::parse(input));
+    std::unique_ptr<json::Node> result(json::Parser::parse(input));
     ASSERT_FALSE(result) << "Parser did not fail for invalid input";
   }
 
   void assert_parse_failure(json::utils::Queue<json::Token> input) {
-    std::unique_ptr<json::Type> result(json::Parser::parse(input));
+    std::unique_ptr<json::Node> result(json::Parser::parse(input));
     ASSERT_FALSE(result) << "Parser did not fail for invalid input";
   }
 
@@ -262,7 +262,7 @@ TEST_F(JsonParserTest, InvalidJsonBadStart) {
 TEST_F(JsonParserTest, InvalidJsonParseObject) {
   assert_parse_failure(make_token_queue(
       {{".",
-        json::TokenType::OBJECT_START}}));  // Token string and type mismatch
+        json::TokenType::OBJECT_START}}));  // Token string and node mismatch
   assert_parse_failure(make_token_queue(
       {{"{", json::TokenType::OBJECT_START}}));  // Incomplete object
   assert_parse_failure(make_token_queue(
@@ -274,7 +274,7 @@ TEST_F(JsonParserTest, InvalidJsonParseObject) {
        {"\"", json::TokenType::QUOTE},
        {"value", json::TokenType::STRING},
        {"\"", json::TokenType::QUOTE},
-       {".", json::TokenType::OBJECT_END}}));  // Token string and type mismatch
+       {".", json::TokenType::OBJECT_END}}));  // Token string and node mismatch
   assert_parse_failure(make_token_queue(
       {{"{", json::TokenType::OBJECT_START},
        {"\"", json::TokenType::QUOTE},
@@ -284,7 +284,7 @@ TEST_F(JsonParserTest, InvalidJsonParseObject) {
        {"\"", json::TokenType::QUOTE},
        {"value", json::TokenType::STRING},
        {"\"", json::TokenType::QUOTE},
-       {".", json::TokenType::COMMA}}));  // Token string and type mismatch
+       {".", json::TokenType::COMMA}}));  // Token string and node mismatch
   assert_parse_failure(
       make_token_queue({{"{", json::TokenType::OBJECT_START},
                         {"\"", json::TokenType::QUOTE},
@@ -333,7 +333,7 @@ TEST_F(JsonParserTest, InvalidJsonParseObject) {
 TEST_F(JsonParserTest, InvalidJsonParseArray) {
   assert_parse_failure(make_token_queue(
       {{".",
-        json::TokenType::ARRAY_START}}));  // Token string and type mismatch
+        json::TokenType::ARRAY_START}}));  // Token string and node mismatch
   assert_parse_failure(make_token_queue(
       {{"[", json::TokenType::ARRAY_START}}));  // Incomplete array
   assert_parse_failure(
@@ -348,11 +348,11 @@ TEST_F(JsonParserTest, InvalidJsonParseArray) {
   assert_parse_failure(make_token_queue(
       {{"[", json::TokenType::ARRAY_START},
        {"1", json::TokenType::NUMBER},
-       {".", json::TokenType::ARRAY_END}}));  // Token string and type mismatch
+       {".", json::TokenType::ARRAY_END}}));  // Token string and node mismatch
   assert_parse_failure(make_token_queue(
       {{"[", json::TokenType::ARRAY_START},
        {"1", json::TokenType::NUMBER},
-       {"[", json::TokenType::COMMA}}));  // Token string and type mismatch
+       {"[", json::TokenType::COMMA}}));  // Token string and node mismatch
   assert_parse_failure(
       make_token_queue({{"[", json::TokenType::ARRAY_START},
                         {"1", json::TokenType::NUMBER},
@@ -366,20 +366,20 @@ TEST_F(JsonParserTest, InvalidJsonParseString) {
   assert_parse_failure(make_token_queue(
       {{"[", json::TokenType::ARRAY_START},
        {".", json::TokenType::QUOTE},
-       {"]", json::TokenType::ARRAY_END}}));  // Token string and type mismatch
+       {"]", json::TokenType::ARRAY_END}}));  // Token string and node mismatch
   assert_parse_failure(make_token_queue({{"[", json::TokenType::ARRAY_START},
                                          {"\"", json::TokenType::QUOTE},
                                          {".", json::TokenType::STRING},
                                          {".", json::TokenType::QUOTE},
                                          {"]", json::TokenType::ARRAY_END}
 
-  }));  // Token string and type mismatch
+  }));  // Token string and node mismatch
   assert_parse_failure(make_token_queue({{"[", json::TokenType::ARRAY_START},
                                          {"\"", json::TokenType::QUOTE},
                                          {".", json::TokenType::QUOTE},
                                          {"]", json::TokenType::ARRAY_END}
 
-  }));  // Token string and type mismatch
+  }));  // Token string and node mismatch
   assert_parse_failure(make_token_queue(
       {{"\"", json::TokenType::QUOTE},
        {"\\", json::TokenType::STRING}}));  // Incomplete escape sequence
@@ -451,7 +451,7 @@ TEST_F(JsonParserTest, InvalidJsonParseKeyValue) {
        {"key", json::TokenType::STRING},
        {"\"", json::TokenType::QUOTE},
        {".", json::TokenType::COLON},
-       {"]", json::TokenType::ARRAY_END}}));  // Token string and type mistmatch
+       {"]", json::TokenType::ARRAY_END}}));  // Token string and node mistmatch
   assert_parse_failure(make_token_queue(
       {{"[", json::TokenType::ARRAY_START},
        {"{", json::TokenType::OBJECT_START},
@@ -462,5 +462,5 @@ TEST_F(JsonParserTest, InvalidJsonParseKeyValue) {
        {"\"", json::TokenType::QUOTE},
        {"\"", json::TokenType::QUOTE},
        {"}", json::TokenType::OBJECT_END},
-       {"]", json::TokenType::ARRAY_END}}));  // Token string and type mismatch
+       {"]", json::TokenType::ARRAY_END}}));  // Token string and node mismatch
 }

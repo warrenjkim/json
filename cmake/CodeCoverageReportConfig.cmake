@@ -53,7 +53,7 @@ function(generate_coverage_report)
             --exclude ".*_test\.cc"
             --exclude ".*gtest.*"
             --exclude ".*gmock.*"
-            --exclude ".*types/*"
+            --exclude ".*node/*"
             DEPENDS ${COVERAGE_DATA_STAMP_FILE}
             COMMENT "Generating coverage report"
             VERBATIM)

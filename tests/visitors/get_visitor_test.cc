@@ -4,13 +4,13 @@
 
 #include <boost/log/trivial.hpp>
 
-#include "types/array.h"
-#include "types/boolean.h"
-#include "types/null.h"
-#include "types/number.h"
-#include "types/object.h"
-#include "types/string.h"
-#include "types/type.h"
+#include "nodes/array.h"
+#include "nodes/boolean.h"
+#include "nodes/node.h"
+#include "nodes/null.h"
+#include "nodes/number.h"
+#include "nodes/object.h"
+#include "nodes/string.h"
 #include "utils/logger.h"
 
 class GetVisitorTest : public ::testing::Test {
@@ -44,9 +44,9 @@ class GetVisitorTest : public ::testing::Test {
   void TearDown() override { delete root_; }
 
   void assert_get(const json::utils::Queue<std::string>& keys,
-                  json::Type* expected) {
+                  json::Node* expected) {
     json::visitors::GetVisitor visitor(root_, keys);
-    json::Type* result = root_->accept(visitor);
+    json::Node* result = root_->accept(visitor);
     if (!expected) {
       ASSERT_EQ(result, nullptr);
     } else {
@@ -61,7 +61,7 @@ class GetVisitorTest : public ::testing::Test {
   json::Array* numbers_;
 };
 
-TEST_F(GetVisitorTest, GetBasicTypes) {
+TEST_F(GetVisitorTest, GetBasicNodes) {
   json::utils::Queue<std::string> keys;
 
   assert_get(keys, root_);
@@ -81,12 +81,12 @@ TEST_F(GetVisitorTest, GetBasicTypes) {
   assert_get(keys, new json::Null());
 }
 
-TEST_F(GetVisitorTest, ConstGetBasicTypes) {
+TEST_F(GetVisitorTest, ConstGetBasicNodes) {
   const json::Object* const_root = root_;
   json::utils::Queue<std::string> keys;
 
   json::visitors::GetVisitor const_visitor_root(const_root, keys);
-  const json::Type* result = const_root->accept(const_visitor_root);
+  const json::Node* result = const_root->accept(const_visitor_root);
   ASSERT_TRUE(result);
   ASSERT_EQ(*result, *root_);
 

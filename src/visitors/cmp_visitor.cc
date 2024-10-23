@@ -2,22 +2,22 @@
 
 #include <cmath>
 
-#include "types/array.h"
-#include "types/boolean.h"
-#include "types/null.h"
-#include "types/number.h"
-#include "types/object.h"
-#include "types/string.h"
-#include "types/type.h"
+#include "nodes/array.h"
+#include "nodes/boolean.h"
+#include "nodes/null.h"
+#include "nodes/number.h"
+#include "nodes/object.h"
+#include "nodes/string.h"
+#include "nodes/node.h"
 
 namespace json {
 
 namespace visitors {
 
-CmpVisitor::CmpVisitor(Type* root) : expected_(root), result_(true) {}
+CmpVisitor::CmpVisitor(Node* root) : expected_(root), result_(true) {}
 
-CmpVisitor::CmpVisitor(const Type* root)
-    : expected_(const_cast<Type*>(root)), result_(true) {}
+CmpVisitor::CmpVisitor(const Node* root)
+    : expected_(const_cast<Node*>(root)), result_(true) {}
 
 void CmpVisitor::visit(const Array& node) {
   auto expected = dynamic_cast<Array*>(expected_);
@@ -27,8 +27,8 @@ void CmpVisitor::visit(const Array& node) {
   }
 
   for (size_t i = 0; i < node.size(); ++i) {
-    Type* expected_element = expected->get()[i];
-    Type* actual_element = node.get()[i];
+    Node* expected_element = expected->get()[i];
+    Node* actual_element = node.get()[i];
     CmpVisitor cmp_visitor(expected_element);
     actual_element->accept(cmp_visitor);
     if (!cmp_visitor.result()) {
@@ -72,7 +72,7 @@ void CmpVisitor::visit(const Object& node) {
       return;
     }
 
-    Type* actual_value = node.get().find(key)->second;
+    Node* actual_value = node.get().find(key)->second;
     CmpVisitor cmp_visitor(expected_value);
     actual_value->accept(cmp_visitor);
     if (!cmp_visitor.result()) {

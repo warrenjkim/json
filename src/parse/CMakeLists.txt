@@ -9,7 +9,7 @@ target_link_libraries(tokenizer PRIVATE
 target_link_libraries(parser PRIVATE
   logger
   tokenizer
-  types
+  nodes
   Boost::log
   Boost::log_setup
 )

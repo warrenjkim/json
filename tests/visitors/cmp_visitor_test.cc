@@ -4,13 +4,13 @@
 
 #include <boost/log/trivial.hpp>
 
-#include "types/array.h"
-#include "types/boolean.h"
-#include "types/null.h"
-#include "types/number.h"
-#include "types/object.h"
-#include "types/string.h"
-#include "types/type.h"
+#include "nodes/array.h"
+#include "nodes/boolean.h"
+#include "nodes/node.h"
+#include "nodes/null.h"
+#include "nodes/number.h"
+#include "nodes/object.h"
+#include "nodes/string.h"
 #include "utils/logger.h"
 
 class CmpVisitorTest : public ::testing::Test {
@@ -19,7 +19,7 @@ class CmpVisitorTest : public ::testing::Test {
     json::utils::init_logging(boost::log::trivial::debug);
   }
 
-  void assert_equal(json::Type* ast_1, json::Type* ast_2) {
+  void assert_equal(json::Node* ast_1, json::Node* ast_2) {
     json::visitors::CmpVisitor visitor(ast_2);
     ast_1->accept(visitor);
     ASSERT_TRUE(visitor.result()) << "ASTs are not equal";
@@ -27,7 +27,7 @@ class CmpVisitorTest : public ::testing::Test {
     delete ast_2;
   }
 
-  void assert_not_equal(json::Type* ast_1, json::Type* ast_2) {
+  void assert_not_equal(json::Node* ast_1, json::Node* ast_2) {
     json::visitors::CmpVisitor visitor(ast_2);
     ast_1->accept(visitor);
     ASSERT_FALSE(visitor.result()) << "ASTs are unexpectedly equal";

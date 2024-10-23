@@ -12,6 +12,6 @@ function(add_coverage_options target)
 endfunction()
 
 add_subdirectory(parse)
-add_subdirectory(types)
+add_subdirectory(nodes)
 add_subdirectory(utils)
 add_subdirectory(visitors)

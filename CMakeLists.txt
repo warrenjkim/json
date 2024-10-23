@@ -60,6 +60,7 @@ generate_coverage_report(
     tokenizer
     parser
     visitors
+
   TESTS
     tokenizer_test
     parser_test

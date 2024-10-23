@@ -5,7 +5,7 @@ add_library(visitors STATIC
 
 target_link_libraries(visitors PRIVATE
   logger
-  types
+  nodes
   Boost::log
   Boost::log_setup
 )

@@ -6,10 +6,10 @@
 #include <string>
 #include <string_view>
 
+#include "nodes/node.h"
+#include "nodes/object.h"
 #include "parse/token.h"
 #include "parse/tokenizer.h"
-#include "types/object.h"
-#include "types/type.h"
 #include "utils/macros.h"
 #include "utils/pair.h"
 #include "utils/queue.h"
@@ -17,7 +17,7 @@
 
 namespace json {
 
-Type* Parser::parse(const std::string_view json) {
+Node* Parser::parse(const std::string_view json) {
   std::optional<json::utils::Queue<Token>> tokens = Tokenizer::tokenize(json);
   if (!tokens || tokens->empty()) {
     return nullptr;
@@ -26,7 +26,7 @@ Type* Parser::parse(const std::string_view json) {
   return parse(*tokens);
 }
 
-Type* Parser::parse(json::utils::Queue<Token>& tokens) {
+Node* Parser::parse(json::utils::Queue<Token>& tokens) {
   if (tokens.empty()) {
     return nullptr;
   }
@@ -113,7 +113,7 @@ Array* Parser::parse_array(json::utils::Queue<Token>& tokens,
       return nullptr;
     }
 
-    Type* value = parse_value(tokens);
+    Node* value = parse_value(tokens);
     if (!value) {
       delete array;
       return nullptr;
@@ -149,7 +149,7 @@ Array* Parser::parse_array(json::utils::Queue<Token>& tokens,
   return nullptr;
 }
 
-Type* Parser::parse_value(json::utils::Queue<Token>& tokens,
+Node* Parser::parse_value(json::utils::Queue<Token>& tokens,
                           const size_t indent_level) {
   if (tokens.empty()) {
     return nullptr;
@@ -216,7 +216,7 @@ Number* Parser::parse_number(json::utils::Queue<Token>& tokens,
   }
 }
 
-std::optional<utils::Pair<std::string, Type*>> Parser::parse_key_value(
+std::optional<utils::Pair<std::string, Node*>> Parser::parse_key_value(
     json::utils::Queue<Token>& tokens, const size_t indent_level) {
   String* string = parse_string(tokens, indent_level);
   if (!string) {
@@ -230,7 +230,7 @@ std::optional<utils::Pair<std::string, Type*>> Parser::parse_key_value(
     return std::nullopt;
   }
 
-  Type* value = parse_value(tokens, indent_level + 1);
+  Node* value = parse_value(tokens, indent_level + 1);
   if (!value) {
     return std::nullopt;
   }

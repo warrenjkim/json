@@ -1,12 +1,12 @@
 #pragma once
 
-#include "types/array.h"
-#include "types/boolean.h"
-#include "types/null.h"
-#include "types/number.h"
-#include "types/object.h"
-#include "types/string.h"
-#include "types/type.h"
+#include "nodes/array.h"
+#include "nodes/boolean.h"
+#include "nodes/node.h"
+#include "nodes/null.h"
+#include "nodes/number.h"
+#include "nodes/object.h"
+#include "nodes/string.h"
 #include "visitor.h"
 
 namespace json {
@@ -15,8 +15,8 @@ namespace visitors {
 
 class CmpVisitor : public Visitor {
  public:
-  CmpVisitor(Type* root);
-  CmpVisitor(const Type* root);
+  CmpVisitor(Node* root);
+  CmpVisitor(const Node* root);
   void visit(const Array& node) override;
   void visit(const Boolean& node) override;
   void visit(const Null& node) override;
@@ -27,7 +27,7 @@ class CmpVisitor : public Visitor {
 
  private:
   bool result_;
-  Type* expected_;
+  Node* expected_;
 };
 
 }  // namespace visitors

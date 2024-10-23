@@ -1,13 +1,14 @@
 #pragma once
 
+#include "node.h"
 #include "type.h"
 
 namespace json {
 
-class Boolean : public Type {
+class Boolean : public Node {
  public:
   void accept(Visitor& visitor) const override;
-  Type* accept(ReturnVisitor& visitor) const override;
+  Node* accept(ReturnVisitor& visitor) const override;
 
  public:
   Boolean(const bool value);
@@ -15,12 +16,11 @@ class Boolean : public Type {
  public:
   const bool get() const;
 
+ public:
+  const Type type() const override;
+
  private:
   bool value_;
-
- public:
-  Boolean() = delete;
-  ~Boolean() = default;
 };
 
 }  // namespace json

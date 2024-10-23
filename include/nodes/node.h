@@ -1,14 +1,15 @@
 #pragma once
+#include "type.h"
 
 namespace json {
 
 class Visitor;
 class ReturnVisitor;
 
-class Type {
+class Node {
  public:
   virtual void accept(Visitor& visitor) const = 0;
-  virtual Type* accept(ReturnVisitor& visitor) const = 0;
+  virtual Node* accept(ReturnVisitor& visitor) const = 0;
 
  public:
   template <typename T>
@@ -22,11 +23,14 @@ class Type {
   }
 
  public:
-  const bool operator==(const Type& other) const;
-  const bool operator!=(const Type& other) const;
+  virtual const Type type() const = 0;
 
  public:
-  virtual ~Type() noexcept = default;
+  const bool operator==(const Node& other) const;
+  const bool operator!=(const Node& other) const;
+
+ public:
+  virtual ~Node() noexcept = default;
 };
 
 class Array;

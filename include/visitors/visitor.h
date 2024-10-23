@@ -2,7 +2,7 @@
 
 namespace json {
 
-class Type;
+class Node;
 class Array;
 class Boolean;
 class Null;

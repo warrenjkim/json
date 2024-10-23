@@ -7,6 +7,6 @@ create_test(parser_test
   parser
   tokenizer
   logger
-  types
+  nodes
   visitors
 )

@@ -1,17 +1,17 @@
-add_library(types STATIC
+add_library(nodes STATIC
   array.cc
   boolean.cc
-  type.cc
+  node.cc
   null.cc
   number.cc
   object.cc
   string.cc
 )
 
-target_link_libraries(types PRIVATE
+target_link_libraries(nodes PRIVATE
   Boost::log
   Boost::log_setup
   visitors
 )
 
-add_coverage_options(types)
+add_coverage_options(nodes)

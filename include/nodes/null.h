@@ -1,17 +1,17 @@
 #pragma once
 
+#include "node.h"
 #include "type.h"
 
 namespace json {
 
-class Null : public Type {
+class Null : public Node {
  public:
   void accept(Visitor& visitor) const override;
-  Type* accept(ReturnVisitor& visitor) const override;
+  Node* accept(ReturnVisitor& visitor) const override;
 
  public:
-  Null() = default;
-  ~Null() = default;
+  const Type type() const override;
 };
 
 }  // namespace json
