@@ -70,5 +70,4 @@ generate_coverage_report(
     pair_test
     rbt_test
     cmp_visitor_test
-    get_visitor_test
 )
