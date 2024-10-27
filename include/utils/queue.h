@@ -46,6 +46,10 @@ class Queue {
   template <typename... Args>
   void emplace(Args&&... args);
 
+ public:
+  template <typename... Args>
+  static Queue of(Args&&... elements);
+
  private:
   Node* head_;
   Node* tail_;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <optional>
-#include <utility>  // move
+#include <utility>  // move, forward
 
 #include "queue.h"
 
@@ -20,7 +20,7 @@ Queue<T>::Node::Node(T&& data)
 template <typename T>
 template <typename... Args>
 Queue<T>::Node::Node(Args&&... args)
-    : data(static_cast<Args&&>(args)...), next(nullptr), prev(nullptr) {}
+    : data(std::forward<Args&&>(args)...), next(nullptr), prev(nullptr) {}
 
 template <typename T>
 Queue<T>::Queue() : head_(nullptr), tail_(nullptr), size_(0) {}
@@ -129,22 +129,6 @@ void Queue<T>::enqueue(T&& data) {
 }
 
 template <typename T>
-template <typename... Args>
-void Queue<T>::emplace(Args&&... args) {
-  if (empty()) {
-    tail_ = new Node(static_cast<Args&&>(args)...);
-    head_ = tail_;
-    size_++;
-    return;
-  }
-
-  tail_->next = new Node(static_cast<Args&&>(args)...);
-  tail_->next->prev = tail_;
-  tail_ = tail_->next;
-  size_++;
-}
-
-template <typename T>
 std::optional<T> Queue<T>::dequeue() {
   if (empty()) {
     return std::nullopt;
@@ -161,6 +145,32 @@ std::optional<T> Queue<T>::dequeue() {
   }
 
   return value;
+}
+
+template <typename T>
+template <typename... Args>
+void Queue<T>::emplace(Args&&... args) {
+  if (empty()) {
+    tail_ = new Node(std::forward<Args&&>(args)...);
+    head_ = tail_;
+    size_++;
+    return;
+  }
+
+  tail_->next = new Node(std::forward<Args&&>(args)...);
+  tail_->next->prev = tail_;
+  tail_ = tail_->next;
+  size_++;
+}
+
+template <typename T>
+template <typename... Args>
+Queue<T> Queue<T>::of(Args&&... args) {
+  static_assert((std::is_convertible_v<Args, T> && ...),
+                "All arguments must be convertible to queue type T");
+  Queue<T> queue;
+  (queue.emplace(std::forward<Args&&>(args)), ...);
+  return queue;
 }
 
 template <typename T>
