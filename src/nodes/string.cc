@@ -2,7 +2,6 @@
 
 #include <string>
 
-#include "nodes/type.h"
 #include "visitors/ret_visitor.h"
 #include "visitors/visitor.h"
 
@@ -16,8 +15,8 @@ Node* String::accept(ReturnVisitor& visitor) const {
 
 String::String(std::string value) : value_(std::move(value)) {}
 
-const std::string& String::get() const { return value_; }
+std::string& String::get() { return value_; }
 
-const Type String::type() const { return Type::STRING; }
+const std::string& String::get() const { return value_; }
 
 }  // namespace json

@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "nodes/node.h"
-#include "nodes/type.h"
 #include "visitors/ret_visitor.h"
 #include "visitors/visitor.h"
 
@@ -24,7 +23,5 @@ const bool Array::empty() const { return array_.empty(); }
 std::vector<Node*>& Array::get() { return array_; }
 
 const std::vector<Node*>& Array::get() const { return array_; }
-
-const Type Array::type() const { return Type::ARRAY; }
 
 }  // namespace json

@@ -3,7 +3,6 @@
 #include <string>
 
 #include "node.h"
-#include "type.h"
 
 namespace json {
 
@@ -16,10 +15,8 @@ class String : public Node {
   String(std::string value);
 
  public:
+  std::string& get();
   const std::string& get() const;
-
- public:
-  const Type type() const override;
 
  private:
   std::string value_;

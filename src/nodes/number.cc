@@ -1,6 +1,5 @@
 #include "nodes/number.h"
 
-#include "nodes/type.h"
 #include "visitors/ret_visitor.h"
 #include "visitors/visitor.h"
 
@@ -14,8 +13,8 @@ Node* Number::accept(ReturnVisitor& visitor) const {
 
 Number::Number(double value) : value_(value) {}
 
-const double Number::get() const { return value_; }
+double& Number::get() { return value_; }
 
-const Type Number::type() const { return Type::NUMBER; }
+const double& Number::get() const { return value_; }
 
 }  // namespace json

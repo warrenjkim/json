@@ -4,7 +4,6 @@
 #include <string>
 
 #include "node.h"
-#include "type.h"
 #include "utils/rbt.h"
 
 namespace json {
@@ -22,9 +21,6 @@ class Object : public Node {
  public:
   utils::Map<std::string, Node*>& get();
   const utils::Map<std::string, Node*>& get() const;
-
- public:
-  const Type type() const override;
 
  private:
   utils::Map<std::string, Node*> properties_;

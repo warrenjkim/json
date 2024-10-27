@@ -1,6 +1,5 @@
 #include "nodes/object.h"
 
-#include "nodes/type.h"
 #include "utils/rbt.h"
 #include "visitors/ret_visitor.h"
 #include "visitors/visitor.h"
@@ -26,7 +25,5 @@ utils::Map<std::string, Node*>& Object::get() { return properties_; }
 const utils::Map<std::string, Node*>& Object::get() const {
   return properties_;
 }
-
-const Type Object::type() const { return Type::OBJECT; }
 
 }  // namespace json

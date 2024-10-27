@@ -1,7 +1,6 @@
 #pragma once
 
 #include "node.h"
-#include "type.h"
 
 namespace json {
 
@@ -14,10 +13,8 @@ class Number : public Node {
   Number(const double value);
 
  public:
-  const double get() const;
-
- public:
-  const Type type() const override;
+  double& get();
+  const double& get() const;
 
  private:
   double value_;

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "node.h"
-#include "type.h"
 
 namespace json {
 
@@ -14,10 +13,8 @@ class Boolean : public Node {
   Boolean(const bool value);
 
  public:
-  const bool get() const;
-
- public:
-  const Type type() const override;
+  bool& get();
+  const bool& get() const;
 
  private:
   bool value_;

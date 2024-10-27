@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "node.h"
-#include "type.h"
 
 namespace json {
 
@@ -20,9 +19,6 @@ class Array : public Node {
  public:
   std::vector<Node*>& get();
   const std::vector<Node*>& get() const;
-
- public:
-  const Type type() const override;
 
  private:
   std::vector<Node*> array_;

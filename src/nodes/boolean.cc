@@ -1,6 +1,5 @@
 #include "nodes/boolean.h"
 
-#include "nodes/type.h"
 #include "visitors/ret_visitor.h"
 #include "visitors/visitor.h"
 
@@ -14,8 +13,8 @@ Node* Boolean::accept(ReturnVisitor& visitor) const {
 
 Boolean::Boolean(const bool value) : value_(value) {}
 
-const bool Boolean::get() const { return value_; }
+bool& Boolean::get() { return value_; }
 
-const Type Boolean::type() const { return Type::BOOLEAN; }
+const bool& Boolean::get() const { return value_; }
 
 }  // namespace json

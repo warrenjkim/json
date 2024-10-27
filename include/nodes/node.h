@@ -1,5 +1,4 @@
 #pragma once
-#include "type.h"
 
 namespace json {
 
@@ -23,9 +22,6 @@ class Node {
   }
 
  public:
-  virtual const Type type() const = 0;
-
- public:
   const bool operator==(const Node& other) const;
   const bool operator!=(const Node& other) const;
 
@@ -38,7 +34,6 @@ class Boolean;
 class Null;
 class Number;
 class Object;
-class KeyValue;
 class String;
 
 }  // namespace json
