@@ -7,10 +7,10 @@
 
 namespace json {
 
-void String::accept(visitors::Visitor& visitor) const { visitor.visit(*this); }
+void String::accept(visitors::Visitor& visitor) { visitor.visit(*this); }
 
-Node* String::accept(visitors::ReturnVisitor& visitor) const {
-  return visitor.visit(*this);
+void String::accept(visitors::ConstVisitor& visitor) const {
+  visitor.visit(*this);
 }
 
 String::String(std::string value) : value_(std::move(value)) {}

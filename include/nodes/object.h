@@ -10,8 +10,8 @@ namespace json {
 
 class Object : public Node {
  public:
-  void accept(visitors::Visitor& visitor) const override;
-  Node* accept(visitors::ReturnVisitor& visitor) const override;
+  void accept(visitors::Visitor& visitor) override;
+  void accept(visitors::ConstVisitor& visitor) const override;
 
  public:
   void add(const std::string& key, Node* value);

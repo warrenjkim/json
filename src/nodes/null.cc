@@ -5,10 +5,10 @@
 
 namespace json {
 
-void Null::accept(visitors::Visitor& visitor) const { visitor.visit(*this); }
+void Null::accept(visitors::Visitor& visitor) { visitor.visit(*this); }
 
-Node* Null::accept(visitors::ReturnVisitor& visitor) const {
-  return visitor.visit(*this);
+void Null::accept(visitors::ConstVisitor& visitor) const {
+  visitor.visit(*this);
 }
 
 }  // namespace json

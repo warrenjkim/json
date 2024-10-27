@@ -13,7 +13,7 @@ namespace json {
 
 namespace visitors {
 
-class CmpVisitor : public Visitor {
+class CmpVisitor : public ConstVisitor {
  public:
   CmpVisitor(Node* root);
   CmpVisitor(const Node* root);

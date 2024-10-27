@@ -8,10 +8,10 @@
 
 namespace json {
 
-void Array::accept(visitors::Visitor& visitor) const { visitor.visit(*this); }
+void Array::accept(visitors::Visitor& visitor) { visitor.visit(*this); }
 
-Node* Array::accept(visitors::ReturnVisitor& visitor) const {
-  return visitor.visit(*this);
+void Array::accept(visitors::ConstVisitor& visitor) const {
+  visitor.visit(*this);
 }
 
 void Array::add(Node* element) { array_.push_back(element); }

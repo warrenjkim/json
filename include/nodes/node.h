@@ -5,14 +5,14 @@ namespace json {
 namespace visitors {
 
 class Visitor;
-class ReturnVisitor;
+class ConstVisitor;
 
 }  // namespace visitors
 
 class Node {
  public:
-  virtual void accept(visitors::Visitor& visitor) const = 0;
-  virtual Node* accept(visitors::ReturnVisitor& visitor) const = 0;
+  virtual void accept(visitors::Visitor& visitor) = 0;
+  virtual void accept(visitors::ConstVisitor& visitor) const = 0;
 
  public:
   template <typename T>

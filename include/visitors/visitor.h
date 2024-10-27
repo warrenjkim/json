@@ -12,7 +12,7 @@ class String;
 
 namespace visitors {
 
-class Visitor {
+class ConstVisitor {
  public:
   virtual void visit(const Array& node) = 0;
   virtual void visit(const Boolean& node) = 0;
@@ -20,6 +20,19 @@ class Visitor {
   virtual void visit(const Number& node) = 0;
   virtual void visit(const Object& node) = 0;
   virtual void visit(const String& node) = 0;
+
+ public:
+  ~ConstVisitor() = default;
+};
+
+class Visitor {
+ public:
+  virtual void visit(Array& node) = 0;
+  virtual void visit(Boolean& node) = 0;
+  virtual void visit(Null& node) = 0;
+  virtual void visit(Number& node) = 0;
+  virtual void visit(Object& node) = 0;
+  virtual void visit(String& node) = 0;
 
  public:
   ~Visitor() = default;
