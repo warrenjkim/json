@@ -10,6 +10,8 @@ class Number;
 class Object;
 class String;
 
+namespace visitors {
+
 class ReturnVisitor {
  public:
   virtual Node* visit(const Array& node) = 0;
@@ -22,5 +24,7 @@ class ReturnVisitor {
  public:
   ~ReturnVisitor() = default;
 };
+
+}  // namespace visitors
 
 }  // namespace json

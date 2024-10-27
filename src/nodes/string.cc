@@ -7,9 +7,9 @@
 
 namespace json {
 
-void String::accept(Visitor& visitor) const { visitor.visit(*this); }
+void String::accept(visitors::Visitor& visitor) const { visitor.visit(*this); }
 
-Node* String::accept(ReturnVisitor& visitor) const {
+Node* String::accept(visitors::ReturnVisitor& visitor) const {
   return visitor.visit(*this);
 }
 

@@ -6,9 +6,9 @@
 
 namespace json {
 
-void Object::accept(Visitor& visitor) const { visitor.visit(*this); }
+void Object::accept(visitors::Visitor& visitor) const { visitor.visit(*this); }
 
-Node* Object::accept(ReturnVisitor& visitor) const {
+Node* Object::accept(visitors::ReturnVisitor& visitor) const {
   return visitor.visit(*this);
 }
 

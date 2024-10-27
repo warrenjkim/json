@@ -5,9 +5,9 @@
 
 namespace json {
 
-void Boolean::accept(Visitor& visitor) const { visitor.visit(*this); }
+void Boolean::accept(visitors::Visitor& visitor) const { visitor.visit(*this); }
 
-Node* Boolean::accept(ReturnVisitor& visitor) const {
+Node* Boolean::accept(visitors::ReturnVisitor& visitor) const {
   return visitor.visit(*this);
 }
 
