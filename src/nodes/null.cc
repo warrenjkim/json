@@ -1,6 +1,5 @@
 #include "nodes/null.h"
 
-#include "visitors/ret_visitor.h"
 #include "visitors/visitor.h"
 
 namespace json {
