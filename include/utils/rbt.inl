@@ -59,6 +59,32 @@ void RBTree<K, V>::swap(RBTree& other) noexcept {
 }
 
 template <typename K, typename V>
+bool RBTree<K, V>::operator==(const RBTree<K, V>& other) const {
+  if (size() != other.size()) {
+    return false;
+  }
+
+  auto it = begin();
+  auto other_it = other.begin();
+
+  while (it != end() && other_it != other.end()) {
+    if (it->first != other_it->first || it->second != other_it->second) {
+      return false;
+    }
+
+    it++;
+    other_it++;
+  }
+
+  return true;
+}
+
+template <typename K, typename V>
+bool RBTree<K, V>::operator!=(const RBTree<K, V>& other) const {
+  return !(*this == other);
+}
+
+template <typename K, typename V>
 RBTree<K, V>::Node* RBTree<K, V>::root() {
   return const_cast<Node*>(static_cast<const RBTree*>(this)->root());
 }

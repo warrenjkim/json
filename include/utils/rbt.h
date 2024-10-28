@@ -61,6 +61,10 @@ class RBTree {
 
   void swap(RBTree& other) noexcept;
 
+public:
+  bool operator==(const RBTree& other) const;
+  bool operator!=(const RBTree& other) const;
+
  public:
   Node* root();
   const Node* root() const;

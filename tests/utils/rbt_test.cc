@@ -790,3 +790,50 @@ TEST_F(RBTreeTest, ExceptionOnDereferenceInvalidConstIterator) {
   ASSERT_THROW(it++, std::out_of_range);
   ASSERT_THROW(it--, std::out_of_range);
 }
+
+TEST_F(RBTreeTest, Equality) {
+  json::utils::RBTree<std::string, int> lhs;
+  lhs.insert("key2", 2);
+  lhs.insert("key1", 1);
+  lhs.insert("key3", 3);
+  lhs.insert("key0", 0);
+
+  json::utils::RBTree<std::string, int> rhs;
+  rhs.insert("key2", 2);
+  rhs.insert("key1", 1);
+  rhs.insert("key3", 3);
+  rhs.insert("key0", 0);
+
+  ASSERT_EQ(lhs, rhs);
+}
+
+TEST_F(RBTreeTest, InequalitySize) {
+  json::utils::RBTree<std::string, int> lhs;
+  lhs.insert("key2", 2);
+  lhs.insert("key1", 1);
+  lhs.insert("key3", 3);
+  lhs.insert("key0", 0);
+
+  json::utils::RBTree<std::string, int> rhs;
+  rhs.insert("key2", 2);
+  rhs.insert("key1", 1);
+  rhs.insert("key3", 3);
+
+  ASSERT_NE(lhs, rhs);
+}
+
+TEST_F(RBTreeTest, Inequality) {
+  json::utils::RBTree<std::string, int> lhs;
+  lhs.insert("key2", 2);
+  lhs.insert("key1", 1);
+  lhs.insert("key3", 3);
+  lhs.insert("key0", 0);
+
+  json::utils::RBTree<std::string, int> rhs;
+  rhs.insert("key2", 2);
+  rhs.insert("key1", 1);
+  rhs.insert("key3", 3);
+  rhs.insert("key4", 0);
+
+  ASSERT_NE(lhs, rhs);
+}
