@@ -4,6 +4,7 @@
 #include <string>
 #include <string_view>
 #include <type_traits>
+#include <vector>
 
 #include "nodes/node.h"
 #include "nodes/null.h"
