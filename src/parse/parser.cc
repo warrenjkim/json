@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <cstddef>
+#include <exception>
 #include <optional>
 #include <string>
 #include <string_view>

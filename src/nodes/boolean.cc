@@ -12,8 +12,12 @@ void Boolean::accept(visitors::ConstVisitor& visitor) const {
 
 Boolean::Boolean(const bool value) : value_(value) {}
 
-bool& Boolean::get() { return value_; }
+bool Boolean::get() { return value_; }
 
-const bool& Boolean::get() const { return value_; }
+const bool Boolean::get() const { return value_; }
+
+bool* Boolean::ptr() { return &value_; }
+
+const bool* Boolean::ptr() const { return &value_; }
 
 }  // namespace json

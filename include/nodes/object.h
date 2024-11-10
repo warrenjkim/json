@@ -22,6 +22,10 @@ class Object : public Node {
   utils::Map<std::string, Node*>& get();
   const utils::Map<std::string, Node*>& get() const;
 
+ public:
+  utils::Map<std::string, Node*>* ptr();
+  const utils::Map<std::string, Node*>* ptr() const;
+
  private:
   utils::Map<std::string, Node*> properties_;
 };

@@ -12,8 +12,12 @@ void Number::accept(visitors::ConstVisitor& visitor) const {
 
 Number::Number(double value) : value_(value) {}
 
-double& Number::get() { return value_; }
+double Number::get() { return value_; }
 
-const double& Number::get() const { return value_; }
+const double Number::get() const { return value_; }
+
+double* Number::ptr() { return &value_; }
+
+const double* Number::ptr() const { return &value_; }
 
 }  // namespace json

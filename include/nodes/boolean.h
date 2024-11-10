@@ -13,8 +13,11 @@ class Boolean : public Node {
   Boolean(const bool value);
 
  public:
-  bool& get();
-  const bool& get() const;
+  bool get();
+  const bool get() const;
+
+  bool* ptr();
+  const bool* ptr() const;
 
  private:
   bool value_;

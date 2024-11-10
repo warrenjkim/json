@@ -13,8 +13,12 @@ class Number : public Node {
   Number(const double value);
 
  public:
-  double& get();
-  const double& get() const;
+  double get();
+  const double get() const;
+
+ public:
+  double* ptr();
+  const double* ptr() const;
 
  private:
   double value_;
