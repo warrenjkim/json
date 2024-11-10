@@ -72,4 +72,5 @@ generate_coverage_report(
     cmp_visitor_test
     get_visitor_test
     value_test
+    json_utils_test
 )

@@ -15,6 +15,10 @@ class JsonException : public std::exception {
   std::string message_;
 };
 
+class ParseException : public JsonException {
+  using JsonException::JsonException;
+};
+
 class BadAccessException : public JsonException {
   using JsonException::JsonException;
 };

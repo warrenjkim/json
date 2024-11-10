@@ -3,7 +3,7 @@
 #include <optional>
 #include <string_view>
 
-#include "nodes/node.h"
+#include "json/value.h"
 #include "parse/parser.h"
 #include "parse/token.h"
 #include "parse/tokenizer.h"
@@ -15,8 +15,10 @@ std::optional<utils::Queue<Token>> tokenize(std::string_view json) {
   return Tokenizer::tokenize(json);
 }
 
-Node* parse(const std::string_view json) { return Parser::parse(json); }
+Value parse(const std::string_view json) { return Value(Parser::parse(json)); }
 
-Node* parse(utils::Queue<Token>& tokens) { return Parser::parse(tokens); }
+Value parse(utils::Queue<Token>& tokens) {
+  return Value(Parser::parse(tokens));
+}
 
 }  // namespace json

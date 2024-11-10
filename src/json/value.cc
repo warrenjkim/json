@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "json/exception.h"
 #include "nodes/node.h"
 #include "visitors/set_visitor.h"
 
@@ -12,6 +13,10 @@ namespace json {
 Value::Value() : data_(), type_(Type::JSON_NULL), node_(nullptr) {}
 
 Value::Value(Node* node) : data_(), type_(Type::JSON_NULL), node_(node) {
+  if (!node) {
+    throw ParseException("Parsing failed.");
+  }
+
   visitors::SetVisitor visitor(*this);
   node_->accept(visitor);
 }
