@@ -19,9 +19,9 @@ class GetVisitor;
 
 class SetVisitor;
 
-} // namespace visitors
+}  // namespace visitors
 
-} // namespace json
+}  // namespace json
 
 template <typename T>
 concept ReasonableInteger =
@@ -44,16 +44,16 @@ concept ReasonableString =
 namespace json {
 
 class Value {
-public:
+ public:
   Value();
   Value(Node *node);
 
-public:
+ public:
   operator bool() const;
   operator const char *() const;
   operator std::nullptr_t() const;
 
-public:
+ public:
   friend bool operator==(const Value &lhs, const Value &rhs);
 
   friend bool operator==(const Value &lhs, bool rhs);
@@ -65,17 +65,21 @@ public:
   friend bool operator==(const Value &lhs, std::nullptr_t rhs);
   friend bool operator==(std::nullptr_t lhs, const Value &rhs);
 
-public:
-  template <ReasonableInteger T> Value operator[](const T index);
+ public:
+  template <ReasonableInteger T>
+  Value operator[](const T index);
 
-  template <ReasonableString T> Value operator[](const T key);
+  template <ReasonableString T>
+  Value operator[](const T key);
 
-public:
-  template <ReasonableNumber T> operator T() const;
+ public:
+  template <ReasonableNumber T>
+  operator T() const;
 
-  template <ReasonableString T> operator T() const;
+  template <ReasonableString T>
+  operator T() const;
 
-public:
+ public:
   template <ReasonableNumber T>
   friend bool operator==(const Value &lhs, const T &rhs);
 
@@ -88,7 +92,7 @@ public:
   template <ReasonableString T>
   friend bool operator==(const T &lhs, const Value &rhs);
 
-private:
+ private:
   enum class Type { ARRAY, BOOLEAN, NUMBER, OBJECT, JSON_NULL, STRING };
   union Data {
     std::vector<Node *> *array;
@@ -104,11 +108,11 @@ private:
   Type type_;
   Node *node_;
 
-private:
+ private:
   friend class visitors::GetVisitor;
   friend class visitors::SetVisitor;
 };
 
-} // namespace json
+}  // namespace json
 
 #include "json/value.inl"

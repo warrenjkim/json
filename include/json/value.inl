@@ -1,7 +1,6 @@
 #pragma once
 
 #include "exception.h"
-#include "utils/macros.h"
 #include "utils/queue.h"
 #include "value.h"
 #include "visitors/get_visitor.h"
