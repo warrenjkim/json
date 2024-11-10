@@ -6,5 +6,10 @@ target_link_libraries(logger PRIVATE
   Boost::log_setup
 )
 
+target_link_libraries(json_utils PRIVATE
+  tokenizer
+  parser
+)
+
 add_coverage_options(logger)
 add_coverage_options(json_utils)
