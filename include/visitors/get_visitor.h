@@ -1,9 +1,9 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 
 #include "nodes/node.h"
-#include "utils/queue.h"
 #include "visitor.h"
 
 namespace json {
@@ -12,8 +12,7 @@ namespace visitors {
 
 class GetVisitor : public Visitor {
  public:
-  GetVisitor(utils::Queue<std::string>& keys);
-  GetVisitor(const utils::Queue<std::string>& keys);
+  GetVisitor(const std::string_view keys);
 
  public:
   void visit(Array& node) override;
@@ -31,7 +30,7 @@ class GetVisitor : public Visitor {
 
  private:
   Node* ast_;
-  utils::Queue<std::string> keys_;
+  std::string key_;
   Node* result_;
 };
 

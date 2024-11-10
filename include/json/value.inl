@@ -1,7 +1,6 @@
 #pragma once
 
 #include "exception.h"
-#include "utils/queue.h"
 #include "value.h"
 #include "visitors/get_visitor.h"
 
@@ -52,8 +51,7 @@ Value Value::operator[](const T index) {
     return *this;
   }
 
-  visitors::GetVisitor visitor(
-      utils::Queue<std::string>::of(std::to_string(index)));
+  visitors::GetVisitor visitor(std::to_string(index));
   node_->accept(visitor);
 
   return Value(visitor.result());
@@ -66,8 +64,7 @@ Value Value::operator[](const T key) {
     return *this;
   }
 
-  utils::Queue<std::string> keys = utils::Queue<std::string>::of(key);
-  visitors::GetVisitor visitor(keys);
+  visitors::GetVisitor visitor(key);
   node_->accept(visitor);
 
   return Value(visitor.result());
