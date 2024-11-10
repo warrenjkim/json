@@ -39,7 +39,7 @@ concept ReasonableNumber =
 template <typename T>
 concept ReasonableString =
     (std::is_same_v<T, std::string> || std::is_same_v<T, std::string_view> ||
-     std::is_same_v<T, const char *>) &&
+     std::is_same_v<T, const char*>) &&
     !std::is_arithmetic_v<T> && !std::is_same_v<T, json::Value>;
 
 namespace json {
@@ -47,24 +47,24 @@ namespace json {
 class Value {
  public:
   Value();
-  Value(Node *node);
+  Value(Node* node);
 
  public:
   operator bool() const;
-  operator const char *() const;
+  operator const char*() const;
   operator std::nullptr_t() const;
 
  public:
-  friend bool operator==(const Value &lhs, const Value &rhs);
+  friend bool operator==(const Value& lhs, const Value& rhs);
 
-  friend bool operator==(const Value &lhs, bool rhs);
-  friend bool operator==(bool lhs, const Value &rhs);
+  friend bool operator==(const Value& lhs, bool rhs);
+  friend bool operator==(bool lhs, const Value& rhs);
 
-  friend bool operator==(const Value &lhs, const char *rhs);
-  friend bool operator==(const char *lhs, const Value &rhs);
+  friend bool operator==(const Value& lhs, const char* rhs);
+  friend bool operator==(const char* lhs, const Value& rhs);
 
-  friend bool operator==(const Value &lhs, std::nullptr_t rhs);
-  friend bool operator==(std::nullptr_t lhs, const Value &rhs);
+  friend bool operator==(const Value& lhs, std::nullptr_t rhs);
+  friend bool operator==(std::nullptr_t lhs, const Value& rhs);
 
  public:
   template <ReasonableInteger T>
@@ -82,32 +82,32 @@ class Value {
 
  public:
   template <ReasonableNumber T>
-  friend bool operator==(const Value &lhs, const T &rhs);
+  friend bool operator==(const Value& lhs, const T& rhs);
 
   template <ReasonableNumber T>
-  friend bool operator==(const T &lhs, const Value &rhs);
+  friend bool operator==(const T& lhs, const Value& rhs);
 
   template <ReasonableString T>
-  friend bool operator==(const Value &lhs, const T &rhs);
+  friend bool operator==(const Value& lhs, const T& rhs);
 
   template <ReasonableString T>
-  friend bool operator==(const T &lhs, const Value &rhs);
+  friend bool operator==(const T& lhs, const Value& rhs);
 
  private:
   enum class Type { ARRAY, BOOLEAN, NUMBER, OBJECT, JSON_NULL, STRING };
   union Data {
-    std::vector<Node *> *array;
-    bool *boolean;
-    double *number;
-    utils::Map<std::string, Node *> *object;
-    Null *null;
-    std::string *string;
+    std::vector<Node*>* array;
+    bool* boolean;
+    double* number;
+    utils::Map<std::string, Node*>* object;
+    Null* null;
+    std::string* string;
     Data() : null(new Null()) {}
   };
 
   Data data_;
   Type type_;
-  Node *node_;
+  Node* node_;
 
  private:
   friend class visitors::GetVisitor;
