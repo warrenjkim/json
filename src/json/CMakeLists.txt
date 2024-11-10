@@ -1,4 +1,4 @@
-add_library(json STATIC json.cc value.cc)
+add_library(json STATIC value.cc)
 
 target_link_libraries(json PRIVATE
   Boost::log
