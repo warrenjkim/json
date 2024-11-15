@@ -51,7 +51,7 @@ Value Value::operator[](const T index) {
     return *this;
   }
 
-  visitors::GetVisitor visitor(std::to_string(index));
+  visitors::GetVisitor visitor(index);
   node_->accept(visitor);
 
   return Value(visitor.result());

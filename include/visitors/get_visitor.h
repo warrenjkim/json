@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <string>
 #include <string_view>
 
@@ -12,7 +13,9 @@ namespace visitors {
 
 class GetVisitor : public Visitor {
  public:
+  GetVisitor();
   GetVisitor(const std::string_view keys);
+  GetVisitor(const size_t keys);
 
  public:
   void visit(Array& node) override;
@@ -30,7 +33,8 @@ class GetVisitor : public Visitor {
 
  private:
   Node* ast_;
-  std::string key_;
+  std::optional<std::string> key_;
+  std::optional<size_t> index_;
   Node* result_;
 };
 
