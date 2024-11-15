@@ -2,10 +2,10 @@
 
 #include <cstddef>
 #include <string>
-#include <string_view>
 #include <type_traits>
 
 #include "nodes/node.h"
+#include "utils/rbt.h"
 
 namespace json {
 
@@ -52,6 +52,11 @@ class Value {
   operator nullptr_t() const;
 
  public:
+  Value& operator=(bool value);
+  Value& operator=(const char* value);
+  Value& operator=(std::nullptr_t value);
+
+ public:
   friend bool operator==(const Value& lhs, const Value& rhs);
 
   friend bool operator==(const Value& lhs, bool rhs);
@@ -65,10 +70,10 @@ class Value {
 
  public:
   template <ReasonableInteger T>
-  Value operator[](const T index);
+  Value& operator[](const T index);
 
   template <ReasonableString T>
-  Value operator[](const T key);
+  Value& operator[](const T key);
 
  public:
   template <ReasonableNumber T>
@@ -76,6 +81,13 @@ class Value {
 
   template <ReasonableString T>
   operator T() const;
+
+ public:
+  template <ReasonableNumber T>
+  Value& operator=(T value);
+
+  template <ReasonableString T>
+  Value& operator=(T value);
 
  public:
   template <ReasonableNumber T>
@@ -92,6 +104,7 @@ class Value {
 
  private:
   Node* node_;
+  utils::Map<std::string, Value> cache_;
 };
 
 }  // namespace json

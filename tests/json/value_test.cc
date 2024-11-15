@@ -30,6 +30,7 @@ class ValueTest : public ::testing::Test {
     array_->add(new json::Number(1));
     array_->add(new json::String("two"));
     array_->add(new json::Boolean(false));
+    array_->add(new json::Null());
     root_->add("array", array_);
 
     nested_obj_ = new json::Object();
@@ -256,4 +257,56 @@ TEST_F(ValueTest, BadCastNoValueSet) {
   json::Value value;
   ASSERT_THROW(std::string s = value[0], json::BadCastException);
   ASSERT_THROW(std::string s = value["key"], json::BadCastException);
+}
+
+TEST_F(ValueTest, UpdateArrayElement) {
+  json::Value value(array_);
+  ASSERT_EQ(value[3], nullptr);
+  value[3] = 4;
+  ASSERT_EQ(value[3], 4);
+}
+
+TEST_F(ValueTest, UpdateObjectValue) {
+  json::Value value(nested_obj_);
+  ASSERT_EQ(value["key"], "value");
+  value["key"] = "new_value";
+  ASSERT_EQ(value["key"], "new_value");
+}
+
+TEST_F(ValueTest, AddNewObjectKey) {
+  json::Value value(nested_obj_);
+  value["new_key"] = 42;
+  ASSERT_EQ(value["new_key"], 42);
+}
+
+TEST_F(ValueTest, UpdateArrayWithMixedTypes) {
+  json::Value value(array_);
+  value[0] = "string";
+  value[1] = 42;
+  value[2] = nullptr;
+
+  ASSERT_EQ(value[0], "string");
+  ASSERT_EQ(value[1], 42);
+  ASSERT_EQ(value[2], nullptr);
+}
+
+TEST_F(ValueTest, UpdateNestedObjectValue) {
+  json::Value value(root_);
+  ASSERT_EQ(value["object"]["key"], "value");
+  value["object"]["key"] = "updated";
+  ASSERT_EQ(value["object"]["key"], "updated");
+}
+
+TEST_F(ValueTest, UpdatePrimitiveTypes) {
+  json::Value number_val(new json::Number(42));
+  json::Value string_val(new json::String("test"));
+  json::Value bool_val(new json::Boolean(false));
+
+  number_val = 100;
+  string_val = "updated";
+  bool_val = true;
+
+  ASSERT_EQ(number_val, 100);
+  ASSERT_EQ(string_val, "updated");
+  ASSERT_EQ(bool_val, true);
 }

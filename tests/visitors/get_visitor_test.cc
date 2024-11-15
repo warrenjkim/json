@@ -51,9 +51,10 @@ TEST_F(GetVisitorTest, ObjectKey) {
   ASSERT_EQ(*visitor.result(), *(new json::String("value")));
 }
 
-TEST_F(GetVisitorTest, ObjectKeyNotFound) {
-  json::visitors::GetVisitor visitor("invalid");
-  ASSERT_THROW(object_->accept(visitor), json::NotFoundException);
+TEST_F(GetVisitorTest, CreateNewObject) {
+  json::visitors::GetVisitor visitor("new_key");
+  object_->accept(visitor);
+  ASSERT_EQ(*visitor.result(), *(new json::Null()));
 }
 
 TEST_F(GetVisitorTest, ObjectBadAccesIndex) {

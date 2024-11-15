@@ -98,7 +98,8 @@ void GetVisitor::visit(Object& node) {
 
   std::optional<Node*> result = node.get().get(*key_);
   if (!result) {
-    throw NotFoundException("Key \"" + *key_ + "\" not found.");
+    result_ = new Null();
+    return;
   }
 
   result_ = *result;

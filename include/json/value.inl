@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+
+#include "exception.h"
 #include "json/exception.h"
 #include "nodes/number.h"
 #include "nodes/string.h"
@@ -27,6 +30,16 @@ Value::operator T() const {
 }
 
 template <ReasonableNumber T>
+Value& Value::operator=(T value) {
+  return *this;
+}
+
+template <ReasonableString T>
+Value& Value::operator=(T value) {
+  return *this;
+}
+
+template <ReasonableNumber T>
 bool operator==(const Value& lhs, const T& rhs) {
   return *lhs.node_ == Number(rhs);
 }
@@ -46,30 +59,39 @@ bool operator==(const T& lhs, const Value& rhs) {
   return rhs == lhs;
 }
 
-// TODO(return reference when caching is implemented)
 template <ReasonableInteger T>
-Value Value::operator[](const T index) {
+Value& Value::operator[](const T index) {
   if (!node_) {
     throw BadCastException("No value set.");
+  }
+
+  std::string key = std::to_string(index);
+  if (cache_.contains(key)) {
+    return cache_[key];
   }
 
   visitors::GetVisitor visitor(index);
   node_->accept(visitor);
+  cache_.insert(key, Value(visitor.result()));
 
-  return Value(visitor.result());
+  return cache_[key];
 }
 
-// TODO(return reference when caching is implemented)
 template <ReasonableString T>
-Value Value::operator[](const T key) {
+Value& Value::operator[](const T key) {
   if (!node_) {
     throw BadCastException("No value set.");
   }
 
+  if (cache_.contains(key)) {
+    return cache_[key];
+  }
+
   visitors::GetVisitor visitor(key);
   node_->accept(visitor);
+  cache_.insert(key, Value(visitor.result()));
 
-  return Value(visitor.result());
+  return cache_[key];
 }
 
 }  // namespace json

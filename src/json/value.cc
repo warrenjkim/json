@@ -43,6 +43,18 @@ Value::operator nullptr_t() const {
   return visitor.result();
 }
 
+Value& Value::operator=(bool value) {
+  return *this;
+}
+
+Value& Value::operator=(const char* value) {
+  return *this;
+}
+
+Value& Value::operator=(std::nullptr_t value) {
+  return *this;
+}
+
 bool operator==(const Value& lhs, const Value& rhs) {
   return *lhs.node_ == *rhs.node_;
 }
