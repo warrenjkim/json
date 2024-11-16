@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <string>
 
+#include "json/exception.h"
 #include "nodes/array.h"
 #include "nodes/boolean.h"
 #include "nodes/node.h"
@@ -81,7 +82,7 @@ TEST_F(ValueTest, ConvertBooleanToBool) {
 
 TEST_F(ValueTest, ConvertBooleanToNullPtrT) {
   json::Value value(new json::Null());
-  std::nullptr_t result = value;
+  nullptr_t result = value;
   ASSERT_TRUE(result == nullptr);
 }
 
@@ -192,7 +193,7 @@ TEST_F(ValueTest, BadCastBooleanToString) {
 
 TEST_F(ValueTest, BadCastBooleanToNullptr) {
   json::Value value(new json::Boolean(true));
-  ASSERT_THROW(std::nullptr_t n = value, json::BadCastException);
+  ASSERT_THROW(nullptr_t n = value, json::BadCastException);
 }
 
 TEST_F(ValueTest, BadCastNumberToString) {

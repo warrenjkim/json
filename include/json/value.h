@@ -52,7 +52,7 @@ class Value {
  public:
   operator bool() const;
   operator const char*() const;
-  operator std::nullptr_t() const;
+  operator nullptr_t() const;
 
  public:
   friend bool operator==(const Value& lhs, const Value& rhs);
@@ -63,8 +63,8 @@ class Value {
   friend bool operator==(const Value& lhs, const char* rhs);
   friend bool operator==(const char* lhs, const Value& rhs);
 
-  friend bool operator==(const Value& lhs, std::nullptr_t rhs);
-  friend bool operator==(std::nullptr_t lhs, const Value& rhs);
+  friend bool operator==(const Value& lhs, nullptr_t rhs);
+  friend bool operator==(nullptr_t lhs, const Value& rhs);
 
  public:
   template <ReasonableInteger T>

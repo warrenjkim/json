@@ -5,6 +5,7 @@
 #include <boost/log/trivial.hpp>
 #include <cstddef>
 
+#include "json/exception.h"
 #include "utils/logger.h"
 
 class JsonUtilsTest : public ::testing::Test {

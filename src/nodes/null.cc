@@ -12,6 +12,6 @@ void Null::accept(visitors::ConstVisitor& visitor) const {
   visitor.visit(*this);
 }
 
-Null::operator std::nullptr_t() const { return nullptr; }
+Null::operator nullptr_t() const { return nullptr; }
 
 }  // namespace json

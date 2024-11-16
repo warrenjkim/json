@@ -1,32 +1,34 @@
 #pragma once
 
-#include "exception.h"
+#include "json/exception.h"
+#include "nodes/number.h"
+#include "nodes/string.h"
 #include "value.h"
 #include "visitors/get_visitor.h"
+#include "visitors/number_visitor.h"
+#include "visitors/string_visitor.h"
 
 namespace json {
 
 template <ReasonableNumber T>
 Value::operator T() const {
-  if (type_ != Type::NUMBER) {
-    throw BadCastException("Value is not a number.");
-  }
+  visitors::NumberVisitor visitor;
+  node_->accept(visitor);
 
-  return static_cast<T>(*data_.number);
+  return static_cast<T>(visitor.result());
 }
 
 template <ReasonableString T>
 Value::operator T() const {
-  if (type_ != Type::STRING) {
-    throw BadCastException("Value is not a string");
-  }
+  visitors::StringVisitor visitor;
+  node_->accept(visitor);
 
-  return T(*data_.string);
+  return T(visitor.result());
 }
 
 template <ReasonableNumber T>
 bool operator==(const Value& lhs, const T& rhs) {
-  return lhs.type_ == Value::Type::NUMBER && *lhs.data_.number == rhs;
+  return *lhs.node_ == Number(rhs);
 }
 
 template <ReasonableNumber T>
@@ -36,7 +38,7 @@ bool operator==(const T& lhs, const Value& rhs) {
 
 template <ReasonableString T>
 bool operator==(const Value& lhs, const T& rhs) {
-  return lhs.type_ == Value::Type::STRING && *lhs.data_.string == rhs;
+  return *lhs.node_ == String(rhs);
 }
 
 template <ReasonableString T>
@@ -48,7 +50,7 @@ bool operator==(const T& lhs, const Value& rhs) {
 template <ReasonableInteger T>
 Value Value::operator[](const T index) {
   if (!node_) {
-    return *this;
+    throw BadCastException("No value set.");
   }
 
   visitors::GetVisitor visitor(index);
@@ -61,7 +63,7 @@ Value Value::operator[](const T index) {
 template <ReasonableString T>
 Value Value::operator[](const T key) {
   if (!node_) {
-    return *this;
+    throw BadCastException("No value set.");
   }
 
   visitors::GetVisitor visitor(key);

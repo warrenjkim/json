@@ -12,7 +12,7 @@ class Null : public Node {
   void accept(visitors::ConstVisitor& visitor) const override;
 
  public:
-  operator std::nullptr_t() const;
+  operator nullptr_t() const;
 };
 
 }  // namespace json
