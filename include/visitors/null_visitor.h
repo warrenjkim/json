@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+
 #include "nodes/node.h"
 #include "visitor.h"
 
