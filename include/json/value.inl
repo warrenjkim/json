@@ -33,6 +33,7 @@ template <ReasonableNumber T>
 Value& Value::operator=(T value) {
   delete node_;
   node_ = new Number(value);
+
   return *this;
 }
 
@@ -40,6 +41,7 @@ template <ReasonableString T>
 Value& Value::operator=(T value) {
   delete node_;
   node_ = new String(value);
+
   return *this;
 }
 
