@@ -5,6 +5,7 @@
 #include "exception.h"
 #include "json/exception.h"
 #include "nodes/number.h"
+#include "nodes/object.h"
 #include "nodes/string.h"
 #include "value.h"
 #include "visitors/get_visitor.h"
@@ -86,7 +87,7 @@ Value& Value::operator[](const T index) {
 template <ReasonableString T>
 Value& Value::operator[](const T key) {
   if (!node_) {
-    throw BadCastException("No value set.");
+    node_ = new Object();
   }
 
   if (cache_.contains(key)) {

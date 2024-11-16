@@ -256,7 +256,6 @@ TEST_F(ValueTest, BadCastNullToString) {
 TEST_F(ValueTest, BadCastNoValueSet) {
   json::Value value;
   ASSERT_THROW(std::string s = value[0], json::BadCastException);
-  ASSERT_THROW(std::string s = value["key"], json::BadCastException);
 }
 
 TEST_F(ValueTest, UpdateArrayElement) {
@@ -309,4 +308,11 @@ TEST_F(ValueTest, UpdatePrimitiveTypes) {
   ASSERT_EQ(number_val, 100);
   ASSERT_EQ(string_val, "updated");
   ASSERT_EQ(bool_val, true);
+}
+
+TEST_F(ValueTest, AddToEmptyObject) {
+  json::Value value;
+  ASSERT_EQ(value["key"], nullptr);
+  value["key"] = 10;
+  ASSERT_EQ(value["key"], 10);
 }
