@@ -1,7 +1,6 @@
 add_library(visitors STATIC
   cmp_visitor.cc
   get_visitor.cc
-  set_visitor.cc
   array_visitor.cc
   boolean_visitor.cc
   number_visitor.cc

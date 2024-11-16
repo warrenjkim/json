@@ -4,11 +4,8 @@
 #include <string>
 #include <string_view>
 #include <type_traits>
-#include <vector>
 
 #include "nodes/node.h"
-#include "nodes/null.h"
-#include "utils/rbt.h"
 
 namespace json {
 
@@ -94,24 +91,7 @@ class Value {
   friend bool operator==(const T& lhs, const Value& rhs);
 
  private:
-  enum class Type { ARRAY, BOOLEAN, NUMBER, OBJECT, JSON_NULL, STRING };
-  union Data {
-    std::vector<Node*>* array;
-    bool* boolean;
-    double* number;
-    utils::Map<std::string, Node*>* object;
-    Null* null;
-    std::string* string;
-    Data() : null(new Null()) {}
-  };
-
-  Data data_;
-  Type type_;
   Node* node_;
-
- private:
-  friend class visitors::GetVisitor;
-  friend class visitors::SetVisitor;
 };
 
 }  // namespace json
