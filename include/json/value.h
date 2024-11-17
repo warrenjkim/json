@@ -47,6 +47,18 @@ class Value {
   Value(Node* node);
 
  public:
+  void add(bool value);
+  void add(const char* value);
+  void add(const Value& value);
+  void add(nullptr_t);
+
+  template <ReasonableInteger T>
+  void add(const T value);
+
+  template <ReasonableString T>
+  void add(const T value);
+
+ public:
   operator bool() const;
   operator const char*() const;
   operator nullptr_t() const;
@@ -54,7 +66,7 @@ class Value {
  public:
   Value& operator=(bool value);
   Value& operator=(const char* value);
-  Value& operator=(std::nullptr_t value);
+  Value& operator=(nullptr_t value);
 
  public:
   friend bool operator==(const Value& lhs, const Value& rhs);
@@ -67,6 +79,9 @@ class Value {
 
   friend bool operator==(const Value& lhs, nullptr_t rhs);
   friend bool operator==(nullptr_t lhs, const Value& rhs);
+
+  friend bool operator==(const Value& lhs, const Array& rhs);
+  friend bool operator==(const Array& lhs, const Value& rhs);
 
  public:
   template <ReasonableInteger T>

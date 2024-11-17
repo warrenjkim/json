@@ -22,6 +22,55 @@ Value::Value(Node* node) : node_(node) {
   }
 }
 
+void Value::add(bool value) {
+  if (!node_) {
+    node_ = new Array();
+  }
+
+  visitors::ArrayVisitor visitor;
+  node_->accept(visitor);
+
+  visitor.result().push_back(new Boolean(value));
+}
+
+void Value::add(const char* value) {
+  if (!node_) {
+    node_ = new Array();
+  }
+
+  visitors::ArrayVisitor visitor;
+  node_->accept(visitor);
+
+  visitor.result().push_back(new String(value));
+}
+
+void Value::add(const Value& value) {
+  if (!node_) {
+    node_ = new Array();
+  }
+
+  visitors::ArrayVisitor visitor;
+  node_->accept(visitor);
+
+  if (!value.node_) {
+    visitor.result().push_back(new Null());
+
+  } else {
+    visitor.result().push_back(value.node_);
+  }
+}
+
+void Value::add(nullptr_t) {
+  if (!node_) {
+    node_ = new Array();
+  }
+
+  visitors::ArrayVisitor visitor;
+  node_->accept(visitor);
+
+  visitor.result().push_back(new Null());
+}
+
 Value::operator bool() const {
   visitors::BooleanVisitor visitor;
   node_->accept(visitor);
@@ -57,7 +106,7 @@ Value& Value::operator=(const char* value) {
   return *this;
 }
 
-Value& Value::operator=(std::nullptr_t value) {
+Value& Value::operator=(nullptr_t value) {
   delete node_;
   node_ = new Null();
 
@@ -83,5 +132,11 @@ bool operator==(const char* lhs, const Value& rhs) { return rhs == lhs; }
 bool operator==(const Value& lhs, nullptr_t) { return *lhs.node_ == Null(); }
 
 bool operator==(nullptr_t lhs, const Value& rhs) { return rhs == lhs; }
+
+bool operator==(const Value& lhs, const Array& rhs) {
+  return *lhs.node_ == rhs;
+}
+
+bool operator==(const Array& lhs, const Value& rhs) { return rhs == lhs; }
 
 }  // namespace json

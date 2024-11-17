@@ -316,3 +316,98 @@ TEST_F(ValueTest, AddToEmptyObject) {
   value["key"] = 10;
   ASSERT_EQ(value["key"], 10);
 }
+
+TEST_F(ValueTest, AddToEmptyArrayNumberFirst) {
+  json::Array array;
+  array.add(new json::Number(10));
+  array.add(new json::Boolean(true));
+
+  json::Value value;
+  value.add(10);
+  value.add(true);
+
+  ASSERT_EQ(value, array);
+  ASSERT_EQ(array, value);
+}
+
+TEST_F(ValueTest, AddToEmptyArrayBooleanFirst) {
+  json::Array array;
+  array.add(new json::Boolean(true));
+  array.add(new json::Number(10));
+
+  json::Value value;
+  value.add(true);
+  value.add(10);
+
+  ASSERT_EQ(value, array);
+  ASSERT_EQ(array, value);
+}
+
+TEST_F(ValueTest, AddToEmptyArrayNullFirst) {
+  json::Array array;
+  array.add(new json::Null());
+  array.add(new json::Boolean(true));
+
+  json::Value value;
+  value.add(nullptr);
+  value.add(true);
+
+  ASSERT_EQ(value, array);
+  ASSERT_EQ(array, value);
+}
+
+TEST_F(ValueTest, AddToEmptyArrayCStringFirst) {
+  json::Array array;
+  array.add(new json::String("string"));
+  array.add(new json::Null());
+
+  json::Value value;
+  value.add("string");
+  value.add(nullptr);
+
+  ASSERT_EQ(value, array);
+  ASSERT_EQ(array, value);
+}
+
+TEST_F(ValueTest, AddToEmptyArrayStringFirst) {
+  json::Array array;
+  array.add(new json::String("string"));
+  array.add(new json::Null());
+
+  json::Value value;
+  value.add(std::string("string"));
+  value.add(nullptr);
+
+  ASSERT_EQ(value, array);
+  ASSERT_EQ(array, value);
+}
+
+TEST_F(ValueTest, AddToEmptyArrayValueFirst) {
+  json::Value num(new json::Number(8));
+
+  json::Array array;
+  array.add(new json::Number(8));
+  array.add(new json::String("string"));
+
+  json::Value value;
+  value.add(num);
+  value.add("string");
+
+  ASSERT_EQ(value, array);
+  ASSERT_EQ(array, value);
+}
+
+TEST_F(ValueTest, AddToEmptyArrayEmptyValueFirst) {
+  json::Value null_value;
+
+  json::Array array;
+  array.add(new json::Null());
+  array.add(new json::String("string"));
+
+  json::Value value;
+  value.add(null_value);
+  value.add("string");
+
+  ASSERT_EQ(value, array);
+  ASSERT_EQ(array, value);
+}
