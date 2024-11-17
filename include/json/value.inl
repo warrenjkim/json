@@ -12,6 +12,7 @@
 #include "visitors/array_visitor.h"
 #include "visitors/get_visitor.h"
 #include "visitors/number_visitor.h"
+#include "visitors/object_visitor.h"
 #include "visitors/string_visitor.h"
 
 namespace json {
@@ -37,6 +38,29 @@ void Value::add(const T value) {
   node_->accept(visitor);
 
   visitor.result().push_back(new String(value));
+}
+
+template <ReasonableInteger T>
+void Value::put(const std::string& key, const T value) {
+  if (!node_) {
+    node_ = new Object();
+  }
+
+  visitors::ObjectVisitor visitor;
+  node_->accept(visitor);
+
+  visitor.result().insert(key, new Number(value));
+}
+
+template <ReasonableString T>
+void Value::put(const std::string& key, const T value) {
+  if (!node_) {
+    node_ = new Object();
+  }
+  visitors::ObjectVisitor visitor;
+  node_->accept(visitor);
+
+  visitor.result().insert(key, new String(value));
 }
 
 template <ReasonableNumber T>

@@ -8,8 +8,10 @@
 #include "nodes/node.h"
 #include "nodes/null.h"
 #include "nodes/string.h"
+#include "visitors/array_visitor.h"
 #include "visitors/boolean_visitor.h"
 #include "visitors/null_visitor.h"
+#include "visitors/object_visitor.h"
 #include "visitors/string_visitor.h"
 
 namespace json {
@@ -69,6 +71,55 @@ void Value::add(nullptr_t) {
   node_->accept(visitor);
 
   visitor.result().push_back(new Null());
+}
+
+void Value::put(const std::string& key, bool value) {
+  if (!node_) {
+    node_ = new Object();
+  }
+
+  visitors::ObjectVisitor visitor;
+  node_->accept(visitor);
+
+  visitor.result().insert(key, new Boolean(value));
+}
+
+void Value::put(const std::string& key, const char* value) {
+  if (!node_) {
+    node_ = new Object();
+  }
+
+  visitors::ObjectVisitor visitor;
+  node_->accept(visitor);
+
+  visitor.result().insert(key, new String(value));
+}
+
+void Value::put(const std::string& key, const Value& value) {
+  if (!node_) {
+    node_ = new Object();
+  }
+
+  visitors::ObjectVisitor visitor;
+  node_->accept(visitor);
+
+  if (!value.node_) {
+    visitor.result().insert(key, new Null());
+
+  } else {
+    visitor.result().insert(key, value.node_);
+  }
+}
+
+void Value::put(const std::string& key, nullptr_t) {
+  if (!node_) {
+    node_ = new Object();
+  }
+
+  visitors::ObjectVisitor visitor;
+  node_->accept(visitor);
+
+  visitor.result().insert(key, new Null());
 }
 
 Value::operator bool() const {
@@ -138,5 +189,11 @@ bool operator==(const Value& lhs, const Array& rhs) {
 }
 
 bool operator==(const Array& lhs, const Value& rhs) { return rhs == lhs; }
+
+bool operator==(const Value& lhs, const Object& rhs) {
+  return *lhs.node_ == rhs;
+}
+
+bool operator==(const Object& lhs, const Value& rhs) { return rhs == lhs; }
 
 }  // namespace json

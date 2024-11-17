@@ -58,6 +58,17 @@ class Value {
   template <ReasonableString T>
   void add(const T value);
 
+  void put(const std::string&, bool value);
+  void put(const std::string&, const char* value);
+  void put(const std::string&, const Value& value);
+  void put(const std::string&, nullptr_t);
+
+  template <ReasonableInteger T>
+  void put(const std::string& key, const T value);
+
+  template <ReasonableString T>
+  void put(const std::string& key, const T value);
+
  public:
   operator bool() const;
   operator const char*() const;
@@ -82,6 +93,9 @@ class Value {
 
   friend bool operator==(const Value& lhs, const Array& rhs);
   friend bool operator==(const Array& lhs, const Value& rhs);
+
+  friend bool operator==(const Value& lhs, const Object& rhs);
+  friend bool operator==(const Object& lhs, const Value& rhs);
 
  public:
   template <ReasonableInteger T>

@@ -411,3 +411,98 @@ TEST_F(ValueTest, AddToEmptyArrayEmptyValueFirst) {
   ASSERT_EQ(value, array);
   ASSERT_EQ(array, value);
 }
+
+TEST_F(ValueTest, AddToEmptyObjectNumberFirst) {
+  json::Object object;
+  object.add("num", new json::Number(10));
+  object.add("bool", new json::Boolean(true));
+
+  json::Value value;
+  value.put("num", 10);
+  value.put("bool", true);
+
+  ASSERT_EQ(value, object);
+  ASSERT_EQ(object, value);
+}
+
+TEST_F(ValueTest, AddToEmptyObjectBooleanFirst) {
+  json::Object object;
+  object.add("bool", new json::Boolean(true));
+  object.add("num", new json::Number(10));
+
+  json::Value value;
+  value.put("bool", true);
+  value.put("num", 10);
+
+  ASSERT_EQ(value, object);
+  ASSERT_EQ(object, value);
+}
+
+TEST_F(ValueTest, AddToEmptyObjectNullFirst) {
+  json::Object object;
+  object.add("null", new json::Null());
+  object.add("bool", new json::Boolean(true));
+
+  json::Value value;
+  value.put("null", nullptr);
+  value.put("bool", true);
+
+  ASSERT_EQ(value, object);
+  ASSERT_EQ(object, value);
+}
+
+TEST_F(ValueTest, AddToEmptyObjectCStringFirst) {
+  json::Object object;
+  object.add("str", new json::String("string"));
+  object.add("null", new json::Null());
+
+  json::Value value;
+  value.put("str", "string");
+  value.put("null", nullptr);
+
+  ASSERT_EQ(value, object);
+  ASSERT_EQ(object, value);
+}
+
+TEST_F(ValueTest, AddToEmptyObjectStringFirst) {
+  json::Object object;
+  object.add("str", new json::String("string"));
+  object.add("null", new json::Null());
+
+  json::Value value;
+  value.put("str", std::string("string"));
+  value.put("null", nullptr);
+
+  ASSERT_EQ(value, object);
+  ASSERT_EQ(object, value);
+}
+
+TEST_F(ValueTest, AddToEmptyObjectValueFirst) {
+  json::Value num(new json::Number(8));
+
+  json::Object object;
+  object.add("val", new json::Number(8));
+  object.add("str", new json::String("string"));
+
+  json::Value value;
+  value.put("val", num);
+  value.put("str", "string");
+
+  ASSERT_EQ(value, object);
+  ASSERT_EQ(object, value);
+}
+
+TEST_F(ValueTest, AddToEmptyObjectEmptyValueFirst) {
+  json::Value null_value;
+
+  json::Object object;
+  object.add("empty_val", new json::Null());
+  object.add("str", new json::String("string"));
+
+  json::Value value;
+  value.put("empty_val", null_value);
+  value.put("str", "string");
+
+  ASSERT_EQ(value, object);
+  ASSERT_EQ(object, value);
+}
