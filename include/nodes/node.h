@@ -15,15 +15,7 @@ class Node {
   virtual void accept(visitors::ConstVisitor& visitor) const = 0;
 
  public:
-  template <typename T>
-  T* as() {
-    return dynamic_cast<T*>(this);
-  }
-
-  template <typename T>
-  const T* as() const {
-    return dynamic_cast<const T*>(this);
-  }
+  virtual Node* clone() = 0;
 
  public:
   const bool operator==(const Node& other) const;
