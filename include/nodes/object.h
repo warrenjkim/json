@@ -17,6 +17,9 @@ class Object : public Node {
   Node* clone() override;
 
  public:
+  ~Object();
+
+ public:
   void add(const std::string& key, Node* value);
   const size_t size() const;
   const bool empty() const;
