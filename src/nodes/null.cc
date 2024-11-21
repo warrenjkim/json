@@ -12,6 +12,8 @@ void Null::accept(visitors::ConstVisitor& visitor) const {
   visitor.visit(*this);
 }
 
+Node* Null::clone() { return new Null(); }
+
 Null::operator nullptr_t() const { return nullptr; }
 
 }  // namespace json
