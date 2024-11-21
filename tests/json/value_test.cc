@@ -204,7 +204,7 @@ TEST_F(ValueTest, BadCastNumberToString) {
 
 TEST_F(ValueTest, BadAccessNumberAsObject) {
   json::Value value(new json::Number(42));
-  ASSERT_THROW(value["key"], json::BadAccessException);
+  ASSERT_THROW((void)value["key"], json::BadAccessException);
 }
 
 TEST_F(ValueTest, BadAccessNumberAsArray) {
@@ -224,12 +224,12 @@ TEST_F(ValueTest, BadCastStringToBool) {
 
 TEST_F(ValueTest, ChainedObjectAccess) {
   json::Value value(root_);
-  ASSERT_EQ(std::string(value["object"]["key"]), "value");
+  ASSERT_EQ(value["object"]["key"], "value");
 }
 
 TEST_F(ValueTest, ChainedArrayAccess) {
   json::Value value(root_);
-  ASSERT_EQ(int(value["array"][0]), 1);
+  ASSERT_EQ(value["array"][0], 1);
 }
 
 TEST_F(ValueTest, CompareNullToNull) {
@@ -505,4 +505,18 @@ TEST_F(ValueTest, AddToEmptyObjectEmptyValueFirst) {
 
   ASSERT_EQ(value, object);
   ASSERT_EQ(object, value);
+}
+
+TEST_F(ValueTest, ValueAssignment) {
+  json::Value bool_value = true;
+  json::Value number_value = 42;
+  json::Value null_value = nullptr;
+  json::Value cstring_value = "some_cstring";
+  json::Value string_value = std::string("some_string");
+
+  ASSERT_EQ(bool_value, true);
+  ASSERT_EQ(number_value, 42);
+  ASSERT_EQ(null_value, nullptr);
+  ASSERT_EQ(cstring_value, "some_cstring");
+  ASSERT_EQ(string_value, "some_string");
 }
