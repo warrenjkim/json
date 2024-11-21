@@ -15,6 +15,9 @@ class Array : public Node {
   Node* clone() override;
 
  public:
+  ~Array();
+
+ public:
   void add(Node* element);
   const size_t size() const;
   const bool empty() const;

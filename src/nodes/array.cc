@@ -22,6 +22,12 @@ Node* Array::clone() {
   return arr;
 }
 
+Array::~Array() {
+  for (Node* node : array_) {
+    delete node;
+  }
+}
+
 void Array::add(Node* element) { array_.push_back(element); }
 
 const size_t Array::size() const { return array_.size(); }
