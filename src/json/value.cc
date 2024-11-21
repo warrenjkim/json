@@ -16,13 +16,32 @@
 
 namespace json {
 
-Value::Value() : node_(nullptr) {}
+Value::Value() : node_(nullptr), owner_(true), cache_() {}
 
-Value::Value(Node* node) : node_(node) {
+Value::Value(Node* node) : node_(node), owner_(true), cache_() {
   if (!node) {
     throw ParseException("Parsing failed.");
   }
 }
+
+Value::Value(const bool value)
+    : node_(new Boolean(value)), owner_(true), cache_() {}
+
+Value::Value(const nullptr_t) : node_(new Null()), owner_(true), cache_() {}
+
+Value::Value(const char* value)
+    : node_(new String(value)), owner_(true), cache_() {}
+
+Value::~Value() {
+  if (node_ && owner_) {
+    delete node_;
+  }
+};
+
+Value::Value(const Value& other)
+    : node_(other.node_ ? other.node_->clone() : nullptr),
+      owner_(other.owner_),
+      cache_() {}
 
 void Value::add(bool value) {
   if (!node_) {
@@ -56,9 +75,8 @@ void Value::add(const Value& value) {
 
   if (!value.node_) {
     visitor.result().push_back(new Null());
-
   } else {
-    visitor.result().push_back(value.node_);
+    visitor.result().push_back(value.node_->clone());
   }
 }
 
@@ -105,9 +123,8 @@ void Value::put(const std::string& key, const Value& value) {
 
   if (!value.node_) {
     visitor.result().insert(key, new Null());
-
   } else {
-    visitor.result().insert(key, value.node_);
+    visitor.result().insert(key, value.node_->clone());
   }
 }
 
@@ -168,32 +185,24 @@ bool operator==(const Value& lhs, const Value& rhs) {
   return *lhs.node_ == *rhs.node_;
 }
 
-bool operator==(const Value& lhs, bool rhs) {
+bool operator==(const Value& lhs, const bool rhs) {
   return *lhs.node_ == Boolean(rhs);
 }
-
-bool operator==(bool lhs, const Value& rhs) { return rhs == lhs; }
 
 bool operator==(const Value& lhs, const char* rhs) {
   return *lhs.node_ == String(rhs);
 }
 
-bool operator==(const char* lhs, const Value& rhs) { return rhs == lhs; }
-
 bool operator==(const Value& lhs, nullptr_t) { return *lhs.node_ == Null(); }
-
-bool operator==(nullptr_t lhs, const Value& rhs) { return rhs == lhs; }
 
 bool operator==(const Value& lhs, const Array& rhs) {
   return *lhs.node_ == rhs;
 }
 
-bool operator==(const Array& lhs, const Value& rhs) { return rhs == lhs; }
-
 bool operator==(const Value& lhs, const Object& rhs) {
   return *lhs.node_ == rhs;
 }
 
-bool operator==(const Object& lhs, const Value& rhs) { return rhs == lhs; }
+Value::Value(Node* node, bool owner) : node_(node), owner_(owner), cache_() {}
 
 }  // namespace json

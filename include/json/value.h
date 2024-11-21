@@ -47,6 +47,22 @@ class Value {
   Value(Node* node);
 
  public:
+  Value(const bool value);
+  Value(const nullptr_t);
+  Value(const char* value);
+
+  template <ReasonableNumber T>
+  Value(const T value);
+
+  template <ReasonableString T>
+  Value(const T& value);
+
+  ~Value();
+
+ public:
+  Value(const Value& other);
+
+ public:
   void add(bool value);
   void add(const char* value);
   void add(const Value& value);
@@ -56,7 +72,7 @@ class Value {
   void add(const T value);
 
   template <ReasonableString T>
-  void add(const T value);
+  void add(const T& value);
 
   void put(const std::string&, bool value);
   void put(const std::string&, const char* value);
@@ -67,7 +83,7 @@ class Value {
   void put(const std::string& key, const T value);
 
   template <ReasonableString T>
-  void put(const std::string& key, const T value);
+  void put(const std::string& key, const T& value);
 
  public:
   operator bool() const;
@@ -80,22 +96,12 @@ class Value {
   Value& operator=(nullptr_t value);
 
  public:
-  friend bool operator==(const Value& lhs, const Value& rhs);
-
-  friend bool operator==(const Value& lhs, bool rhs);
-  friend bool operator==(bool lhs, const Value& rhs);
-
+  friend bool operator==(const Value& lhs, const bool rhs);
   friend bool operator==(const Value& lhs, const char* rhs);
-  friend bool operator==(const char* lhs, const Value& rhs);
-
-  friend bool operator==(const Value& lhs, nullptr_t rhs);
-  friend bool operator==(nullptr_t lhs, const Value& rhs);
-
+  friend bool operator==(const Value& lhs, const Value& rhs);
   friend bool operator==(const Value& lhs, const Array& rhs);
-  friend bool operator==(const Array& lhs, const Value& rhs);
-
   friend bool operator==(const Value& lhs, const Object& rhs);
-  friend bool operator==(const Object& lhs, const Value& rhs);
+  friend bool operator==(const Value& lhs, const nullptr_t rhs);
 
  public:
   template <ReasonableInteger T>
@@ -104,6 +110,12 @@ class Value {
   template <ReasonableString T>
   Value& operator[](const T key);
 
+  template <ReasonableInteger T>
+  Value& operator[](const T index) const;
+
+  template <ReasonableString T>
+  Value& operator[](const T& key) const;
+
  public:
   template <ReasonableNumber T>
   operator T() const;
@@ -113,27 +125,25 @@ class Value {
 
  public:
   template <ReasonableNumber T>
-  Value& operator=(T value);
+  Value& operator=(const T value);
 
   template <ReasonableString T>
-  Value& operator=(T value);
+  Value& operator=(const T& value);
 
  public:
   template <ReasonableNumber T>
-  friend bool operator==(const Value& lhs, const T& rhs);
-
-  template <ReasonableNumber T>
-  friend bool operator==(const T& lhs, const Value& rhs);
+  friend bool operator==(const Value& lhs, const T rhs);
 
   template <ReasonableString T>
   friend bool operator==(const Value& lhs, const T& rhs);
-
-  template <ReasonableString T>
-  friend bool operator==(const T& lhs, const Value& rhs);
 
  private:
   Node* node_;
-  utils::Map<std::string, Value> cache_;
+  bool owner_;
+  mutable utils::Map<std::string, Value> cache_;
+
+ private:
+  Value(Node* node, bool owner);
 };
 
 }  // namespace json

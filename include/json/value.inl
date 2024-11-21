@@ -17,6 +17,14 @@
 
 namespace json {
 
+template <ReasonableNumber T>
+Value::Value(const T value)
+    : node_(new Number(value)), owner_(true), cache_() {}
+
+template <ReasonableString T>
+Value::Value(const T& value)
+    : node_(new String(value)), owner_(true), cache_() {}
+
 template <ReasonableInteger T>
 void Value::add(const T value) {
   if (!node_) {
@@ -30,7 +38,7 @@ void Value::add(const T value) {
 }
 
 template <ReasonableString T>
-void Value::add(const T value) {
+void Value::add(const T& value) {
   if (!node_) {
     node_ = new Array();
   }
@@ -53,7 +61,7 @@ void Value::put(const std::string& key, const T value) {
 }
 
 template <ReasonableString T>
-void Value::put(const std::string& key, const T value) {
+void Value::put(const std::string& key, const T& value) {
   if (!node_) {
     node_ = new Object();
   }
@@ -80,7 +88,7 @@ Value::operator T() const {
 }
 
 template <ReasonableNumber T>
-Value& Value::operator=(T value) {
+Value& Value::operator=(const T value) {
   delete node_;
   node_ = new Number(value);
 
@@ -88,7 +96,7 @@ Value& Value::operator=(T value) {
 }
 
 template <ReasonableString T>
-Value& Value::operator=(T value) {
+Value& Value::operator=(const T& value) {
   delete node_;
   node_ = new String(value);
 
@@ -96,23 +104,13 @@ Value& Value::operator=(T value) {
 }
 
 template <ReasonableNumber T>
-bool operator==(const Value& lhs, const T& rhs) {
+bool operator==(const Value& lhs, const T rhs) {
   return *lhs.node_ == Number(rhs);
-}
-
-template <ReasonableNumber T>
-bool operator==(const T& lhs, const Value& rhs) {
-  return rhs == lhs;
 }
 
 template <ReasonableString T>
 bool operator==(const Value& lhs, const T& rhs) {
   return *lhs.node_ == String(rhs);
-}
-
-template <ReasonableString T>
-bool operator==(const T& lhs, const Value& rhs) {
-  return rhs == lhs;
 }
 
 template <ReasonableInteger T>
@@ -128,7 +126,7 @@ Value& Value::operator[](const T index) {
 
   visitors::GetVisitor visitor(index);
   node_->accept(visitor);
-  cache_.insert(key, Value(visitor.result()));
+  cache_.insert(key, Value(visitor.result(), /*owner=*/false));
 
   return cache_[key];
 }
@@ -145,9 +143,19 @@ Value& Value::operator[](const T key) {
 
   visitors::GetVisitor visitor(key);
   node_->accept(visitor);
-  cache_.insert(key, Value(visitor.result()));
+  cache_.insert(key, Value(visitor.result(), /*owner=*/false));
 
   return cache_[key];
+}
+
+template <ReasonableInteger T>
+Value& Value::operator[](const T index) const {
+  return const_cast<Value*>(this)->operator[](index);
+}
+
+template <ReasonableString T>
+Value& Value::operator[](const T& key) const {
+  return const_cast<Value*>(this)->operator[](key);
 }
 
 }  // namespace json
