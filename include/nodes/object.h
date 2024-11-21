@@ -14,6 +14,9 @@ class Object : public Node {
   void accept(visitors::ConstVisitor& visitor) const override;
 
  public:
+  Node* clone() override;
+
+ public:
   void add(const std::string& key, Node* value);
   const size_t size() const;
   const bool empty() const;
