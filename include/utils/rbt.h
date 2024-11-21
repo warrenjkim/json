@@ -138,8 +138,6 @@ class RBTree {
 
   void deep_copy(const RBTree& other);
 
-  void swap_pointers(Node*& target, Node*& replacement);
-
  public:
   class Iterator {
    public:
