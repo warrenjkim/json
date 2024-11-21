@@ -14,7 +14,7 @@
 
 namespace json {
 
-class Token;
+struct Token;
 
 class Parser {
  public:
@@ -47,11 +47,11 @@ class Parser {
 
  private:
   Parser() = delete;
-  Parser(const Parser&) = delete;
-  Parser(Parser&&) = delete;
-  Parser& operator=(const Parser&) = delete;
-  Parser& operator=(Parser&&) = delete;
   ~Parser() = delete;
+  Parser(Parser&&) = delete;
+  Parser(const Parser&) = delete;
+  Parser& operator=(Parser&&) = delete;
+  Parser& operator=(const Parser&) = delete;
 };
 
 }  // namespace json

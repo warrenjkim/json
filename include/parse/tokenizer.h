@@ -9,7 +9,7 @@
 
 namespace json {
 
-class Token;
+struct Token;
 
 class Tokenizer {
  public:
@@ -59,11 +59,11 @@ class Tokenizer {
 
  private:
   Tokenizer() = delete;
-  Tokenizer(const Tokenizer&) = delete;
-  Tokenizer(Tokenizer&&) = delete;
-  Tokenizer& operator=(const Tokenizer&) = delete;
-  Tokenizer& operator=(Tokenizer&&) = delete;
   ~Tokenizer() = delete;
+  Tokenizer(Tokenizer&&) = delete;
+  Tokenizer(const Tokenizer&) = delete;
+  Tokenizer& operator=(Tokenizer&&) = delete;
+  Tokenizer& operator=(const Tokenizer&) = delete;
 };
 
 }  // namespace json
