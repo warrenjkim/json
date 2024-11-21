@@ -25,7 +25,7 @@ template <ReasonableString T>
 Value::Value(const T& value)
     : node_(new String(value)), owner_(true), cache_() {}
 
-template <ReasonableInteger T>
+template <ReasonableNumber T>
 void Value::add(const T value) {
   if (!node_) {
     node_ = new Array();
@@ -48,7 +48,7 @@ void Value::add(const T& value) {
   visitor.result().push_back(new String(value));
 }
 
-template <ReasonableInteger T>
+template <ReasonableNumber T>
 void Value::put(const std::string& key, const T value) {
   if (!node_) {
     node_ = new Object();
@@ -87,6 +87,51 @@ Value::operator T() const {
   return T(visitor.result());
 }
 
+template <ReasonableInteger T>
+Value& Value::operator[](const T index) {
+  if (!node_) {
+    throw BadCastException("No value set.");
+  }
+
+  std::string key = std::to_string(index);
+  if (cache_.contains(key)) {
+    return cache_[key];
+  }
+
+  visitors::GetVisitor visitor(index);
+  node_->accept(visitor);
+  cache_.insert(key, Value(visitor.result(), /*owner=*/false));
+
+  return cache_[key];
+}
+
+template <ReasonableInteger T>
+Value& Value::operator[](const T index) const {
+  return const_cast<Value*>(this)->operator[](index);
+}
+
+template <ReasonableString T>
+Value& Value::operator[](const T key) {
+  if (!node_) {
+    node_ = new Object();
+  }
+
+  if (cache_.contains(key)) {
+    return cache_[key];
+  }
+
+  visitors::GetVisitor visitor(key);
+  node_->accept(visitor);
+  cache_.insert(key, Value(visitor.result(), /*owner=*/false));
+
+  return cache_[key];
+}
+
+template <ReasonableString T>
+Value& Value::operator[](const T& key) const {
+  return const_cast<Value*>(this)->operator[](key);
+}
+
 template <ReasonableNumber T>
 Value& Value::operator=(const T value) {
   delete node_;
@@ -111,51 +156,6 @@ bool operator==(const Value& lhs, const T rhs) {
 template <ReasonableString T>
 bool operator==(const Value& lhs, const T& rhs) {
   return *lhs.node_ == String(rhs);
-}
-
-template <ReasonableInteger T>
-Value& Value::operator[](const T index) {
-  if (!node_) {
-    throw BadCastException("No value set.");
-  }
-
-  std::string key = std::to_string(index);
-  if (cache_.contains(key)) {
-    return cache_[key];
-  }
-
-  visitors::GetVisitor visitor(index);
-  node_->accept(visitor);
-  cache_.insert(key, Value(visitor.result(), /*owner=*/false));
-
-  return cache_[key];
-}
-
-template <ReasonableString T>
-Value& Value::operator[](const T key) {
-  if (!node_) {
-    node_ = new Object();
-  }
-
-  if (cache_.contains(key)) {
-    return cache_[key];
-  }
-
-  visitors::GetVisitor visitor(key);
-  node_->accept(visitor);
-  cache_.insert(key, Value(visitor.result(), /*owner=*/false));
-
-  return cache_[key];
-}
-
-template <ReasonableInteger T>
-Value& Value::operator[](const T index) const {
-  return const_cast<Value*>(this)->operator[](index);
-}
-
-template <ReasonableString T>
-Value& Value::operator[](const T& key) const {
-  return const_cast<Value*>(this)->operator[](key);
 }
 
 }  // namespace json
