@@ -38,7 +38,7 @@ class ValueTest : public ::testing::Test {
     root_->add("object", nested_obj_);
   }
 
-  void TearDown() override { delete root_; }
+  void TearDown() override {}
 
   json::Object* root_;
   json::Array* array_;
