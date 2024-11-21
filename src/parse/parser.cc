@@ -14,7 +14,6 @@
 #include "utils/macros.h"
 #include "utils/pair.h"
 #include "utils/queue.h"
-#include "utils/typedefs.h"
 
 namespace json {
 

@@ -10,7 +10,6 @@
 #include "parse/token.h"
 #include "utils/macros.h"
 #include "utils/queue.h"
-#include "utils/typedefs.h"
 
 namespace json {
 

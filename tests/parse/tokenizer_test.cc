@@ -10,7 +10,6 @@
 #include "gtest/gtest.h"
 #include "parse/token.h"
 #include "utils/logger.h"
-#include "utils/typedefs.h"
 
 class JsonTokenizerTest : public ::testing::Test {
  protected:
