@@ -10,6 +10,8 @@ void Number::accept(visitors::ConstVisitor& visitor) const {
   visitor.visit(*this);
 }
 
+Node* Number::clone() { return new Number(value_); }
+
 Number::Number(double value) : value_(value) {}
 
 double Number::get() { return value_; }

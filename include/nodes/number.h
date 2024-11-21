@@ -10,6 +10,9 @@ class Number : public Node {
   void accept(visitors::ConstVisitor& visitor) const override;
 
  public:
+  Node* clone() override;
+
+ public:
   Number(const double value);
 
  public:
