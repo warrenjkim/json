@@ -45,76 +45,66 @@ class Value {
  public:
   Value();
   Value(Node* node);
+  ~Value();
 
  public:
-  Value(const bool value);
   Value(const nullptr_t);
+  Value(const bool value);
   Value(const char* value);
 
+ public:
+  Value(const Value& other);
+
+ public:
+  void add(const nullptr_t);
+  void add(const bool value);
+  void add(const char* value);
+  void add(const Value& value);
+
+ public:
+  void put(const std::string&, const nullptr_t);
+  void put(const std::string&, const bool value);
+  void put(const std::string&, const char* value);
+  void put(const std::string&, const Value& value);
+
+ public:
+  operator bool() const;
+  operator nullptr_t() const;
+  operator const char*() const;
+
+ public:
+  Value& operator=(const bool value);
+  Value& operator=(const char* value);
+  Value& operator=(const nullptr_t value);
+
+ public:
+  friend bool operator==(const Value& lhs, const bool rhs);
+  friend bool operator==(const Value& lhs, const char* rhs);
+  friend bool operator==(const Value& lhs, const nullptr_t);
+  friend bool operator==(const Value& lhs, const Value& rhs);
+  friend bool operator==(const Value& lhs, const Array& rhs);
+  friend bool operator==(const Value& lhs, const Object& rhs);
+
+ public:
   template <ReasonableNumber T>
   Value(const T value);
 
   template <ReasonableString T>
   Value(const T& value);
 
-  ~Value();
-
  public:
-  Value(const Value& other);
-
- public:
-  void add(bool value);
-  void add(const char* value);
-  void add(const Value& value);
-  void add(nullptr_t);
-
-  template <ReasonableInteger T>
+  template <ReasonableNumber T>
   void add(const T value);
 
   template <ReasonableString T>
   void add(const T& value);
 
-  void put(const std::string&, bool value);
-  void put(const std::string&, const char* value);
-  void put(const std::string&, const Value& value);
-  void put(const std::string&, nullptr_t);
-
-  template <ReasonableInteger T>
+ public:
+  template <ReasonableNumber T>
   void put(const std::string& key, const T value);
 
   template <ReasonableString T>
   void put(const std::string& key, const T& value);
-
- public:
-  operator bool() const;
-  operator const char*() const;
-  operator nullptr_t() const;
-
- public:
-  Value& operator=(bool value);
-  Value& operator=(const char* value);
-  Value& operator=(nullptr_t value);
-
- public:
-  friend bool operator==(const Value& lhs, const bool rhs);
-  friend bool operator==(const Value& lhs, const char* rhs);
-  friend bool operator==(const Value& lhs, const Value& rhs);
-  friend bool operator==(const Value& lhs, const Array& rhs);
-  friend bool operator==(const Value& lhs, const Object& rhs);
-  friend bool operator==(const Value& lhs, const nullptr_t rhs);
-
- public:
-  template <ReasonableInteger T>
-  Value& operator[](const T index);
-
-  template <ReasonableString T>
-  Value& operator[](const T key);
-
-  template <ReasonableInteger T>
-  Value& operator[](const T index) const;
-
-  template <ReasonableString T>
-  Value& operator[](const T& key) const;
 
  public:
   template <ReasonableNumber T>
@@ -122,6 +112,19 @@ class Value {
 
   template <ReasonableString T>
   operator T() const;
+
+ public:
+  template <ReasonableInteger T>
+  Value& operator[](const T index);
+
+  template <ReasonableInteger T>
+  Value& operator[](const T index) const;
+
+  template <ReasonableString T>
+  Value& operator[](const T key);
+
+  template <ReasonableString T>
+  Value& operator[](const T& key) const;
 
  public:
   template <ReasonableNumber T>
