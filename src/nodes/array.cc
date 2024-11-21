@@ -13,6 +13,15 @@ void Array::accept(visitors::ConstVisitor& visitor) const {
   visitor.visit(*this);
 }
 
+Node* Array::clone() {
+  Array* arr = new Array();
+  for (Node* node : array_) {
+    arr->add(node->clone());
+  }
+
+  return arr;
+}
+
 void Array::add(Node* element) { array_.push_back(element); }
 
 const size_t Array::size() const { return array_.size(); }

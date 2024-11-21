@@ -12,6 +12,9 @@ class Array : public Node {
   void accept(visitors::ConstVisitor& visitor) const override;
 
  public:
+  Node* clone() override;
+
+ public:
   void add(Node* element);
   const size_t size() const;
   const bool empty() const;
