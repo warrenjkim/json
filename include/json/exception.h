@@ -19,15 +19,11 @@ class ParseException : public JsonException {
   using JsonException::JsonException;
 };
 
-class BadAccessException : public JsonException {
-  using JsonException::JsonException;
-};
-
-class NotFoundException : public JsonException {
-  using JsonException::JsonException;
-};
-
 class BadCastException : public JsonException {
+  using JsonException::JsonException;
+};
+
+class BadAccessException : public JsonException {
   using JsonException::JsonException;
 };
 
