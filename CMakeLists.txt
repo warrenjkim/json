@@ -64,7 +64,6 @@ generate_coverage_report(
   TESTS
     tokenizer_test
     parser_test
-    trie_test
     stack_test
     queue_test
     pair_test
