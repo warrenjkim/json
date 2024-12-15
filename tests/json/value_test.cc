@@ -312,7 +312,7 @@ TEST_F(ValueTest, UpdatePrimitiveTypes) {
 
 TEST_F(ValueTest, AddToEmptyObject) {
   json::Value value;
-  ASSERT_EQ(value["key"], nullptr);
+  ASSERT_EQ(value["key"], json::Object());
   value["key"] = 10;
   ASSERT_EQ(value["key"], 10);
 }
@@ -537,7 +537,7 @@ TEST_F(ValueTest, MoveConstructor) {
   json::Value moved = std::move(original);
 
   ASSERT_EQ(moved["key"], "value");
-  ASSERT_EQ(original["key"], nullptr);
+  ASSERT_EQ(original["key"], json::Object());
 }
 
 TEST_F(ValueTest, MoveCleansUpDestination) {
@@ -550,8 +550,8 @@ TEST_F(ValueTest, MoveCleansUpDestination) {
   dest = std::move(source);
 
   ASSERT_EQ(dest["new"], "content");
-  ASSERT_EQ(dest["old"], nullptr);
-  ASSERT_EQ(source["new"], nullptr);
+  ASSERT_EQ(dest["old"], json::Object());
+  ASSERT_EQ(source["new"], json::Object());
 }
 
 TEST_F(ValueTest, MoveSelfAssignmentNoOp) {

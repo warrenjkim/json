@@ -98,7 +98,7 @@ void GetVisitor::visit(Object& node) {
 
   std::optional<Node*> result = node.get().get(*key_);
   if (!result) {
-    result_ = new Null();
+    result_ = new Object();
     return;
   }
 

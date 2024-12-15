@@ -54,7 +54,7 @@ TEST_F(GetVisitorTest, ObjectKey) {
 TEST_F(GetVisitorTest, CreateNewObject) {
   json::visitors::GetVisitor visitor("new_key");
   object_->accept(visitor);
-  ASSERT_EQ(*visitor.result(), *(new json::Null()));
+  ASSERT_EQ(*visitor.result(), *(new json::Object()));
 }
 
 TEST_F(GetVisitorTest, ObjectBadAccesIndex) {
