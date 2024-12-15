@@ -514,16 +514,25 @@ TEST_F(ValueTest, ValueAssignment) {
   json::Value cstring_value = "some_cstring";
   json::Value string_value = std::string("some_string");
 
+  json::Value arr;
+  arr.add(1);
+  arr.add("2");
+
+  json::Value json = "str";
+  json = arr;
+
   ASSERT_EQ(bool_value, true);
   ASSERT_EQ(number_value, 42);
   ASSERT_EQ(null_value, nullptr);
   ASSERT_EQ(cstring_value, "some_cstring");
   ASSERT_EQ(string_value, "some_string");
+  ASSERT_EQ(json, arr);
 }
 
 TEST_F(ValueTest, MoveConstructor) {
   json::Value original;
-  original.put("key", "value");
+  original["key"] = "value";
+  ASSERT_EQ(original["key"], "value");
 
   json::Value moved = std::move(original);
 
