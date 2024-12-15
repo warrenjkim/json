@@ -54,6 +54,7 @@ class Value {
 
  public:
   Value(const Value& other);
+  Value(Value&& other);
 
  public:
   void add(const nullptr_t);
@@ -73,8 +74,10 @@ class Value {
   operator const char*() const;
 
  public:
+  Value& operator=(Value&& value);
   Value& operator=(const bool value);
   Value& operator=(const char* value);
+  Value& operator=(const Value& value);
   Value& operator=(const nullptr_t value);
 
  public:
