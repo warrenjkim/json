@@ -134,6 +134,10 @@ Value& Value::operator[](const T& key) const {
 
 template <ReasonableNumber T>
 Value& Value::operator=(const T value) {
+  if (node_ && !parent_) {
+    delete node_;
+  }
+
   node_ = new Number(value);
 
   return *this;
@@ -141,6 +145,10 @@ Value& Value::operator=(const T value) {
 
 template <ReasonableString T>
 Value& Value::operator=(const T& value) {
+  if (node_ && !parent_) {
+    delete node_;
+  }
+
   node_ = new String(value);
 
   return *this;

@@ -180,12 +180,20 @@ Value& Value::operator=(Value&& other) {
 }
 
 Value& Value::operator=(const bool value) {
+  if (node_ && !parent_) {
+    delete node_;
+  }
+
   node_ = new Boolean(value);
 
   return *this;
 }
 
 Value& Value::operator=(const char* value) {
+  if (node_ && !parent_) {
+    delete node_;
+  }
+
   node_ = new String(value);
 
   return *this;
@@ -205,6 +213,10 @@ Value& Value::operator=(const Value& value) {
 }
 
 Value& Value::operator=(const nullptr_t value) {
+  if (node_ && !parent_) {
+    delete node_;
+  }
+
   node_ = new Null();
 
   return *this;
