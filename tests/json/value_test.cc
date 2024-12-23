@@ -562,3 +562,10 @@ TEST_F(ValueTest, MoveSelfAssignmentNoOp) {
 
   ASSERT_EQ(val["test"], "data");
 }
+
+TEST_F(ValueTest, ChangesPropagateToCache) {
+  json::Value val;
+  val["key"] = 10;
+  val["key"] = "10";
+  ASSERT_EQ(val["key"], "10");
+}
