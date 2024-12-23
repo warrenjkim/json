@@ -520,3 +520,10 @@ TEST_F(ValueTest, ValueAssignment) {
   ASSERT_EQ(cstring_value, "some_cstring");
   ASSERT_EQ(string_value, "some_string");
 }
+
+TEST_F(ValueTest, ChangesPropagateToCache) {
+  json::Value val;
+  val["key"] = 10;
+  val["key"] = "10";
+  ASSERT_EQ(val["key"], "10");
+}
