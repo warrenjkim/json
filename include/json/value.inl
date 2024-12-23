@@ -19,11 +19,11 @@ namespace json {
 
 template <ReasonableNumber T>
 Value::Value(const T value)
-    : node_(new Number(value)), owner_(true), cache_() {}
+    : node_(new Number(value)), parent_(nullptr), cache_() {}
 
 template <ReasonableString T>
 Value::Value(const T& value)
-    : node_(new String(value)), owner_(true), cache_() {}
+    : node_(new String(value)), parent_(nullptr), cache_() {}
 
 template <ReasonableNumber T>
 void Value::add(const T value) {
@@ -100,7 +100,7 @@ Value& Value::operator[](const T index) {
 
   visitors::GetVisitor visitor(index);
   node_->accept(visitor);
-  cache_.insert(key, new Value(visitor.result(), /*owner=*/false));
+  cache_.insert(key, new Value(visitor.result(), /*parent=*/node_));
 
   return *cache_[key];
 }
@@ -122,7 +122,7 @@ Value& Value::operator[](const T key) {
 
   visitors::GetVisitor visitor(key);
   node_->accept(visitor);
-  cache_.insert(key, new Value(visitor.result(), /*owner=*/false));
+  cache_.insert(key, new Value(visitor.result(), /*parent=*/node_));
 
   return *cache_[key];
 }
@@ -134,10 +134,6 @@ Value& Value::operator[](const T& key) const {
 
 template <ReasonableNumber T>
 Value& Value::operator=(const T value) {
-  if (node_) {
-    delete node_;
-  }
-
   node_ = new Number(value);
 
   return *this;
@@ -145,10 +141,6 @@ Value& Value::operator=(const T value) {
 
 template <ReasonableString T>
 Value& Value::operator=(const T& value) {
-  if (node_) {
-    delete node_;
-  }
-
   node_ = new String(value);
 
   return *this;

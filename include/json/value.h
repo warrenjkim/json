@@ -145,11 +145,11 @@ class Value {
 
  private:
   Node* node_;
-  bool owner_;
+  Node* parent_;
   utils::Map<std::string, Value*> cache_;
 
  private:
-  Value(Node* node, bool owner);
+  Value(Node* node, Node* parent);
 };
 
 }  // namespace json

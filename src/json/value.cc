@@ -16,34 +16,34 @@
 
 namespace json {
 
-Value::Value() : node_(nullptr), owner_(true), cache_() {}
+Value::Value() : node_(nullptr), parent_(nullptr), cache_() {}
 
-Value::Value(Node* node) : node_(node), owner_(true), cache_() {
+Value::Value(Node* node) : node_(node), parent_(nullptr), cache_() {
   if (!node) {
     throw ParseException("Parsing failed.");
   }
 }
 
 Value::~Value() {
-  if (node_ && owner_) {
+  if (node_ && !parent_) {
     delete node_;
   }
 }
 
-Value::Value(const nullptr_t) : node_(new Null()), owner_(true), cache_() {}
+Value::Value(const nullptr_t) : node_(new Null()), parent_(nullptr), cache_() {}
 
 Value::Value(const bool value)
-    : node_(new Boolean(value)), owner_(true), cache_() {}
+    : node_(new Boolean(value)), parent_(nullptr), cache_() {}
 
 Value::Value(const char* value)
-    : node_(new String(value)), owner_(true), cache_() {}
+    : node_(new String(value)), parent_(nullptr), cache_() {}
 
 Value::Value(const Value& other)
     : node_(other.node_ ? other.node_->clone() : nullptr),
-      owner_(other.owner_),
+      parent_(other.parent_),
       cache_() {}
 
-Value::Value(Value&& other) : node_(nullptr), owner_(false), cache_() {
+Value::Value(Value&& other) : node_(nullptr), parent_(nullptr), cache_() {
   *this = std::move(other);
 }
 
@@ -166,17 +166,14 @@ Value::operator const char*() const {
 
 Value& Value::operator=(Value&& other) {
   if (this != &other) {
-    if (node_ && owner_) {
+    if (node_ && !parent_) {
       delete node_;
     }
 
     node_ = other.node_;
     other.node_ = nullptr;
-    owner_ = other.owner_;
+    parent_ = other.parent_;
     cache_ = std::move(other.cache_);
-    for (auto& [key, value] : cache_) {
-      value->owner_ = false;
-    }
   }
 
   return *this;
@@ -237,6 +234,7 @@ bool operator==(const Value& lhs, const Object& rhs) {
   return *lhs.node_ == rhs;
 }
 
-Value::Value(Node* node, bool owner) : node_(node), owner_(owner), cache_() {}
+Value::Value(Node* node, Node* parent)
+    : node_(node), parent_(parent), cache_() {}
 
 }  // namespace json
