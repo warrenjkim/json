@@ -27,6 +27,7 @@ Value::Value(Node* node) : node_(node), parent_(nullptr), cache_() {
 Value::~Value() {
   if (node_ && !parent_) {
     delete node_;
+    cache_.clear();
   }
 }
 
