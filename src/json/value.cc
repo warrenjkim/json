@@ -175,7 +175,7 @@ Value& Value::operator=(Value&& other) {
     owner_ = other.owner_;
     cache_ = std::move(other.cache_);
     for (auto& [key, value] : cache_) {
-      value.owner_ = false;
+      value->owner_ = false;
     }
   }
 
@@ -183,14 +183,12 @@ Value& Value::operator=(Value&& other) {
 }
 
 Value& Value::operator=(const bool value) {
-  delete node_;
   node_ = new Boolean(value);
 
   return *this;
 }
 
 Value& Value::operator=(const char* value) {
-  delete node_;
   node_ = new String(value);
 
   return *this;
@@ -210,7 +208,6 @@ Value& Value::operator=(const Value& value) {
 }
 
 Value& Value::operator=(const nullptr_t value) {
-  delete node_;
   node_ = new Null();
 
   return *this;

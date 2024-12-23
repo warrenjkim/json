@@ -146,7 +146,7 @@ class Value {
  private:
   Node* node_;
   bool owner_;
-  mutable utils::Map<std::string, Value> cache_;
+  utils::Map<std::string, Value*> cache_;
 
  private:
   Value(Node* node, bool owner);

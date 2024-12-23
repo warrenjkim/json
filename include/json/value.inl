@@ -95,14 +95,14 @@ Value& Value::operator[](const T index) {
 
   std::string key = std::to_string(index);
   if (cache_.contains(key)) {
-    return cache_[key];
+    return *cache_[key];
   }
 
   visitors::GetVisitor visitor(index);
   node_->accept(visitor);
-  cache_.insert(key, Value(visitor.result(), /*owner=*/false));
+  cache_.insert(key, new Value(visitor.result(), /*owner=*/false));
 
-  return cache_[key];
+  return *cache_[key];
 }
 
 template <ReasonableInteger T>
@@ -117,14 +117,14 @@ Value& Value::operator[](const T key) {
   }
 
   if (cache_.contains(key)) {
-    return cache_[key];
+    return *cache_[key];
   }
 
   visitors::GetVisitor visitor(key);
   node_->accept(visitor);
-  cache_.insert(key, Value(visitor.result(), /*owner=*/false));
+  cache_.insert(key, new Value(visitor.result(), /*owner=*/false));
 
-  return cache_[key];
+  return *cache_[key];
 }
 
 template <ReasonableString T>
@@ -134,7 +134,10 @@ Value& Value::operator[](const T& key) const {
 
 template <ReasonableNumber T>
 Value& Value::operator=(const T value) {
-  delete node_;
+  if (node_) {
+    delete node_;
+  }
+
   node_ = new Number(value);
 
   return *this;
@@ -142,7 +145,10 @@ Value& Value::operator=(const T value) {
 
 template <ReasonableString T>
 Value& Value::operator=(const T& value) {
-  delete node_;
+  if (node_) {
+    delete node_;
+  }
+
   node_ = new String(value);
 
   return *this;
