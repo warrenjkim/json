@@ -569,3 +569,15 @@ TEST_F(ValueTest, ChangesPropagateToCache) {
   val["key"] = "10";
   ASSERT_EQ(val["key"], "10");
 }
+
+TEST_F(ValueTest, AssignNull) {
+  json::Value val(new json::Number(42));
+  val = nullptr;
+  ASSERT_EQ(val, nullptr);
+}
+
+TEST_F(ValueTest, CopyConstructor) {
+  json::Value val(new json::Number(42));
+  json::Value val_2(val);
+  ASSERT_EQ(val, val_2);
+}
