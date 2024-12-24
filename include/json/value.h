@@ -76,10 +76,10 @@ class Value {
 
  public:
   Value& operator=(Value&& value);
+  Value& operator=(const nullptr_t);
   Value& operator=(const bool value);
   Value& operator=(const char* value);
   Value& operator=(const Value& value);
-  Value& operator=(const nullptr_t value);
 
  public:
   friend bool operator==(const Value& lhs, const bool rhs);

@@ -13,6 +13,7 @@
 #include "visitors/get_visitor.h"
 #include "visitors/number_visitor.h"
 #include "visitors/object_visitor.h"
+#include "visitors/set_visitor.h"
 #include "visitors/string_visitor.h"
 
 namespace json {
@@ -102,7 +103,7 @@ Value& Value::operator[](const T index) {
 
   visitors::GetVisitor visitor(index);
   node_->accept(visitor);
-  cache_.insert(key, new Value(visitor.result(), /*parent=*/node_));
+  cache_.insert(key, new Value(visitor.result(), /*parent=*/this, index));
 
   return *cache_[key];
 }
@@ -124,7 +125,7 @@ Value& Value::operator[](const T key) {
 
   visitors::GetVisitor visitor(key);
   node_->accept(visitor);
-  cache_.insert(key, new Value(visitor.result(), /*parent=*/node_));
+  cache_.insert(key, new Value(visitor.result(), /*parent=*/this));
 
   return *cache_[key];
 }
@@ -136,22 +137,24 @@ Value& Value::operator[](const T& key) const {
 
 template <ReasonableNumber T>
 Value& Value::operator=(const T value) {
-  if (node_ && !parent_) {
-    delete node_;
+  Number* val = new Number(value);
+  visitors::SetVisitor visitor(node_, val, index_);
+  (parent_ ? parent_->node_ : val)->accept(visitor);
+  if (index_) {
+    parent_->cache_.remove(std::to_string(*index_));
   }
-
-  node_ = new Number(value);
 
   return *this;
 }
 
 template <ReasonableString T>
 Value& Value::operator=(const T& value) {
-  if (node_ && !parent_) {
-    delete node_;
+  String* val = new String(value);
+  visitors::SetVisitor visitor(node_, val, index_);
+  (parent_ ? parent_->node_ : val)->accept(visitor);
+  if (index_) {
+    parent_->cache_.remove(std::to_string(*index_));
   }
-
-  node_ = new String(value);
 
   return *this;
 }

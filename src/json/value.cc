@@ -13,6 +13,7 @@
 #include "visitors/boolean_visitor.h"
 #include "visitors/null_visitor.h"
 #include "visitors/object_visitor.h"
+#include "visitors/set_visitor.h"
 #include "visitors/string_visitor.h"
 
 namespace json {
@@ -185,45 +186,49 @@ Value& Value::operator=(Value&& other) {
   return *this;
 }
 
-Value& Value::operator=(const bool value) {
-  if (node_ && !parent_) {
-    delete node_;
+Value& Value::operator=(const nullptr_t) {
+  Null* val = new Null();
+  visitors::SetVisitor visitor(node_, val, index_);
+  (parent_ ? parent_->node_ : val)->accept(visitor);
+  if (index_) {
+    parent_->cache_.remove(std::to_string(*index_));
   }
 
-  node_ = new Boolean(value);
+  return *this;
+}
+
+Value& Value::operator=(const bool value) {
+  Boolean* val = new Boolean(value);
+  visitors::SetVisitor visitor(node_, val, index_);
+  (parent_ ? parent_->node_ : val)->accept(visitor);
+  if (index_) {
+    parent_->cache_.remove(std::to_string(*index_));
+  }
 
   return *this;
 }
 
 Value& Value::operator=(const char* value) {
-  if (node_ && !parent_) {
-    delete node_;
+  String* val = new String(value);
+  visitors::SetVisitor visitor(node_, val, index_);
+  (parent_ ? parent_->node_ : val)->accept(visitor);
+  if (index_) {
+    parent_->cache_.remove(std::to_string(*index_));
   }
-
-  node_ = new String(value);
 
   return *this;
 }
 
 Value& Value::operator=(const Value& value) {
   if (this != &value) {
-    if (node_) {
+    if (node_ && !parent_) {
       delete node_;
+      cache_.clear();
     }
 
     node_ = value.node_->clone();
-    cache_.clear();
+    parent_ = value.parent_;
   }
-
-  return *this;
-}
-
-Value& Value::operator=(const nullptr_t value) {
-  if (node_ && !parent_) {
-    delete node_;
-  }
-
-  node_ = new Null();
 
   return *this;
 }
