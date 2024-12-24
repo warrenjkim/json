@@ -1,8 +1,9 @@
 #pragma once
 
-#include <cstddef>
+#include <cstddef>  // size_t
+#include <optional>
 #include <string>
-#include <type_traits>
+#include <type_traits>  // concept
 
 #include "nodes/node.h"
 #include "utils/rbt.h"
@@ -145,11 +146,12 @@ class Value {
 
  private:
   Node* node_;
-  Node* parent_;
+  Value* parent_;
+  std::optional<size_t> index_;
   utils::Map<std::string, Value*> cache_;
 
  private:
-  Value(Node* node, Node* parent);
+  Value(Node* node, Value* parent, std::optional<size_t> index = std::nullopt);
 };
 
 }  // namespace json

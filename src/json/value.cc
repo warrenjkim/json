@@ -1,6 +1,7 @@
 #include "json/value.h"
 
 #include <cstddef>
+#include <optional>
 #include <string>
 
 #include "json/exception.h"
@@ -56,6 +57,7 @@ void Value::add(const nullptr_t) {
   visitors::ArrayVisitor visitor;
   node_->accept(visitor);
 
+  index_ = visitor.result().size();
   visitor.result().push_back(new Null());
 }
 
@@ -67,6 +69,7 @@ void Value::add(const bool value) {
   visitors::ArrayVisitor visitor;
   node_->accept(visitor);
 
+  index_ = visitor.result().size();
   visitor.result().push_back(new Boolean(value));
 }
 
@@ -78,6 +81,7 @@ void Value::add(const char* value) {
   visitors::ArrayVisitor visitor;
   node_->accept(visitor);
 
+  index_ = visitor.result().size();
   visitor.result().push_back(new String(value));
 }
 
@@ -89,6 +93,7 @@ void Value::add(const Value& value) {
   visitors::ArrayVisitor visitor;
   node_->accept(visitor);
 
+  index_ = visitor.result().size();
   if (!value.node_) {
     visitor.result().push_back(new Null());
   } else {
@@ -247,7 +252,7 @@ bool operator==(const Value& lhs, const Object& rhs) {
   return *lhs.node_ == rhs;
 }
 
-Value::Value(Node* node, Node* parent)
-    : node_(node), parent_(parent), cache_() {}
+Value::Value(Node* node, Value* parent, std::optional<size_t> index)
+    : node_(node), parent_(parent), index_(index), cache_() {}
 
 }  // namespace json

@@ -34,6 +34,7 @@ void Value::add(const T value) {
   visitors::ArrayVisitor visitor;
   node_->accept(visitor);
 
+  index_ = visitor.result().size();
   visitor.result().push_back(new Number(value));
 }
 
@@ -45,6 +46,7 @@ void Value::add(const T& value) {
   visitors::ArrayVisitor visitor;
   node_->accept(visitor);
 
+  index_ = visitor.result().size();
   visitor.result().push_back(new String(value));
 }
 
