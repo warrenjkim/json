@@ -16,13 +16,9 @@ SetVisitor::SetVisitor(Node* node, Node* value, std::optional<size_t> index)
     : node_(node), value_(value), index_(index) {}
 
 void SetVisitor::visit(Array& node) {
-  try {
-    Node* old = node.get().at(*index_);
-    node.get()[*index_] = value_;
-    delete old;
-  } catch (const std::out_of_range& e) {
-    throw e;
-  }
+  Node* old = node.get().at(*index_);
+  node.get()[*index_] = value_;
+  delete old;
 }
 
 void SetVisitor::visit(Boolean& node) {
