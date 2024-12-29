@@ -4,6 +4,7 @@
 
 #include <boost/log/trivial.hpp>
 #include <cstddef>
+#include <stdexcept>  // out_of_range
 #include <string>
 
 #include "json/exception.h"
@@ -563,11 +564,34 @@ TEST_F(ValueTest, MoveSelfAssignmentNoOp) {
   ASSERT_EQ(val["test"], "data");
 }
 
-TEST_F(ValueTest, ChangesPropagateToCache) {
+TEST_F(ValueTest, ObjectChangesPropagateToCache) {
   json::Value val;
   val["key"] = 10;
+  ASSERT_EQ(val["key"], 10);
+
   val["key"] = "10";
   ASSERT_EQ(val["key"], "10");
+
+  val["key"] = false;
+  ASSERT_EQ(val["key"], false);
+}
+
+TEST_F(ValueTest, ArrayChangesPropagateToCache) {
+  json::Value val;
+  val.add(10);
+  ASSERT_EQ(val[0], 10);
+
+  val[0] = "20";
+  ASSERT_EQ(val[0], "20");
+
+  val[0] = std::string("30");
+  ASSERT_EQ(val[0], "30");
+
+  val[0] = false;
+  ASSERT_EQ(val[0], false);
+
+  val[0] = 20;
+  ASSERT_EQ(val[0], 20);
 }
 
 TEST_F(ValueTest, AssignNull) {
