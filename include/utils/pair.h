@@ -12,8 +12,6 @@ struct Pair {
 
   Pair() : first(K()), second(V()) {}
 
-  ~Pair() = default;
-
   Pair(const K& first, const V& second) : first(first), second(second) {}
 
   Pair(const Pair& other) : first(other.first), second(other.second) {}
