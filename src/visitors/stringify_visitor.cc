@@ -66,11 +66,7 @@ void StringifyVisitor::visit(Object& node) {
 
     first = false;
     result_ += "\"" + key + "\": ";
-    if (value) {
-      value->accept(*this);
-    } else {
-      result_ += "null";
-    }
+    value->accept(*this);
   }
 
   result_ += " }";
