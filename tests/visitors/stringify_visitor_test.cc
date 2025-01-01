@@ -41,11 +41,11 @@ TEST_F(StringifyVisitorTest, Null) {
 TEST_F(StringifyVisitorTest, Number) {
   json::visitors::StringifyVisitor visitor;
 
-  json::Number(10, true).accept(visitor);
+  json::Number(10).accept(visitor);
   ASSERT_EQ(visitor.result(), "10");
 
   visitor = json::visitors::StringifyVisitor();
-  json::Number(12.34, false).accept(visitor);
+  json::Number(12.34).accept(visitor);
   ASSERT_EQ(visitor.result(), "12.34");
 }
 
