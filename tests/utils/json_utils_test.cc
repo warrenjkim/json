@@ -117,4 +117,7 @@ TEST_F(JsonUtilsTest, ComplexExample) {
   ASSERT_EQ(complex["nested"]["a"], true);
   ASSERT_EQ(complex["nested"]["b"][0]["x"], 1);
   ASSERT_EQ(complex["nested"]["b"][1]["y"], 2);
+  ASSERT_EQ(json::to_string(complex),
+            "{ \"name\": \"test\", \"nested\": { \"a\": true, \"b\": [ { "
+            "\"x\": 1 }, { \"y\": 2 } ] }, \"numbers\": [ 1, 2, 3 ] }");
 }
