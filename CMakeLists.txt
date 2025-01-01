@@ -79,4 +79,5 @@ generate_coverage_report(
     string_visitor_test
     value_test
     json_utils_test
+    stringify_visitor_test
 )

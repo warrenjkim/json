@@ -60,3 +60,9 @@ create_test(string_visitor_test
   json
 )
 
+create_test(stringify_visitor_test
+  visitors
+  logger
+  nodes
+  json
+)
