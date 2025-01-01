@@ -45,7 +45,11 @@ void StringifyVisitor::visit(Boolean& node) {
 void StringifyVisitor::visit(Null& node) { result_ += "null"; }
 
 void StringifyVisitor::visit(Number& node) {
-  result_ += std::to_string(node.get());
+  double number = node.get();
+  result_ += std::floor(number) == number
+                 ? std::to_string((int64_t)number)
+                 : std::to_string(number).substr(
+                       0, std::to_string(number).find_last_not_of('0') + 1);
 }
 
 void StringifyVisitor::visit(Object& node) {
