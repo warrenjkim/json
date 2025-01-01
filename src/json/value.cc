@@ -46,9 +46,7 @@ Value::Value(const Value& other)
       parent_(other.parent_),
       cache_() {}
 
-Value::Value(Value&& other) : node_(nullptr), parent_(nullptr), cache_() {
-  *this = std::move(other);
-}
+Value::Value(Value&& other) { *this = std::move(other); }
 
 void Value::add(const nullptr_t) {
   if (!node_) {
@@ -173,14 +171,12 @@ Value::operator const char*() const {
 
 Value& Value::operator=(Value&& other) {
   if (this != &other) {
-    if (node_ && !parent_) {
-      delete node_;
-    }
-
     node_ = other.node_;
     other.node_ = nullptr;
     parent_ = other.parent_;
-    cache_ = std::move(other.cache_);
+    other.parent_ = nullptr;
+    cache_.clear();
+    // cache_ = std::move(other.cache_);
   }
 
   return *this;
