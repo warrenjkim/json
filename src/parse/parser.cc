@@ -1,6 +1,6 @@
 #include "parse/parser.h"
 
-#include <cmath>
+#include <cmath>  // pow
 #include <cstddef>
 #include <exception>
 #include <optional>
@@ -208,7 +208,7 @@ Number* Parser::parse_number(json::utils::Queue<Token>& tokens,
       base = std::stod(number_string);
     }
 
-    return new Number(base * std::pow(10.0, exponent));
+    return new Number(base * std::pow(10, exponent));
   } catch (const std::exception& e) {
     ERROR("parse_number", std::string("Failed to parse number: ") + e.what(),
           indent_level);
