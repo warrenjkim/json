@@ -1,7 +1,6 @@
 #include "json/value.h"
 
 #include <cstddef>
-#include <iostream>
 #include <optional>
 #include <string>
 
@@ -29,10 +28,14 @@ Value::Value(Node* node) : node_(node), parent_(nullptr), cache_() {
 
 Value::~Value() {
   if (node_ && !parent_) {
-    std::cout << "here: " << std::endl;
     delete node_;
-    cache_.clear();
   }
+
+  for (auto& [_, value] : cache_) {
+    delete value;
+  }
+
+  cache_.clear();
 }
 
 Value::Value(const nullptr_t) : node_(new Null()), parent_(nullptr), cache_() {}
@@ -48,7 +51,15 @@ Value::Value(const Value& other)
       parent_(other.parent_),
       cache_() {}
 
-Value::Value(Value&& other) { *this = std::move(other); }
+Value::Value(Value&& other)
+    : node_(other.node_),
+      parent_(other.parent_),
+      index_(other.index_),
+      cache_(std::move(other.cache_)) {
+  other.node_ = nullptr;
+  other.parent_ = nullptr;
+  other.index_ = std::nullopt;
+}
 
 void Value::add(const nullptr_t) {
   if (!node_) {
@@ -173,14 +184,17 @@ Value::operator const char*() const {
 
 Value& Value::operator=(Value&& other) {
   if (this != &other) {
-    node_ = other.node_;
-    other.node_ = nullptr;
-    parent_ = other.parent_;
-    other.parent_ = nullptr;
-    cache_.clear();
-    // cache_ = std::move(other.cache_);
-  }
+    this->~Value();
 
+    node_ = other.node_;
+    parent_ = other.parent_;
+    index_ = other.index_;
+    cache_ = std::move(other.cache_);
+
+    other.node_ = nullptr;
+    other.parent_ = nullptr;
+    other.index_ = std::nullopt;
+  }
   return *this;
 }
 
@@ -217,15 +231,13 @@ Value& Value::operator=(const char* value) {
   return *this;
 }
 
-Value& Value::operator=(const Value& value) {
-  if (this != &value) {
-    if (node_ && !parent_) {
-      delete node_;
-      cache_.clear();
-    }
+Value& Value::operator=(const Value& other) {
+  if (this != &other) {
+    this->~Value();
 
-    node_ = value.node_->clone();
-    parent_ = value.parent_;
+    node_ = other.node_ ? other.node_->clone() : nullptr;
+    parent_ = nullptr;
+    index_ = std::nullopt;
   }
 
   return *this;
