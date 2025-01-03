@@ -1,6 +1,7 @@
 #include "json/value.h"
 
 #include <cstddef>
+#include <iostream>
 #include <optional>
 #include <string>
 
@@ -28,6 +29,7 @@ Value::Value(Node* node) : node_(node), parent_(nullptr), cache_() {
 
 Value::~Value() {
   if (node_ && !parent_) {
+    std::cout << "here: " << std::endl;
     delete node_;
     cache_.clear();
   }
