@@ -28,7 +28,7 @@ Value::~Value() {
   if (node_ && owner_) {
     delete node_;
   }
-}
+};
 
 Value::Value(const nullptr_t) : node_(new Null()), owner_(true), cache_() {}
 
@@ -42,10 +42,6 @@ Value::Value(const Value& other)
     : node_(other.node_ ? other.node_->clone() : nullptr),
       owner_(other.owner_),
       cache_() {}
-
-Value::Value(Value&& other) : node_(nullptr), owner_(false), cache_() {
-  *this = std::move(other);
-}
 
 void Value::add(const nullptr_t) {
   if (!node_) {
@@ -164,24 +160,6 @@ Value::operator const char*() const {
   return visitor.result().c_str();
 }
 
-Value& Value::operator=(Value&& other) {
-  if (this != &other) {
-    if (node_ && owner_) {
-      delete node_;
-    }
-
-    node_ = other.node_;
-    other.node_ = nullptr;
-    owner_ = other.owner_;
-    cache_ = std::move(other.cache_);
-    for (auto& [key, value] : cache_) {
-      value.owner_ = false;
-    }
-  }
-
-  return *this;
-}
-
 Value& Value::operator=(const bool value) {
   delete node_;
   node_ = new Boolean(value);
@@ -192,19 +170,6 @@ Value& Value::operator=(const bool value) {
 Value& Value::operator=(const char* value) {
   delete node_;
   node_ = new String(value);
-
-  return *this;
-}
-
-Value& Value::operator=(const Value& value) {
-  if (this != &value) {
-    if (node_) {
-      delete node_;
-    }
-
-    node_ = value.node_->clone();
-    cache_.clear();
-  }
 
   return *this;
 }
