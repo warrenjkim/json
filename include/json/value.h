@@ -44,16 +44,17 @@ namespace json {
 class Value {
  public:
   Value();
-  Value(Node* node);
   ~Value();
+  Value(Value&& other);
+  Value(const Value& other);
+  Value& operator=(Value&& other);
+  Value& operator=(const Value& other);
 
  public:
+  Value(Node* node);
   Value(const nullptr_t);
   Value(const bool value);
   Value(const char* value);
-
- public:
-  Value(const Value& other);
 
  public:
   void add(const nullptr_t);
@@ -142,11 +143,12 @@ class Value {
 
  private:
   Node* node_;
-  bool owner_;
-  mutable utils::Map<std::string, Value> cache_;
+  Value* parent_;
+  std::optional<std::string> key_;
+  utils::Map<std::string, Value> cache_;
 
  private:
-  Value(Node* node, bool owner);
+  Value(Node* node, Value* parent);
 };
 
 }  // namespace json

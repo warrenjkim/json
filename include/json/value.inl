@@ -18,12 +18,10 @@
 namespace json {
 
 template <ReasonableNumber T>
-Value::Value(const T value)
-    : node_(new Number(value)), owner_(true), cache_() {}
+Value::Value(const T value) : node_(new Number(value)), parent_(nullptr) {}
 
 template <ReasonableString T>
-Value::Value(const T& value)
-    : node_(new String(value)), owner_(true), cache_() {}
+Value::Value(const T& value) : node_(new String(value)), parent_(nullptr) {}
 
 template <ReasonableNumber T>
 void Value::add(const T value) {
@@ -100,7 +98,7 @@ Value& Value::operator[](const T index) {
 
   visitors::GetVisitor visitor(index);
   node_->accept(visitor);
-  cache_.insert(key, Value(visitor.result(), /*owner=*/false));
+  cache_.insert(key, Value(visitor.result(), this));
 
   return cache_[key];
 }
@@ -122,7 +120,7 @@ Value& Value::operator[](const T key) {
 
   visitors::GetVisitor visitor(key);
   node_->accept(visitor);
-  cache_.insert(key, Value(visitor.result(), /*owner=*/false));
+  cache_.insert(key, Value(visitor.result(), this));
 
   return cache_[key];
 }
