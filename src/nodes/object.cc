@@ -1,5 +1,7 @@
 #include "nodes/object.h"
 
+#include <string>
+
 #include "utils/rbt.h"
 #include "visitors/visitor.h"
 
@@ -19,6 +21,9 @@ Node* Object::clone() {
 
   return obj;
 }
+
+Object::Object(const utils::Map<std::string, Node*>& properties)
+    : properties_(properties) {}
 
 Object::~Object() {
   for (auto [_, node] : properties_) {

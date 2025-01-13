@@ -17,7 +17,14 @@ class Object : public Node {
   Node* clone() override;
 
  public:
+  Object() = default;
+  Object(const utils::Map<std::string, Node*>& properties);
   ~Object();
+
+  Object(Object&&) = delete;
+  Object(const Object&) = delete;
+  Object& operator=(Object&&) = delete;
+  Object& operator=(const Object&) = delete;
 
  public:
   void add(const std::string& key, Node* value);

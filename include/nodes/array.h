@@ -15,7 +15,14 @@ class Array : public Node {
   Node* clone() override;
 
  public:
+  Array() = default;
+  Array(const std::vector<Node*>& array);
   ~Array();
+
+  Array(Array&&) = delete;
+  Array(const Array&) = delete;
+  Array& operator=(Array&&) = delete;
+  Array& operator=(const Array&) = delete;
 
  public:
   void add(Node* element);

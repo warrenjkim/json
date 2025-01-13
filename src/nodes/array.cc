@@ -22,6 +22,8 @@ Node* Array::clone() {
   return arr;
 }
 
+Array::Array(const std::vector<Node*>& array) : array_(array) {}
+
 Array::~Array() {
   for (Node* node : array_) {
     delete node;
