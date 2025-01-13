@@ -22,6 +22,7 @@ Value::Value() : node_(nullptr), parent_(nullptr) {}
 Value::~Value() {
   if (node_ && !parent_) {
     delete node_;
+    node_ = nullptr;
   }
 }
 
