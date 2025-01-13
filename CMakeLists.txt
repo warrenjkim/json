@@ -70,6 +70,7 @@ generate_coverage_report(
     rbt_test
     cmp_visitor_test
     get_visitor_test
+    set_visitor_test
     array_visitor_test
     boolean_visitor_test
     null_visitor_test
