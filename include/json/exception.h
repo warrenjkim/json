@@ -27,4 +27,8 @@ class BadAccessException : public JsonException {
   using JsonException::JsonException;
 };
 
+class UnexpectedParentException : public JsonException {
+  using JsonException::JsonException;
+};
+
 }  // namespace json
