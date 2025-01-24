@@ -15,18 +15,21 @@ void Object::accept(visitors::ConstVisitor& visitor) const {
 
 Node* Object::clone() {
   Object* obj = new Object();
-  for (auto [key, value] : properties_) {
+  for (auto& [key, value] : properties_) {
     obj->add(key, value->clone());
   }
 
   return obj;
 }
 
-Object::Object(const utils::Map<std::string, Node*>& properties)
-    : properties_(properties) {}
+Object::Object(const utils::Map<std::string, Node*>& properties) {
+  for (auto& [key, value] : properties) {
+    properties_[key] = value->clone();
+  }
+}
 
 Object::~Object() {
-  for (auto [_, node] : properties_) {
+  for (auto& [_, node] : properties_) {
     delete node;
   }
 }
