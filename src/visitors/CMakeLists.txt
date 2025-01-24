@@ -8,6 +8,7 @@ add_library(visitors STATIC
   null_visitor.cc
   object_visitor.cc
   string_visitor.cc
+  stringify_visitor.cc
 )
 
 target_link_libraries(visitors PRIVATE

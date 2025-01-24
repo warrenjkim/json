@@ -79,6 +79,9 @@ class Value {
   Value& operator=(const nullptr_t value);
 
  public:
+  const std::string to_string() const;
+
+ public:
   friend bool operator==(const Value& lhs, const bool rhs);
   friend bool operator==(const Value& lhs, const char* rhs);
   friend bool operator==(const Value& lhs, const nullptr_t);

@@ -14,6 +14,7 @@
 #include "visitors/null_visitor.h"
 #include "visitors/object_visitor.h"
 #include "visitors/string_visitor.h"
+#include "visitors/stringify_visitor.h"
 
 namespace json {
 
@@ -235,6 +236,13 @@ Value& Value::operator=(const nullptr_t value) {
   }
 
   return *this;
+}
+
+const std::string Value::to_string() const {
+  visitors::StringifyVisitor visitor;
+  node_->accept(visitor);
+
+  return visitor.result();
 }
 
 bool operator==(const Value& lhs, const bool rhs) {
