@@ -1,6 +1,6 @@
 #include "visitors/stringify_visitor.h"
 
-#include <cmath>
+#include <cmath>  // floor
 #include <string>
 
 #include "nodes/array.h"
