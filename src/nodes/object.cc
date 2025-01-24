@@ -35,6 +35,10 @@ void Object::add(const std::string& key, Node* value) {
   properties_[key] = value;
 }
 
+void Object::put(const std::string& key, Node* value) {
+  properties_.insert(key, value);
+}
+
 const size_t Object::size() const { return properties_.size(); }
 
 const bool Object::empty() const { return properties_.empty(); }
