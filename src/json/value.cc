@@ -190,22 +190,49 @@ Value::operator const char*() const {
 }
 
 Value& Value::operator=(const bool value) {
-  delete node_;
-  node_ = new Boolean(value);
+  if (parent_ && key_) {
+    parent_->cache_.remove(*key_);
+  }
+
+  if (parent_) {
+    visitors::SetVisitor visitor(&node_, new Boolean(value), *key_);
+    parent_->node_->accept(visitor);
+  } else {
+    delete node_;
+    node_ = new Boolean(value);
+  }
 
   return *this;
 }
 
 Value& Value::operator=(const char* value) {
-  delete node_;
-  node_ = new String(value);
+  if (parent_ && key_) {
+    parent_->cache_.remove(*key_);
+  }
+
+  if (parent_) {
+    visitors::SetVisitor visitor(&node_, new Boolean(value), *key_);
+    parent_->node_->accept(visitor);
+  } else {
+    delete node_;
+    node_ = new Boolean(value);
+  }
 
   return *this;
 }
 
 Value& Value::operator=(const nullptr_t value) {
-  delete node_;
-  node_ = new Null();
+  if (parent_ && key_) {
+    parent_->cache_.remove(*key_);
+  }
+
+  if (parent_) {
+    visitors::SetVisitor visitor(&node_, new Null(), *key_);
+    parent_->node_->accept(visitor);
+  } else {
+    delete node_;
+    node_ = new Null();
+  }
 
   return *this;
 }

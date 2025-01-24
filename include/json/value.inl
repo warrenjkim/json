@@ -13,6 +13,7 @@
 #include "visitors/get_visitor.h"
 #include "visitors/number_visitor.h"
 #include "visitors/object_visitor.h"
+#include "visitors/set_visitor.h"
 #include "visitors/string_visitor.h"
 
 namespace json {
@@ -132,16 +133,34 @@ Value& Value::operator[](const T& key) const {
 
 template <ReasonableNumber T>
 Value& Value::operator=(const T value) {
-  delete node_;
-  node_ = new Number(value);
+  if (parent_ && key_) {
+    parent_->cache_.remove(*key_);
+  }
+
+  if (parent_) {
+    visitors::SetVisitor visitor(&node_, new Number(value), *key_);
+    parent_->node_->accept(visitor);
+  } else {
+    delete node_;
+    node_ = new Number(value);
+  }
 
   return *this;
 }
 
 template <ReasonableString T>
 Value& Value::operator=(const T& value) {
-  delete node_;
-  node_ = new String(value);
+  if (parent_ && key_) {
+    parent_->cache_.remove(*key_);
+  }
+
+  if (parent_) {
+    visitors::SetVisitor visitor(&node_, new String(value), *key_);
+    parent_->node_->accept(visitor);
+  } else {
+    delete node_;
+    node_ = new String(value);
+  }
 
   return *this;
 }
