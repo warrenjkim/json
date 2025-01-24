@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include "json/exception.h"
 #include "json/value.h"
 #include "nodes/array.h"
 #include "nodes/boolean.h"
@@ -15,36 +16,45 @@ namespace json {
 
 namespace visitors {
 
-SetVisitor::SetVisitor(Node* target) : target_(target) {}
+SetVisitor::SetVisitor(Node** target, Node* value, const std::string& key)
+    : target_(target), value_(value), key_(key) {}
 
-void SetVisitor::visit(Array& value) {
-  target_->~Node();
-  new (target_) Array(value.get());
+void SetVisitor::visit(Array& parent) {
+  if (*target_) {
+    delete *target_;
+  }
+
+  *target_ = value_;
+  parent.get()[std::stoi(key_)] = *target_;
 }
 
-void SetVisitor::visit(Boolean& value) {
-  target_->~Node();
-  new (target_) Boolean(value.get());
+void SetVisitor::visit(Boolean& parent) {
+  throw UnexpectedParentException(
+      "Expected a parent of type Array or Object, but was Boolean.");
 }
 
-void SetVisitor::visit(Null& value) {
-  target_->~Node();
-  new (target_) Null();
+void SetVisitor::visit(Null& parent) {
+  throw UnexpectedParentException(
+      "Expected a parent of type Array or Object, but was Null.");
 }
 
-void SetVisitor::visit(Number& value) {
-  target_->~Node();
-  new (target_) Number(value.get());
+void SetVisitor::visit(Number& parent) {
+  throw UnexpectedParentException(
+      "Expected a parent of type Array or Object, but was Number.");
 }
 
-void SetVisitor::visit(Object& value) {
-  target_->~Node();
-  new (target_) Object(value.get());
+void SetVisitor::visit(Object& parent) {
+  if (*target_) {
+    delete *target_;
+  }
+
+  *target_ = value_;
+  parent.put(key_, *target_);
 }
 
-void SetVisitor::visit(String& value) {
-  target_->~Node();
-  new (target_) String(value.get());
+void SetVisitor::visit(String& parent) {
+  throw UnexpectedParentException(
+      "Expected a parent of type Array or Object, but was String.");
 }
 
 }  // namespace visitors

@@ -12,122 +12,88 @@
 #include "nodes/number.h"
 #include "nodes/object.h"
 #include "nodes/string.h"
-#include "utils/logger.h"
 
 class SetVisitorTest : public ::testing::Test {
  protected:
-  void SetUp() override {
-    json::utils::init_logging(boost::log::trivial::debug);
-  }
+  void SetUp() override {}
 
-  void TearDown() override {
-    boost::log::core::get()->remove_all_sinks();
-    original_ = nullptr;
-  }
-
-  json::Node* original_ = nullptr;
+  void TearDown() override {}
 };
 
-TEST_F(SetVisitorTest, SetBooleanValue) {
-  original_ = new json::Boolean(false);
-  json::Boolean new_value(true);
-
-  json::visitors::SetVisitor visitor(original_);
-  new_value.accept(visitor);
-
-  ASSERT_TRUE(json::Value(original_));
-}
-
-TEST_F(SetVisitorTest, SetNumberValue) {
-  original_ = new json::Number(42);
-  json::Number new_value(99);
-
-  json::visitors::SetVisitor visitor(original_);
-  new_value.accept(visitor);
-
-  ASSERT_EQ(json::Value(original_), 99);
-}
-
-TEST_F(SetVisitorTest, SetStringValue) {
-  original_ = new json::String("hello");
-  json::String new_value("world");
-
-  json::visitors::SetVisitor visitor(original_);
-  new_value.accept(visitor);
-
-  ASSERT_EQ(json::Value(original_), "world");
-}
-
-TEST_F(SetVisitorTest, SetNullValue) {
-  original_ = new json::Boolean(true);
-  json::Null new_value;
-
-  json::visitors::SetVisitor visitor(original_);
-  new_value.accept(visitor);
-
-  ASSERT_EQ(json::Value(original_), nullptr);
-}
-
 TEST_F(SetVisitorTest, SetObjectValue) {
-  original_ = new json::Object();
-  json::Object new_value;
-  new_value.add("key", new json::Number(123));
+  // arrange
+  json::Object* root = new json::Object();
+  json::Node* string = new json::String("value");
+  json::Number num(123);
+  root->put("key", string);
 
-  json::visitors::SetVisitor visitor(original_);
-  new_value.accept(visitor);
+  // act
+  json::visitors::SetVisitor visitor(&string, num.clone(), "key");
+  root->accept(visitor);
 
-  ASSERT_EQ(*original_, new_value);
+  // assert
+  json::Object* expected_root = new json::Object();
+  expected_root->put("key", num.clone());
+  ASSERT_EQ(json::Value(root), json::Value(expected_root));
 }
 
 TEST_F(SetVisitorTest, SetArrayValue) {
-  original_ = new json::Array();
-  json::Array new_value;
-  new_value.add(new json::Number(123));
+  // arrange
+  json::Array* root = new json::Array();
+  json::Node* string = new json::String("value");
+  json::Number num(123);
+  root->add(string);
 
-  json::visitors::SetVisitor visitor(original_);
-  new_value.accept(visitor);
+  // act
+  json::visitors::SetVisitor visitor(&string, num.clone(), "0");
+  root->accept(visitor);
 
-  ASSERT_EQ(*original_, new_value);
+  // assert
+  json::Array* expected_root = new json::Array();
+  expected_root->add(num.clone());
+  ASSERT_EQ(json::Value(root), json::Value(expected_root));
 }
 
-TEST_F(SetVisitorTest, SetArrayToString) {
-  original_ = new json::Array({new json::Number(123)});
-  json::String new_value("converted");
+TEST_F(SetVisitorTest, SetBooleanValueThrowsException) {
+  // arrange
+  json::Boolean* root = new json::Boolean(true);
+  json::Node* string = new json::String("value");
+  json::Number num(123);
 
-  json::visitors::SetVisitor visitor(original_);
-  new_value.accept(visitor);
-
-  ASSERT_EQ(json::Value(original_), "converted");
+  // act + assert
+  json::visitors::SetVisitor visitor(&string, num.clone(), "key");
+  ASSERT_THROW(root->accept(visitor), json::UnexpectedParentException);
 }
 
-TEST_F(SetVisitorTest, SetBooleanToObject) {
-  original_ = new json::Boolean(true);
-  json::Object new_value;
-  new_value.add("key", new json::Number(123));
+TEST_F(SetVisitorTest, SetNullValueThrowsException) {
+  // arrange
+  json::Null* root = new json::Null();
+  json::Node* string = new json::String("value");
+  json::Number num(123);
 
-  json::visitors::SetVisitor visitor(original_);
-  new_value.accept(visitor);
-
-  ASSERT_EQ(*original_, new_value);
+  // act + assert
+  json::visitors::SetVisitor visitor(&string, num.clone(), "key");
+  ASSERT_THROW(root->accept(visitor), json::UnexpectedParentException);
 }
 
-TEST_F(SetVisitorTest, SetNullToArray) {
-  original_ = new json::Null();
-  json::Array new_value;
-  new_value.add(new json::String("element"));
+TEST_F(SetVisitorTest, SetNumberValueThrowsException) {
+  // arrange
+  json::Number* root = new json::Number(42);
+  json::Node* string = new json::String("value");
+  json::Number num(123);
 
-  json::visitors::SetVisitor visitor(original_);
-  new_value.accept(visitor);
-
-  ASSERT_EQ(*original_, new_value);
+  // act + assert
+  json::visitors::SetVisitor visitor(&string, num.clone(), "key");
+  ASSERT_THROW(root->accept(visitor), json::UnexpectedParentException);
 }
 
-TEST_F(SetVisitorTest, SetNumberToBoolean) {
-  original_ = new json::Number(123);
-  json::Boolean new_value(false);
+TEST_F(SetVisitorTest, SetStringValueThrowsException) {
+  // arrange
+  json::String* root = new json::String("test");
+  json::Node* string = new json::String("value");
+  json::Number num(123);
 
-  json::visitors::SetVisitor visitor(original_);
-  new_value.accept(visitor);
-
-  ASSERT_FALSE(json::Value(original_));
+  // act + assert
+  json::visitors::SetVisitor visitor(&string, num.clone(), "key");
+  ASSERT_THROW(root->accept(visitor), json::UnexpectedParentException);
 }

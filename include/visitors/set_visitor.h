@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "visitor.h"
 
 namespace json {
@@ -10,18 +12,20 @@ namespace visitors {
 
 class SetVisitor : public Visitor {
  public:
-  SetVisitor(Node* target);
+  SetVisitor(Node** target, Node* value, const std::string& key);
 
  public:
-  void visit(Array& value) override;
-  void visit(Boolean& value) override;
-  void visit(Null& value) override;
-  void visit(Number& value) override;
-  void visit(Object& value) override;
-  void visit(String& value) override;
+  void visit(Array& parent) override;
+  void visit(Boolean& parent) override;
+  void visit(Null& parent) override;
+  void visit(Number& parent) override;
+  void visit(Object& parent) override;
+  void visit(String& parent) override;
 
  private:
-  Node* target_;
+  Node** target_;
+  Node* value_;
+  std::string key_;
 };
 
 }  // namespace visitors
