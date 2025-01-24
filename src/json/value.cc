@@ -211,11 +211,11 @@ Value& Value::operator=(const char* value) {
   }
 
   if (parent_) {
-    visitors::SetVisitor visitor(&node_, new Boolean(value), *key_);
+    visitors::SetVisitor visitor(&node_, new String(value), *key_);
     parent_->node_->accept(visitor);
   } else {
     delete node_;
-    node_ = new Boolean(value);
+    node_ = new String(value);
   }
 
   return *this;
@@ -260,7 +260,5 @@ bool operator==(const Value& lhs, const Array& rhs) {
 bool operator==(const Value& lhs, const Object& rhs) {
   return *lhs.node_ == rhs;
 }
-
-Value::Value(Node* node, Value* parent) : node_(node), parent_(parent) {}
 
 }  // namespace json

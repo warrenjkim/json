@@ -146,9 +146,6 @@ class Value {
   Value* parent_;
   std::optional<std::string> key_;
   utils::Map<std::string, Value> cache_;
-
- private:
-  Value(Node* node, Value* parent);
 };
 
 }  // namespace json
