@@ -5,6 +5,7 @@
 #include "exception.h"
 #include "json/exception.h"
 #include "nodes/array.h"
+#include "nodes/null.h"
 #include "nodes/number.h"
 #include "nodes/object.h"
 #include "nodes/string.h"
@@ -114,7 +115,7 @@ Value& Value::operator[](const T index) const {
 
 template <ReasonableString T>
 Value& Value::operator[](const T key) {
-  if (!node_) {
+  if (!node_ || (parent_ && *node_ == Null())) {
     node_ = new Object();
   }
 
