@@ -25,8 +25,7 @@ GetVisitor::GetVisitor(const size_t index) : index_(index) {}
 
 void GetVisitor::visit(Array& node) {
   if (key_) {
-    throw BadAccessException(
-        "Bad access. Cannot access a property of an array.");
+    throw BadAccessException("Cannot access a property of an array.");
   }
 
   if (!index_) {
@@ -45,13 +44,11 @@ void GetVisitor::visit(Array& node) {
 
 void GetVisitor::visit(Boolean& node) {
   if (key_) {
-    throw BadAccessException(
-        "Bad access. Cannot access a property of a boolean value.");
+    throw BadAccessException("Cannot access a property of a boolean value.");
   }
 
   if (index_) {
-    throw BadAccessException(
-        "Bad access. Cannot access an index of a boolean value.");
+    throw BadAccessException("Cannot access an index of a boolean value.");
   }
 
   result_ = &node;
@@ -59,13 +56,11 @@ void GetVisitor::visit(Boolean& node) {
 
 void GetVisitor::visit(Null& node) {
   if (key_) {
-    throw BadAccessException(
-        "Bad access. Cannot access a property of a null value.");
+    throw BadAccessException("Cannot access a property of a null value.");
   }
 
   if (index_) {
-    throw BadAccessException(
-        "Bad access. Cannot access an index of a null value.");
+    throw BadAccessException("Cannot access an index of a null value.");
   }
 
   result_ = &node;
@@ -73,13 +68,11 @@ void GetVisitor::visit(Null& node) {
 
 void GetVisitor::visit(Number& node) {
   if (key_) {
-    throw BadAccessException(
-        "Bad access. Cannot access a property of a number value.");
+    throw BadAccessException("Cannot access a property of a number value.");
   }
 
   if (index_) {
-    throw BadAccessException(
-        "Bad access. Cannot access an index of a number value.");
+    throw BadAccessException("Cannot access an index of a number value.");
   }
 
   result_ = &node;
@@ -87,8 +80,7 @@ void GetVisitor::visit(Number& node) {
 
 void GetVisitor::visit(Object& node) {
   if (index_) {
-    throw BadAccessException(
-        "Bad access. Cannot access an index of a number value.");
+    throw BadAccessException("Cannot access an index of a number value.");
   }
 
   if (!key_ || key_->empty()) {
@@ -109,13 +101,11 @@ void GetVisitor::visit(Object& node) {
 
 void GetVisitor::visit(String& node) {
   if (key_) {
-    throw BadAccessException(
-        "Bad access. Cannot access a property of a string value.");
+    throw BadAccessException("Cannot access a property of a string value.");
   }
 
   if (index_) {
-    throw BadAccessException(
-        "Bad access. Cannot access an index of a string value.");
+    throw BadAccessException("Cannot access an index of a string value.");
   }
 
   result_ = &node;

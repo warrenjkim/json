@@ -17,23 +17,23 @@ namespace visitors {
 StringVisitor::StringVisitor() {}
 
 void StringVisitor::visit(Array& node) {
-  throw BadCastException("Value is not a string.");
+  throw BadCastException("Expected type String, but was Array.");
 }
 
 void StringVisitor::visit(Boolean& node) {
-  throw BadCastException("Value is not a string.");
+  throw BadCastException("Expected type String, but was Boolean.");
 }
 
 void StringVisitor::visit(Null& node) {
-  throw BadCastException("Value is not a string.");
+  throw BadCastException("Expected type String, but was Null.");
 }
 
 void StringVisitor::visit(Number& node) {
-  throw BadCastException("Value is not a string.");
+  throw BadCastException("Expected type String, but was Number.");
 }
 
 void StringVisitor::visit(Object& node) {
-  throw BadCastException("Value is not a string.");
+  throw BadCastException("Expected type String, but was Object.");
 }
 
 void StringVisitor::visit(String& node) { result_ = &node.get(); }

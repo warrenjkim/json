@@ -15,25 +15,25 @@ namespace visitors {
 NullVisitor::NullVisitor() {}
 
 void NullVisitor::visit(Array& node) {
-  throw BadCastException("Value is not null.");
+  throw BadCastException("Expected type Null, but was Array.");
 }
 
 void NullVisitor::visit(Boolean& node) {
-  throw BadCastException("Value is not null.");
+  throw BadCastException("Expected type Null, but was Boolean.");
 }
 
 void NullVisitor::visit(Null& node) { return; }
 
 void NullVisitor::visit(Number& node) {
-  throw BadCastException("Value is not null.");
+  throw BadCastException("Expected type Null, but was Number.");
 }
 
 void NullVisitor::visit(Object& node) {
-  throw BadCastException("Value is not null.");
+  throw BadCastException("Expected type Null, but was Object.");
 }
 
 void NullVisitor::visit(String& node) {
-  throw BadCastException("Value is not null.");
+  throw BadCastException("Expected type Null, but was String.");
 }
 
 nullptr_t NullVisitor::result() { return nullptr; }
