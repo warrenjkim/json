@@ -14,6 +14,6 @@ Value parse(const std::string_view json);
 
 Value parse(utils::Queue<Token>& tokens);
 
-Value to_string(const Value& value);
+std::string to_string(const Value& value);
 
 }  // namespace json

@@ -21,6 +21,6 @@ Value parse(utils::Queue<Token>& tokens) {
   return Value(Parser::parse(tokens));
 }
 
-Value to_string(const Value& value) { return value.to_string(); }
+std::string to_string(const Value& value) { return value.to_string(); }
 
 }  // namespace json
