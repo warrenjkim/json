@@ -42,7 +42,25 @@ Value& Value::operator=(Value&& other) {
   }
 
   node_ = other.node_;
-  key_ = other.key_;
+
+  // TODO(move to yet another visitor class, probably)
+  if (other.key_) {
+    try {
+      visitors::ObjectVisitor visitor;
+      other.parent_->node_->accept(visitor);
+      visitor.result().remove(*key_);
+      parent_->node_->accept(visitor);
+      visitor.result().insert(*key_, node_);
+    } catch (BadCastException) {
+      visitors::ArrayVisitor visitor;
+      other.parent_->node_->accept(visitor);
+      auto& arr = visitor.result();
+      arr.erase(arr.begin() + std::stoi(*key_));
+      other.parent_->node_->accept(visitor);
+      arr = visitor.result();
+      arr[std::stoi(*key_)] = node_;
+    }
+  }
 
   other.node_ = nullptr;
   other.parent_ = nullptr;
