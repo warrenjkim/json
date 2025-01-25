@@ -19,10 +19,6 @@ class Boolean : public Node {
   bool get();
   const bool get() const;
 
- public:
-  bool* ptr();
-  const bool* ptr() const;
-
  private:
   bool value_;
 };

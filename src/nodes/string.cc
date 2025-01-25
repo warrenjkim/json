@@ -20,8 +20,4 @@ std::string& String::get() { return value_; }
 
 const std::string& String::get() const { return value_; }
 
-std::string* String::ptr() { return &value_; }
-
-const std::string* String::ptr() const { return &value_; }
-
 }  // namespace json

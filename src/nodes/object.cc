@@ -52,10 +52,4 @@ const utils::Map<std::string, Node*>& Object::get() const {
   return properties_;
 }
 
-utils::Map<std::string, Node*>* Object::ptr() { return &properties_; }
-
-const utils::Map<std::string, Node*>* Object::ptr() const {
-  return &properties_;
-}
-
 }  // namespace json

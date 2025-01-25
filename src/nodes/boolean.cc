@@ -18,8 +18,4 @@ bool Boolean::get() { return value_; }
 
 const bool Boolean::get() const { return value_; }
 
-bool* Boolean::ptr() { return &value_; }
-
-const bool* Boolean::ptr() const { return &value_; }
-
 }  // namespace json

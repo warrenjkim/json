@@ -40,8 +40,4 @@ std::vector<Node*>& Array::get() { return array_; }
 
 const std::vector<Node*>& Array::get() const { return array_; }
 
-std::vector<Node*>* Array::ptr() { return &array_; }
-
-const std::vector<Node*>* Array::ptr() const { return &array_; }
-
 }  // namespace json

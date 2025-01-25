@@ -18,8 +18,4 @@ double Number::get() { return value_; }
 
 const double Number::get() const { return value_; }
 
-double* Number::ptr() { return &value_; }
-
-const double* Number::ptr() const { return &value_; }
-
 }  // namespace json

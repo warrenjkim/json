@@ -21,10 +21,6 @@ class String : public Node {
   std::string& get();
   const std::string& get() const;
 
- public:
-  std::string* ptr();
-  const std::string* ptr() const;
-
  private:
   std::string value_;
 

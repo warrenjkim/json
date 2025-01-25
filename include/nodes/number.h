@@ -19,10 +19,6 @@ class Number : public Node {
   double get();
   const double get() const;
 
- public:
-  double* ptr();
-  const double* ptr() const;
-
  private:
   double value_;
 };

@@ -33,10 +33,6 @@ class Array : public Node {
   std::vector<Node*>& get();
   const std::vector<Node*>& get() const;
 
- public:
-  std::vector<Node*>* ptr();
-  const std::vector<Node*>* ptr() const;
-
  private:
   std::vector<Node*> array_;
 };
