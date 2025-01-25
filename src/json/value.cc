@@ -246,27 +246,28 @@ const std::string Value::to_string() const {
 }
 
 bool operator==(const Value& lhs, const bool rhs) {
-  return *lhs.node_ == Boolean(rhs);
+  return lhs.node_ && *lhs.node_ == Boolean(rhs);
 }
 
 bool operator==(const Value& lhs, const char* rhs) {
-  return *lhs.node_ == String(rhs);
+  return lhs.node_ && *lhs.node_ == String(rhs);
 }
 
 bool operator==(const Value& lhs, const nullptr_t) {
-  return *lhs.node_ == Null();
+  return lhs.node_ && *lhs.node_ == Null();
 }
 
 bool operator==(const Value& lhs, const Value& rhs) {
-  return *lhs.node_ == *rhs.node_;
+  return (!lhs.node_ && !rhs.node_) ||
+         ((lhs.node_ && rhs.node_) && (*lhs.node_ == *rhs.node_));
 }
 
 bool operator==(const Value& lhs, const Array& rhs) {
-  return *lhs.node_ == rhs;
+  return lhs.node_ && *lhs.node_ == rhs;
 }
 
 bool operator==(const Value& lhs, const Object& rhs) {
-  return *lhs.node_ == rhs;
+  return lhs.node_ && *lhs.node_ == rhs;
 }
 
 }  // namespace json
