@@ -11,14 +11,6 @@ namespace json {
 
 class Value;
 
-namespace visitors {
-
-class GetVisitor;
-
-class SetVisitor;
-
-}  // namespace visitors
-
 }  // namespace json
 
 template <typename T>
