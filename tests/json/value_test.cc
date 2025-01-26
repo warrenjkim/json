@@ -563,3 +563,61 @@ TEST_F(ValueTest, CopyConstructor) {
   json::Value val_2(val);
   ASSERT_EQ(val, val_2);
 }
+
+TEST_F(ValueTest, ObjectMoveSemantics) {
+  // arrange
+  json::Value obj1;
+  obj1["key1"] = "value1";
+  obj1["key2"] = "value2";
+
+  json::Value obj2;
+  obj2["keyA"] = "valueA";
+
+  // act
+  obj2["keyX"] = std::move(obj1["key1"]);
+
+  // assert
+  json::Object expected_obj1;
+  expected_obj1.get().insert("key2", new json::String("value2"));
+
+  json::Object expected_obj2;
+  expected_obj2.get().insert("keyA", new json::String("valueA"));
+  expected_obj2.get().insert("keyX", new json::String("value1"));
+
+  ASSERT_EQ(obj1, expected_obj1);
+  ASSERT_EQ(obj2, expected_obj2);
+}
+
+TEST_F(ValueTest, ArrayMoveSemantics) {
+  // arrange
+  json::Value arr1;
+  arr1.add("value1");
+  arr1.add("value2");
+  arr1.add("value3");
+
+  std::cout << "arr1 before " << arr1.to_string() << std::endl;
+
+  json::Value arr2;
+  arr2.add("valueA");
+  arr2.add("valueB");
+  std::cout << "arr2 before " << arr2.to_string() << std::endl;
+
+  // act
+  arr2[1] = std::move(arr1[0]);
+
+  // assert
+  json::Array expected_arr1;
+  expected_arr1.get().push_back(new json::Null());
+  expected_arr1.get().push_back(new json::String("value2"));
+  expected_arr1.get().push_back(new json::String("value3"));
+
+  json::Array expected_arr2;
+  expected_arr2.get().push_back(new json::String("valueA"));
+  expected_arr2.get().push_back(new json::String("value1"));
+
+  std::cout << "arr1 " << arr1.to_string() << std::endl;
+  std::cout << "arr2 " << arr2.to_string() << std::endl;
+
+  ASSERT_EQ(arr1, expected_arr1);
+  ASSERT_EQ(arr2, expected_arr2);
+}
