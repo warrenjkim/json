@@ -595,12 +595,9 @@ TEST_F(ValueTest, ArrayMoveSemantics) {
   arr1.add("value2");
   arr1.add("value3");
 
-  std::cout << "arr1 before " << arr1.to_string() << std::endl;
-
   json::Value arr2;
   arr2.add("valueA");
   arr2.add("valueB");
-  std::cout << "arr2 before " << arr2.to_string() << std::endl;
 
   // act
   arr2[1] = std::move(arr1[0]);
@@ -614,9 +611,6 @@ TEST_F(ValueTest, ArrayMoveSemantics) {
   json::Array expected_arr2;
   expected_arr2.get().push_back(new json::String("valueA"));
   expected_arr2.get().push_back(new json::String("value1"));
-
-  std::cout << "arr1 " << arr1.to_string() << std::endl;
-  std::cout << "arr2 " << arr2.to_string() << std::endl;
 
   ASSERT_EQ(arr1, expected_arr1);
   ASSERT_EQ(arr2, expected_arr2);
