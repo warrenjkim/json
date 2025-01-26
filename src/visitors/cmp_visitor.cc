@@ -29,11 +29,19 @@ void CmpVisitor::visit(const Array& node) {
   for (size_t i = 0; i < node.size(); ++i) {
     Node* expected_element = expected->get().at(i);
     Node* actual_element = node.get().at(i);
-    CmpVisitor cmp_visitor(expected_element);
-    actual_element->accept(cmp_visitor);
-    if (!cmp_visitor.result()) {
+    if (!expected_element != !actual_element) {
       result_ = false;
       return;
+    }
+
+    if (expected_element && actual_element) {
+      CmpVisitor cmp_visitor(expected_element);
+      actual_element->accept(cmp_visitor);
+
+      if (!cmp_visitor.result()) {
+        result_ = false;
+        return;
+      }
     }
   }
 }
