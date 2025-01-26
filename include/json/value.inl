@@ -174,12 +174,12 @@ Value& Value::operator=(const T& value) {
 
 template <ReasonableNumber T>
 bool operator==(const Value& lhs, const T rhs) {
-  return *lhs.node_ == Number(rhs);
+  return lhs.node_ && *lhs.node_ == Number(rhs);
 }
 
 template <ReasonableString T>
 bool operator==(const Value& lhs, const T& rhs) {
-  return *lhs.node_ == String(rhs);
+  return lhs.node_ && *lhs.node_ == String(rhs);
 }
 
 }  // namespace json
