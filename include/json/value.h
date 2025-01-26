@@ -88,6 +88,7 @@ class Value {
   template <ReasonableString T>
   Value(const T& value);
 
+  // TODO(add -> push_back)
  public:
   template <ReasonableNumber T>
   void add(const T value);
@@ -95,6 +96,7 @@ class Value {
   template <ReasonableString T>
   void add(const T& value);
 
+  // TODO(put -> insert)
  public:
   template <ReasonableNumber T>
   void put(const std::string& key, const T value);
@@ -102,6 +104,14 @@ class Value {
   template <ReasonableString T>
   void put(const std::string& key, const T& value);
 
+  // TODO(add erase() once iterators are implemented)
+ public:
+  template <ReasonableInteger T>
+  void remove(const T index);
+
+  template <ReasonableString T>
+  void remove(const T key);
+
  public:
   template <ReasonableNumber T>
   operator T() const;
@@ -109,6 +119,8 @@ class Value {
   template <ReasonableString T>
   operator T() const;
 
+  // TODO(ReasonableString should be T&)
+  // TODO(Add a const char* overload)
  public:
   template <ReasonableInteger T>
   Value& operator[](const T index);

@@ -71,6 +71,22 @@ void Value::put(const std::string& key, const T& value) {
   visitor.result().insert(key, new String(value));
 }
 
+template <ReasonableInteger T>
+void Value::remove(const T index) {
+  cache_.remove(std::to_string(index));
+  visitors::ArrayVisitor visitor;
+  node_->accept(visitor);
+  visitor.result()[index] = nullptr;
+}
+
+template <ReasonableString T>
+void Value::remove(const T key) {
+  cache_.remove(key);
+  visitors::ObjectVisitor visitor;
+  node_->accept(visitor);
+  visitor.result().remove(key);
+}
+
 template <ReasonableNumber T>
 Value::operator T() const {
   visitors::NumberVisitor visitor;
