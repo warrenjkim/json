@@ -61,7 +61,7 @@ Value& Value::operator=(Value&& other) {
 
       // null out other's AST
       other.parent_->node_->accept(visitor);
-      visitor.result()[std::stoi(*other.key_)] = new Null();
+      visitor.result().erase(visitor.result().begin() + std::stoi(*other.key_));
 
       // move to current AST
       parent_->node_->accept(visitor);

@@ -604,7 +604,6 @@ TEST_F(ValueTest, ArrayMoveSemantics) {
 
   // assert
   json::Array expected_arr1;
-  expected_arr1.get().push_back(new json::Null());
   expected_arr1.get().push_back(new json::String("value2"));
   expected_arr1.get().push_back(new json::String("value3"));
 
