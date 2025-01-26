@@ -12,6 +12,17 @@
 #include "nodes/string.h"
 #include "utils/queue.h"
 
+// TODO(replace DEBUG() with a tracing module. This probably won't get done
+// until the Value API + the rest of the TODOs are finished.)
+
+// TODO(modify the parser to support the actual ECMA-404 requirements [e.g.
+// technically you are allowed to have a Number as a valid json, given that is
+// the only thing specified in the string])
+// Note: This sould be done after the tokenizer migration.
+// context: This is pretty similar (i.e. almost identical) to a primitive json
+// parser I wrote in ~2 days for the CS130 project. Since I knew that we would
+// only ever get either an array or object, I did not allow for a json string to
+// be anything else.
 namespace json {
 
 struct Token;

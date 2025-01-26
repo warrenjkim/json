@@ -7,6 +7,24 @@
 #include "nodes/node.h"
 #include "utils/rbt.h"
 
+// TODO(Iterator/ConstIterator. Still need to design that. The main issues we'll
+// probably run into is the fact that we need to be able to iterate over both an
+// Array and and Object, depending on what container type the Value is.
+// Otherwise, the actual iterator impl is actually pretty straightforward. You
+// can see utils/rbt.h, utils/rbt.inl for an example.)
+
+// TODO(maybe move the concepts to its own .h file? e.g. something like
+// "utils/types.h". Maybe utils is not the best folder to put it in.)
+
+// TODO(add() is probably not the best function name. Maybe migrate to push(),
+// or something else?)
+
+// TODO(we might have to add a index_ field [std::optional<size_t>] to easily
+// tell whether or not the current Value is an Array or Object container.)
+
+// TODO(add a tracing module. This probably won't get done until the Value API +
+// the rest of the TODOs are finished.)
+
 namespace json {
 
 class Value;

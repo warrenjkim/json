@@ -3,10 +3,20 @@
 #include <optional>
 #include <string>
 #include <string_view>
+
+// TODO(remove std::pair as a dependency)
 #include <utility>  // pair
 
 #include "utils/queue.h"
 
+// TODO(replace DEBUG() with a tracing module. This probably won't get done
+// until the Value API + the rest of the TODOs are finished.)
+
+// TODO(create a grammar-based tokenizer instead of whatever this is)
+// context: This is pretty similar (i.e. almost identical) to a primitive json
+// parser I wrote in ~2 days for the CS130 project. The only difference is that
+// I enforce a functional pattern and use std::optional. Other than that, the
+// logic is almost identical.
 namespace json {
 
 struct Token;
