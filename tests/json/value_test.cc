@@ -614,3 +614,40 @@ TEST_F(ValueTest, ArrayMoveSemantics) {
   ASSERT_EQ(arr1, expected_arr1);
   ASSERT_EQ(arr2, expected_arr2);
 }
+
+TEST_F(ValueTest, ObjectRemove) {
+  // arrange
+  json::Value obj;
+  obj["key1"] = "value1";
+  obj["key2"] = "value2";
+  obj["key3"] = "value3";
+
+  // act
+  obj.remove("key2");
+
+  // assert
+  json::Object expected_obj;
+  expected_obj.get().insert("key1", new json::String("value1"));
+  expected_obj.get().insert("key3", new json::String("value3"));
+
+  ASSERT_EQ(obj, expected_obj);
+}
+
+TEST_F(ValueTest, ArrayRemove) {
+  // arrange
+  json::Value arr;
+  arr.add("value1");
+  arr.add("value2");
+  arr.add("value3");
+
+  // act
+  arr.remove(1);  // Remove the element at index 1
+
+  // assert
+  json::Array expected_arr;
+  expected_arr.get().push_back(new json::String("value1"));
+  expected_arr.get().push_back(nullptr);  // index 1 is nullified
+  expected_arr.get().push_back(new json::String("value3"));
+
+  ASSERT_EQ(arr, expected_arr);
+}
