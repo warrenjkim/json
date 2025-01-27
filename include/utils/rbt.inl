@@ -231,12 +231,13 @@ RBTree<K, V, Comparator>::Node* RBTree<K, V, Comparator>::recursive_insert(
     return z;
   }
 
-  if (key < root->data.first) {
+  Comparator less;
+  if (less(key, root->data.first)) {
     root->left = recursive_insert(root->left, key, value, z);
     if (root->left == z) {
       z->parent = root;
     }
-  } else if (key > root->data.first) {
+  } else if (less(root->data.first, key)) {
     root->right = recursive_insert(root->right, key, value, z);
     if (root->right == z) {
       z->parent = root;
@@ -304,9 +305,10 @@ RBTree<K, V, Comparator>::Node* RBTree<K, V, Comparator>::recursive_find(
     return nullptr;
   }
 
-  if (key < root->data.first) {
+  Comparator less;
+  if (less(key, root->data.first)) {
     return recursive_find(root->left, key);
-  } else if (key > root->data.first) {
+  } else if (less(root->data.first, key)) {
     return recursive_find(root->right, key);
   }
 
