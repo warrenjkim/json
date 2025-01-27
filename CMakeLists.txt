@@ -68,6 +68,7 @@ generate_coverage_report(
     queue_test
     pair_test
     map_test
+    rbt_test
     cmp_visitor_test
     get_visitor_test
     set_visitor_test
