@@ -206,7 +206,8 @@ RBTree<K, V, Comparator>::Node* RBTree<K, V, Comparator>::find(
 template <typename K, typename V, class Comparator>
 const RBTree<K, V, Comparator>::Node* RBTree<K, V, Comparator>::find(
     const K& key) const noexcept {
-  return const_cast<const Node*>(recursive_find(const_cast<Node*>(root_), key));
+  return const_cast<const Node*>(
+      const_cast<RBTree*>(this)->recursive_find(root_, key));
 }
 
 template <typename K, typename V, class Comparator>

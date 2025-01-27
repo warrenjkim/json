@@ -3,14 +3,12 @@
 #include <cstddef>  // size_t
 #include <utility>  // move
 
+#include "less.h"
 #include "pair.h"
 
 namespace json {
 
 namespace utils {
-
-template <typename T>
-struct less;
 
 namespace rbt {
 
@@ -20,7 +18,7 @@ enum class Structure { LEFT_LEFT, RIGHT_RIGHT, LEFT_RIGHT, RIGHT_LEFT };
 
 }  // namespace rbt
 
-template <typename K, typename V, class Comparator = less<Pair<K, V>>>
+template <typename K, typename V, class Comparator = less<K>>
 class RBTree {
  public:
   struct Node {
@@ -50,6 +48,24 @@ class RBTree {
       if (right) {
         right->parent = this;
       }
+    }
+
+    const bool operator==(const Node& other) const {
+      if (data != other.data || color != other.color) {
+        return false;
+      }
+
+      bool lhs = (!left && !other.left) ||
+                 (left && other.left && *left == *other.left);
+
+      if (!lhs) {
+        return false;
+      }
+
+      bool rhs = (!right && !other.right) ||
+                 (right && other.right && *right == *other.right);
+
+      return rhs;
     }
 
     Node(K key, V value) : Node(Pair<K, V>(std::move(key), value)) {}
@@ -139,3 +155,5 @@ class RBTree {
 }  // namespace utils
 
 }  // namespace json
+
+#include "rbt.inl"
