@@ -1,7 +1,6 @@
 #pragma once
 
-#include <cstddef>
-#include <optional>
+#include <cstddef>  // size_t
 #include <utility>  // move
 
 #include "pair.h"
@@ -9,6 +8,9 @@
 namespace json {
 
 namespace utils {
+
+template <typename T>
+struct less;
 
 namespace rbt {
 
@@ -18,7 +20,7 @@ enum class Structure { LEFT_LEFT, RIGHT_RIGHT, LEFT_RIGHT, RIGHT_LEFT };
 
 }  // namespace rbt
 
-template <typename K, typename V>
+template <typename K, typename V, class Comparator = less<Pair<K, V>>>
 class RBTree {
  public:
   struct Node {
@@ -29,13 +31,6 @@ class RBTree {
     rbt::Color color;
     Node* parent;
 
-    Node(K key, V value)
-        : data({std::move(key), value}),
-          color(rbt::Color::RED),
-          left(nullptr),
-          right(nullptr),
-          parent(nullptr) {}
-
     Node(const Pair<K, V>& data)
         : data(data),
           color(rbt::Color::RED),
@@ -43,186 +38,103 @@ class RBTree {
           right(nullptr),
           parent(nullptr) {}
 
+    Node(const Node& other)
+        : data(other.data),
+          color(other.color),
+          left(other.left ? new Node(*other.left) : nullptr),
+          right(other.right ? new Node(*other.right) : nullptr),
+          parent(nullptr) {
+      if (left) {
+        left->parent = this;
+      }
+      if (right) {
+        right->parent = this;
+      }
+    }
+
+    Node(K key, V value) : Node(Pair<K, V>(std::move(key), value)) {}
+
     ~Node() = default;
+
+    Node(Node&& other) noexcept = delete;
+    Node& operator=(const Node& other) = delete;
+    Node& operator=(Node&& other) noexcept = delete;
   };
 
  public:
-  class Iterator;
-  class ConstIterator;
+  RBTree() noexcept = default;
+  ~RBTree() noexcept;
 
- public:
-  RBTree();
-  ~RBTree();
   RBTree(const RBTree& other);
   RBTree(RBTree&& other) noexcept;
 
   RBTree& operator=(const RBTree& other);
   RBTree& operator=(RBTree&& other) noexcept;
 
-  void swap(RBTree& other) noexcept;
+ public:
+  constexpr Node* root() noexcept;
+  constexpr const Node* root() const noexcept;
+
+  Node* min() noexcept;
+  const Node* min() const noexcept;
+
+  Node* max() noexcept;
+  const Node* max() const noexcept;
+
+  Node* successor(Node* node) noexcept;
+  const Node* successor(const Node* node) const noexcept;
+
+  Node* predecessor(Node* node) noexcept;
+  const Node* predecessor(const Node* node) const noexcept;
 
  public:
-  bool operator==(const RBTree& other) const;
-  bool operator!=(const RBTree& other) const;
+  constexpr bool empty() const noexcept;
+  constexpr size_t size() const noexcept;
 
  public:
-  Node* root();
-  const Node* root() const;
-
-  size_t size() const;
-  bool empty() const;
-  bool contains(const K& key) const;
-
-  std::optional<V> get(const K& key);
-  const std::optional<V> get(const K& key) const;
-
-  V& operator[](const K& key);
-  const V& operator[](const K& key) const;
-
- public:
-  void insert(const K& key, V value);
-  void remove(const K& key);
+  void insert(const K& key, const V& value);
+  void erase(const K& key);
   void clear();
+  Node* find(const K& key) noexcept;
+  const Node* find(const K& key) const noexcept;
 
  public:
-  Iterator begin();
-  ConstIterator begin() const;
-  ConstIterator cbegin() const;
-
-  Iterator end();
-  ConstIterator end() const;
-  ConstIterator cend() const;
-
-  Iterator find(const K& key);
-  ConstIterator find(const K& key) const;
+  bool operator==(const RBTree& other) const noexcept;
+  bool operator!=(const RBTree& other) const noexcept;
 
  private:
-  Node* root_;
-  size_t size_;
+  Node* root_ = nullptr;
+  size_t size_ = 0;
 
  private:
   Node* recursive_insert(Node* root, const K& key, V value, Node*& z);
+
   Node* recursive_remove(Node* key);
-  Node* recursive_get(Node* root, const K& key);
-  const Node* recursive_get(const Node* root, const K& key) const;
-  void clear(Node* node);
+
+  Node* recursive_find(Node* root, const K& key) noexcept;
+
+  void recursive_clear(Node* node);
 
  private:
-  Node* double_red_fixup(Node* z);
-  Node* double_black_fixup(Node* replacement, Node* parent);
+  Node* double_red_fixup(Node* z) noexcept;
+  Node* double_black_fixup(Node* replacement, Node* parent) noexcept;
 
  private:
-  Node* recolor(Node* z);
-  Node* restructure(Node* z);
-  Node* left_rotate(Node* node);
-  Node* right_rotate(Node* node);
+  Node* recolor(Node* z) noexcept;
+  Node* restructure(Node* z) noexcept;
+
+  Node* left_rotate(Node* node) noexcept;
+  Node* right_rotate(Node* node) noexcept;
 
  private:
-  Node* tree_min(Node* node);
-  const Node* tree_min(const Node* node) const;
-
-  Node* tree_max(Node* node);
-  const Node* tree_max(const Node* node) const;
-
-  Node* grandparent(Node* node);
-  Node* uncle(Node* node);
-
-  Node* successor(Node* node);
-  const Node* successor(const Node* node) const;
-
-  Node* predecessor(Node* node);
-  const Node* predecessor(const Node* node) const;
-
-  bool is_black(const Node* node) const;
-  bool is_red(const Node* node) const;
-
   void deep_copy(const RBTree& other);
 
- public:
-  class Iterator {
-   public:
-    using iterator_category = std::bidirectional_iterator_tag;
-    using value_type = Pair<const K, V>;
-    using difference_type = std::ptrdiff_t;
-    using pointer = value_type*;
-    using reference = value_type&;
+  constexpr Node* uncle(Node* node) noexcept;
+  constexpr Node* grandparent(Node* node) noexcept;
 
-   public:
-    Iterator();
-    ~Iterator() = default;
-    Iterator(Node* node, const RBTree<K, V>* tree);
-
-   public:
-    Iterator& operator++();
-    Iterator operator++(int);
-
-    Iterator& operator--();
-    Iterator operator--(int);
-
-    reference operator*() const;
-    pointer operator->() const;
-
-    bool operator==(const Iterator& other) const;
-    bool operator!=(const Iterator& other) const;
-
-    bool operator==(const ConstIterator& other) const;
-    bool operator!=(const ConstIterator& other) const;
-
-   private:
-    Node* curr_;
-    const RBTree<K, V>* tree_;
-    friend class ConstIterator;
-  };
-
-  class ConstIterator {
-   public:
-    using iterator_category = std::bidirectional_iterator_tag;
-    using value_type = Pair<const K, const V>;
-    using difference_type = std::ptrdiff_t;
-    using pointer = const value_type*;
-    using reference = const value_type&;
-
-   public:
-    ConstIterator();
-    ~ConstIterator() = default;
-    ConstIterator(const Node* node, const RBTree<K, V>* tree);
-    ConstIterator(const Iterator& it);
-
-   public:
-    ConstIterator& operator++();
-    ConstIterator operator++(int);
-
-    ConstIterator& operator--();
-    ConstIterator operator--(int);
-
-    reference operator*() const;
-    pointer operator->() const;
-
-    bool operator==(const ConstIterator& other) const;
-    bool operator!=(const ConstIterator& other) const;
-
-    bool operator==(const Iterator& other) const;
-    bool operator!=(const Iterator& other) const;
-
-   private:
-    const Node* curr_;
-    const RBTree<K, V>* tree_;
-    friend class Iterator;
-  };
+  constexpr bool is_black(const Node* node) const noexcept;
+  constexpr bool is_red(const Node* node) const noexcept;
 };
-
-}  // namespace utils
-
-}  // namespace json
-
-#include "rbt.inl"
-
-namespace json {
-
-namespace utils {
-
-template <typename K, typename V>
-using Map = RBTree<K, V>;
 
 }  // namespace utils
 

@@ -1,5 +1,3 @@
-#include "utils/rbt.h"
-
 #include <gtest/gtest.h>
 
 #include <boost/log/trivial.hpp>
@@ -8,12 +6,13 @@
 #include <vector>
 
 #include "utils/logger.h"
+#include "utils/map.h"
 
 class RBTreeVerifier {
  public:
   static bool verify_rb_tree_properties(
-      const json::utils::RBTree<std::string, int>& tree) {
-    const json::utils::RBTree<std::string, int>::Node* root = tree.root();
+      const json::utils::Map<std::string, int>& tree) {
+    const json::utils::Map<std::string, int>::Node* root = tree.root();
     if (!root) {
       return true;
     }
@@ -25,20 +24,20 @@ class RBTreeVerifier {
 
  private:
   static bool verify_root_property(
-      const json::utils::RBTree<std::string, int>::Node* root) {
-    return (!root || root->color == json::utils::rbt::Color::BLACK);
+      const json::utils::Map<std::string, int>::Node* root) {
+    return (!root || root->color == json::utils::map::Color::BLACK);
   }
 
   static bool verify_red_property(
-      const json::utils::RBTree<std::string, int>::Node* node) {
+      const json::utils::Map<std::string, int>::Node* node) {
     if (!node) {
       return true;
     }
 
-    if ((node->color == json::utils::rbt::Color::RED) &&
-        ((node->left && node->left->color != json::utils::rbt::Color::BLACK) ||
+    if ((node->color == json::utils::map::Color::RED) &&
+        ((node->left && node->left->color != json::utils::map::Color::BLACK) ||
          (node->right &&
-          node->right->color != json::utils::rbt::Color::BLACK))) {
+          node->right->color != json::utils::map::Color::BLACK))) {
       return false;
     }
 
@@ -46,8 +45,7 @@ class RBTreeVerifier {
   }
 
   static bool verify_black_height(
-      const json::utils::RBTree<std::string, int>::Node* node,
-      int& black_height) {
+      const json::utils::Map<std::string, int>::Node* node, int& black_height) {
     if (!node) {
       black_height = 1;
       return true;
@@ -63,14 +61,14 @@ class RBTreeVerifier {
       return false;
     }
 
-    black_height = (node->color == json::utils::rbt::Color::BLACK ? 1 : 0) +
+    black_height = (node->color == json::utils::map::Color::BLACK ? 1 : 0) +
                    left_black_height;
 
     return true;
   }
 
   static bool verify_bst_property(
-      const json::utils::RBTree<std::string, int>::Node* node) {
+      const json::utils::Map<std::string, int>::Node* node) {
     if (!node) {
       return true;
     }
@@ -99,7 +97,7 @@ class RBTreeTest : public ::testing::Test {
     ASSERT_TRUE(RBTreeVerifier::verify_rb_tree_properties(tree_));
   }
 
-  json::utils::RBTree<std::string, int> tree_;
+  json::utils::Map<std::string, int> tree_;
 };
 
 TEST_F(RBTreeTest, EmptyAndContains) {
@@ -366,7 +364,7 @@ TEST_F(RBTreeTest, CopyConstructor) {
   validate_tree();
   ASSERT_EQ(tree_.size(), 3);
 
-  json::utils::RBTree<std::string, int> copy_tree(tree_);
+  json::utils::Map<std::string, int> copy_tree(tree_);
   ASSERT_EQ(copy_tree.size(), 3);
   ASSERT_EQ(copy_tree.get("key1"), 1);
   ASSERT_EQ(copy_tree.get("key2"), 2);
@@ -381,7 +379,7 @@ TEST_F(RBTreeTest, CopyConstructor) {
 TEST_F(RBTreeTest, CopyConstructorNoOp) {
   ASSERT_EQ(tree_.size(), 0);
 
-  json::utils::RBTree<std::string, int> copy_tree(tree_);
+  json::utils::Map<std::string, int> copy_tree(tree_);
   ASSERT_EQ(copy_tree.size(), 0);
 
   tree_["key1"] = 1;
@@ -397,7 +395,7 @@ TEST_F(RBTreeTest, CopyAssignmentOperator) {
   validate_tree();
   ASSERT_EQ(tree_.size(), 3);
 
-  json::utils::RBTree<std::string, int> copy_tree;
+  json::utils::Map<std::string, int> copy_tree;
   copy_tree = tree_;
   ASSERT_EQ(copy_tree.size(), 3);
   ASSERT_EQ(copy_tree.get("key1"), 1);
@@ -418,7 +416,7 @@ TEST_F(RBTreeTest, MoveConstructor) {
   validate_tree();
   ASSERT_EQ(tree_.size(), 3);
 
-  json::utils::RBTree<std::string, int> moved_tree(std::move(tree_));
+  json::utils::Map<std::string, int> moved_tree(std::move(tree_));
   ASSERT_EQ(moved_tree.size(), 3);
   ASSERT_EQ(moved_tree.get("key1"), 1);
   ASSERT_EQ(moved_tree.get("key2"), 2);
@@ -436,7 +434,7 @@ TEST_F(RBTreeTest, MoveAssignmentOperator) {
   validate_tree();
   ASSERT_EQ(tree_.size(), 3);
 
-  json::utils::RBTree<std::string, int> moved_tree;
+  json::utils::Map<std::string, int> moved_tree;
   moved_tree = std::move(tree_);
   ASSERT_EQ(moved_tree.size(), 3);
   ASSERT_EQ(moved_tree.get("key1"), 1);
@@ -454,7 +452,7 @@ TEST_F(RBTreeTest, SwapFunction) {
   validate_tree();
   ASSERT_EQ(tree_.size(), 3);
 
-  json::utils::RBTree<std::string, int> other_tree;
+  json::utils::Map<std::string, int> other_tree;
   other_tree.insert("key4", 4);
   other_tree.insert("key5", 5);
   validate_tree();
@@ -562,7 +560,7 @@ TEST_F(RBTreeTest, ConstBeginEndTest) {
 
   const auto& const_tree = tree_;
   auto it = const_tree.cbegin();
-  json::utils::RBTree<std::string, int>::ConstIterator const_it =
+  json::utils::Map<std::string, int>::ConstIterator const_it =
       const_tree.begin();
   ASSERT_EQ(it->first, "key1");
   ASSERT_EQ(const_it->first, "key1");
@@ -778,27 +776,27 @@ TEST_F(RBTreeTest, ConstIteratorDecrementOnEmptyTree) {
 }
 
 TEST_F(RBTreeTest, ExceptionOnDereferenceInvalidIterator) {
-  json::utils::RBTree<std::string, int>::Iterator it;
+  json::utils::Map<std::string, int>::Iterator it;
   ASSERT_THROW(*it, std::out_of_range);
   ASSERT_THROW(it++, std::out_of_range);
   ASSERT_THROW(it--, std::out_of_range);
 }
 
 TEST_F(RBTreeTest, ExceptionOnDereferenceInvalidConstIterator) {
-  json::utils::RBTree<std::string, int>::ConstIterator it;
+  json::utils::Map<std::string, int>::ConstIterator it;
   ASSERT_THROW(*it, std::out_of_range);
   ASSERT_THROW(it++, std::out_of_range);
   ASSERT_THROW(it--, std::out_of_range);
 }
 
 TEST_F(RBTreeTest, Equality) {
-  json::utils::RBTree<std::string, int> lhs;
+  json::utils::Map<std::string, int> lhs;
   lhs.insert("key2", 2);
   lhs.insert("key1", 1);
   lhs.insert("key3", 3);
   lhs.insert("key0", 0);
 
-  json::utils::RBTree<std::string, int> rhs;
+  json::utils::Map<std::string, int> rhs;
   rhs.insert("key2", 2);
   rhs.insert("key1", 1);
   rhs.insert("key3", 3);
@@ -808,13 +806,13 @@ TEST_F(RBTreeTest, Equality) {
 }
 
 TEST_F(RBTreeTest, InequalitySize) {
-  json::utils::RBTree<std::string, int> lhs;
+  json::utils::Map<std::string, int> lhs;
   lhs.insert("key2", 2);
   lhs.insert("key1", 1);
   lhs.insert("key3", 3);
   lhs.insert("key0", 0);
 
-  json::utils::RBTree<std::string, int> rhs;
+  json::utils::Map<std::string, int> rhs;
   rhs.insert("key2", 2);
   rhs.insert("key1", 1);
   rhs.insert("key3", 3);
@@ -823,13 +821,13 @@ TEST_F(RBTreeTest, InequalitySize) {
 }
 
 TEST_F(RBTreeTest, Inequality) {
-  json::utils::RBTree<std::string, int> lhs;
+  json::utils::Map<std::string, int> lhs;
   lhs.insert("key2", 2);
   lhs.insert("key1", 1);
   lhs.insert("key3", 3);
   lhs.insert("key0", 0);
 
-  json::utils::RBTree<std::string, int> rhs;
+  json::utils::Map<std::string, int> rhs;
   rhs.insert("key2", 2);
   rhs.insert("key1", 1);
   rhs.insert("key3", 3);

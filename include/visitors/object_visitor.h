@@ -1,7 +1,7 @@
 #pragma once
 
 #include "nodes/node.h"
-#include "utils/rbt.h"
+#include "utils/map.h"
 #include "visitor.h"
 
 namespace json {

@@ -7,7 +7,7 @@
 #include "nodes/number.h"
 #include "nodes/object.h"
 #include "nodes/string.h"
-#include "utils/rbt.h"
+#include "utils/map.h"
 
 namespace json {
 

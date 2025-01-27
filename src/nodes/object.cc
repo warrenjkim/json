@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "utils/rbt.h"
+#include "utils/map.h"
 #include "visitors/visitor.h"
 
 namespace json {
