@@ -255,8 +255,8 @@ RBTree<K, V, Comparator>::Node* RBTree<K, V, Comparator>::recursive_remove(
     Node* target) {
   if (target->left && target->right) {
     Node* replacement = successor(target);
-    target->data.~Pair();
-    new (&target->data) Pair<K, V>(std::move(replacement->data));
+    target->data.~Pair<const K, V>();
+    new (&target->data) Pair<const K, V>(std::move(replacement->data));
 
     return recursive_remove(replacement);
   }

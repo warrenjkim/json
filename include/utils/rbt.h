@@ -22,14 +22,14 @@ template <typename K, typename V, class Comparator = less<K>>
 class RBTree {
  public:
   struct Node {
-    Pair<K, V> data;
+    Pair<const K, V> data;
     Node* left;
     Node* right;
 
     rbt::Color color;
     Node* parent;
 
-    Node(const Pair<K, V>& data)
+    Node(const Pair<const K, V>& data)
         : data(data),
           color(rbt::Color::RED),
           left(nullptr),
@@ -68,7 +68,7 @@ class RBTree {
       return rhs;
     }
 
-    Node(K key, V value) : Node(Pair<K, V>(std::move(key), value)) {}
+    Node(const K key, V value) : Node(Pair<const K, V>(std::move(key), value)) {}
 
     ~Node() = default;
 
