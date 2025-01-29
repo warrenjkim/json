@@ -8,7 +8,7 @@
 #include "utils/logger.h"
 #include "utils/map.h"
 
-class RBTreeVerifier {
+class MapVerifier {
  public:
   static bool verify_rb_tree_properties(
       const json::utils::Map<std::string, int>& tree) {
@@ -87,20 +87,20 @@ class RBTreeVerifier {
   }
 };
 
-class RBTreeTest : public ::testing::Test {
+class MapTest : public ::testing::Test {
  protected:
   void SetUp() override {
     json::utils::init_logging(boost::log::trivial::debug);
   }
 
   void validate_tree() {
-    ASSERT_TRUE(RBTreeVerifier::verify_rb_tree_properties(tree_));
+    ASSERT_TRUE(MapVerifier::verify_rb_tree_properties(tree_));
   }
 
   json::utils::Map<std::string, int> tree_;
 };
 
-TEST_F(RBTreeTest, EmptyAndContains) {
+TEST_F(MapTest, EmptyAndContains) {
   ASSERT_TRUE(tree_.empty());
   tree_.insert("key", 1);
   ASSERT_FALSE(tree_.empty());
@@ -108,7 +108,7 @@ TEST_F(RBTreeTest, EmptyAndContains) {
   ASSERT_FALSE(tree_.contains("key2"));
 }
 
-TEST_F(RBTreeTest, RemoveRootNode) {
+TEST_F(MapTest, RemoveRootNode) {
   tree_.insert("key2", 2);
   tree_.insert("key1", 1);
   tree_.insert("key3", 3);
@@ -124,7 +124,7 @@ TEST_F(RBTreeTest, RemoveRootNode) {
   ASSERT_TRUE(tree_.get("key3").has_value());
 }
 
-TEST_F(RBTreeTest, RemoveNodeWithOneChild) {
+TEST_F(MapTest, RemoveNodeWithOneChild) {
   tree_.insert("key1", 1);
   tree_.insert("key2", 2);
   tree_.insert("key3", 3);
@@ -137,7 +137,7 @@ TEST_F(RBTreeTest, RemoveNodeWithOneChild) {
   ASSERT_EQ(tree_.size(), 2);
 }
 
-TEST_F(RBTreeTest, RemoveNodeWithTwoChildren) {
+TEST_F(MapTest, RemoveNodeWithTwoChildren) {
   tree_.insert("key2", 2);
   tree_.insert("key1", 1);
   tree_.insert("key3", 3);
@@ -151,35 +151,35 @@ TEST_F(RBTreeTest, RemoveNodeWithTwoChildren) {
   ASSERT_EQ(tree_.size(), 3);
 }
 
-TEST_F(RBTreeTest, LeftLeftRotationTest) {
+TEST_F(MapTest, LeftLeftRotationTest) {
   tree_.insert("key3", 3);
   tree_.insert("key2", 2);
   tree_.insert("key1", 1);
   validate_tree();
 }
 
-TEST_F(RBTreeTest, LeftRightRotationTest) {
+TEST_F(MapTest, LeftRightRotationTest) {
   tree_.insert("key3", 3);
   tree_.insert("key1", 1);
   tree_.insert("key2", 2);
   validate_tree();
 }
 
-TEST_F(RBTreeTest, RightRightRotationTest) {
+TEST_F(MapTest, RightRightRotationTest) {
   tree_.insert("key1", 1);
   tree_.insert("key2", 2);
   tree_.insert("key3", 3);
   validate_tree();
 }
 
-TEST_F(RBTreeTest, RightLeftRotationTest) {
+TEST_F(MapTest, RightLeftRotationTest) {
   tree_.insert("key1", 1);
   tree_.insert("key3", 3);
   tree_.insert("key2", 2);
   validate_tree();
 }
 
-TEST_F(RBTreeTest, RecoloringTest) {
+TEST_F(MapTest, RecoloringTest) {
   tree_.insert("key5", 5);
   tree_.insert("key3", 3);
   tree_.insert("key7", 7);
@@ -190,7 +190,7 @@ TEST_F(RBTreeTest, RecoloringTest) {
   validate_tree();
 }
 
-TEST_F(RBTreeTest, DoubleBlackFixupTest) {
+TEST_F(MapTest, DoubleBlackFixupTest) {
   tree_.insert("key5", 5);
   tree_.insert("key3", 3);
   tree_.insert("key7", 7);
@@ -204,7 +204,7 @@ TEST_F(RBTreeTest, DoubleBlackFixupTest) {
   validate_tree();
 }
 
-TEST_F(RBTreeTest, InsertAndFind) {
+TEST_F(MapTest, InsertAndFind) {
   tree_.insert("key1", 1);
   validate_tree();
   tree_.insert("key2", 2);
@@ -216,7 +216,7 @@ TEST_F(RBTreeTest, InsertAndFind) {
   ASSERT_FALSE(tree_.get("nonexistent").has_value());
 }
 
-TEST_F(RBTreeTest, RemoveExistingKey) {
+TEST_F(MapTest, RemoveExistingKey) {
   tree_.insert("key", 1);
   validate_tree();
   ASSERT_EQ(tree_.size(), 1);
@@ -227,7 +227,7 @@ TEST_F(RBTreeTest, RemoveExistingKey) {
   ASSERT_EQ(tree_.size(), 0);
 }
 
-TEST_F(RBTreeTest, RemoveNonExistentKey) {
+TEST_F(MapTest, RemoveNonExistentKey) {
   tree_.insert("key", 1);
   validate_tree();
   ASSERT_EQ(tree_.size(), 1);
@@ -238,7 +238,7 @@ TEST_F(RBTreeTest, RemoveNonExistentKey) {
   ASSERT_TRUE(tree_.get("key").has_value());
 }
 
-TEST_F(RBTreeTest, InsertDuplicateKey) {
+TEST_F(MapTest, InsertDuplicateKey) {
   tree_.insert("key", 1);
   validate_tree();
   ASSERT_EQ(tree_.size(), 1);
@@ -249,7 +249,7 @@ TEST_F(RBTreeTest, InsertDuplicateKey) {
   ASSERT_EQ(tree_.get("key"), 2);
 }
 
-TEST_F(RBTreeTest, EmptyTreeOperations) {
+TEST_F(MapTest, EmptyTreeOperations) {
   validate_tree();
   ASSERT_EQ(tree_.size(), 0);
   ASSERT_EQ(tree_.root(), nullptr);
@@ -260,7 +260,7 @@ TEST_F(RBTreeTest, EmptyTreeOperations) {
   ASSERT_EQ(tree_.size(), 0);
 }
 
-TEST_F(RBTreeTest, LargeKeyInsertion) {
+TEST_F(MapTest, LargeKeyInsertion) {
   std::string large_key(1000, 'a');
   tree_.insert(large_key, 1);
   validate_tree();
@@ -268,7 +268,7 @@ TEST_F(RBTreeTest, LargeKeyInsertion) {
   ASSERT_EQ(tree_.get(large_key), 1);
 }
 
-TEST_F(RBTreeTest, Clear) {
+TEST_F(MapTest, Clear) {
   const int N = 10000;
   for (int i = 0; i < N; i++) {
     tree_.insert(std::to_string(i), i);
@@ -281,7 +281,7 @@ TEST_F(RBTreeTest, Clear) {
   ASSERT_EQ(tree_.size(), 0);
 }
 
-TEST_F(RBTreeTest, StressTestRandomOperations) {
+TEST_F(MapTest, StressTestRandomOperations) {
   const int N = 10000;
   auto next_pseudo_random = [a = 1103515245, c = 12345, m = 1 << 31]() mutable {
     static unsigned int seed = 54321;
@@ -317,7 +317,7 @@ TEST_F(RBTreeTest, StressTestRandomOperations) {
   }
 }
 
-TEST_F(RBTreeTest, OperatorBracketTest) {
+TEST_F(MapTest, OperatorBracketTest) {
   tree_["key1"] = 10;
   validate_tree();
   ASSERT_EQ(tree_.size(), 1);
@@ -357,7 +357,7 @@ TEST_F(RBTreeTest, OperatorBracketTest) {
   ASSERT_EQ(tree_.size(), 5);
 }
 
-TEST_F(RBTreeTest, CopyConstructor) {
+TEST_F(MapTest, CopyConstructor) {
   tree_.insert("key1", 1);
   tree_.insert("key2", 2);
   tree_.insert("key3", 3);
@@ -376,7 +376,7 @@ TEST_F(RBTreeTest, CopyConstructor) {
   ASSERT_TRUE(copy_tree.get("key1").has_value());
 }
 
-TEST_F(RBTreeTest, CopyConstructorNoOp) {
+TEST_F(MapTest, CopyConstructorNoOp) {
   ASSERT_EQ(tree_.size(), 0);
 
   json::utils::Map<std::string, int> copy_tree(tree_);
@@ -388,7 +388,7 @@ TEST_F(RBTreeTest, CopyConstructorNoOp) {
   ASSERT_FALSE(copy_tree.get("key1").has_value());
 }
 
-TEST_F(RBTreeTest, CopyAssignmentOperator) {
+TEST_F(MapTest, CopyAssignmentOperator) {
   tree_.insert("key1", 1);
   tree_.insert("key2", 2);
   tree_.insert("key3", 3);
@@ -409,7 +409,7 @@ TEST_F(RBTreeTest, CopyAssignmentOperator) {
   ASSERT_TRUE(copy_tree.get("key1").has_value());
 }
 
-TEST_F(RBTreeTest, MoveConstructor) {
+TEST_F(MapTest, MoveConstructor) {
   tree_.insert("key1", 1);
   tree_.insert("key2", 2);
   tree_.insert("key3", 3);
@@ -427,7 +427,7 @@ TEST_F(RBTreeTest, MoveConstructor) {
   ASSERT_FALSE(tree_.get("key1").has_value());
 }
 
-TEST_F(RBTreeTest, MoveAssignmentOperator) {
+TEST_F(MapTest, MoveAssignmentOperator) {
   tree_.insert("key1", 1);
   tree_.insert("key2", 2);
   tree_.insert("key3", 3);
@@ -445,7 +445,7 @@ TEST_F(RBTreeTest, MoveAssignmentOperator) {
   ASSERT_FALSE(tree_.get("key1").has_value());
 }
 
-TEST_F(RBTreeTest, SwapFunction) {
+TEST_F(MapTest, SwapFunction) {
   tree_.insert("key1", 1);
   tree_.insert("key2", 2);
   tree_.insert("key3", 3);
@@ -473,7 +473,7 @@ TEST_F(RBTreeTest, SwapFunction) {
   ASSERT_FALSE(other_tree.get("key4").has_value());
 }
 
-TEST_F(RBTreeTest, IteratorBoundsTest) {
+TEST_F(MapTest, IteratorBoundsTest) {
   auto it = tree_.begin();
   it--;
   ASSERT_EQ(it, tree_.end());
@@ -482,7 +482,7 @@ TEST_F(RBTreeTest, IteratorBoundsTest) {
   ASSERT_THROW(it++, std::out_of_range);
 }
 
-TEST_F(RBTreeTest, IteratorTest) {
+TEST_F(MapTest, IteratorTest) {
   tree_.insert("key1", 1);
   tree_.insert("key2", 2);
   tree_.insert("key3", 3);
@@ -499,7 +499,7 @@ TEST_F(RBTreeTest, IteratorTest) {
   ASSERT_EQ(keys[2], "key3");
 }
 
-TEST_F(RBTreeTest, ReverseIteratorTest) {
+TEST_F(MapTest, ReverseIteratorTest) {
   tree_.insert("key1", 1);
   tree_.insert("key2", 2);
   tree_.insert("key3", 3);
@@ -518,7 +518,7 @@ TEST_F(RBTreeTest, ReverseIteratorTest) {
   ASSERT_EQ(keys[2], "key1");
 }
 
-TEST_F(RBTreeTest, IteratorDereferenceEnd) {
+TEST_F(MapTest, IteratorDereferenceEnd) {
   tree_.insert("key1", 1);
   validate_tree();
 
@@ -526,7 +526,7 @@ TEST_F(RBTreeTest, IteratorDereferenceEnd) {
   ASSERT_THROW(*it, std::out_of_range);
 }
 
-TEST_F(RBTreeTest, ConstIteratorBoundsTest) {
+TEST_F(MapTest, ConstIteratorBoundsTest) {
   auto it = tree_.cbegin();
   it--;
   ASSERT_EQ(it, tree_.cend());
@@ -535,7 +535,7 @@ TEST_F(RBTreeTest, ConstIteratorBoundsTest) {
   ASSERT_THROW(it++, std::out_of_range);
 }
 
-TEST_F(RBTreeTest, ConstIteratorTest) {
+TEST_F(MapTest, ConstIteratorTest) {
   tree_.insert("key1", 1);
   tree_.insert("key2", 2);
   tree_.insert("key3", 3);
@@ -553,7 +553,7 @@ TEST_F(RBTreeTest, ConstIteratorTest) {
   ASSERT_EQ(keys[2], "key3");
 }
 
-TEST_F(RBTreeTest, ConstBeginEndTest) {
+TEST_F(MapTest, ConstBeginEndTest) {
   tree_.insert("key1", 1);
   tree_.insert("key2", 2);
   validate_tree();
@@ -569,7 +569,7 @@ TEST_F(RBTreeTest, ConstBeginEndTest) {
   ASSERT_THROW(*it, std::out_of_range);
 }
 
-TEST_F(RBTreeTest, FindTest) {
+TEST_F(MapTest, FindTest) {
   tree_.insert("key1", 1);
   tree_.insert("key2", 2);
   tree_.insert("key3", 3);
@@ -584,7 +584,7 @@ TEST_F(RBTreeTest, FindTest) {
   ASSERT_EQ(it, tree_.end());
 }
 
-TEST_F(RBTreeTest, ConstFindTest) {
+TEST_F(MapTest, ConstFindTest) {
   tree_.insert("key1", 1);
   tree_.insert("key2", 2);
   validate_tree();
@@ -598,7 +598,7 @@ TEST_F(RBTreeTest, ConstFindTest) {
   ASSERT_EQ(it, const_tree.end());
 }
 
-TEST_F(RBTreeTest, PredecessorIncorrectInRedBlackTree) {
+TEST_F(MapTest, PredecessorIncorrectInRedBlackTree) {
   tree_.insert("20", 20);
   tree_.insert("10", 10);
   tree_.insert("30", 30);
@@ -620,7 +620,7 @@ TEST_F(RBTreeTest, PredecessorIncorrectInRedBlackTree) {
   ASSERT_EQ(it, tree_.end());
 }
 
-TEST_F(RBTreeTest, PredecessorWithParentTraversal) {
+TEST_F(MapTest, PredecessorWithParentTraversal) {
   // Construct the tree as per the example:
   //          30
   //         /  \
@@ -655,7 +655,7 @@ TEST_F(RBTreeTest, PredecessorWithParentTraversal) {
   ASSERT_EQ(it, tree_.end());
 }
 
-TEST_F(RBTreeTest, IteratorDecrementAtBegin) {
+TEST_F(MapTest, IteratorDecrementAtBegin) {
   tree_.insert("key2", 2);
   tree_.insert("key1", 1);
   tree_.insert("key3", 3);
@@ -677,7 +677,7 @@ TEST_F(RBTreeTest, IteratorDecrementAtBegin) {
   ASSERT_EQ(it->first, "key1");
 }
 
-TEST_F(RBTreeTest, IteratorDecrementFromEnd) {
+TEST_F(MapTest, IteratorDecrementFromEnd) {
   tree_.insert("key2", 2);
   tree_.insert("key1", 1);
   tree_.insert("key3", 3);
@@ -697,7 +697,7 @@ TEST_F(RBTreeTest, IteratorDecrementFromEnd) {
   ASSERT_EQ(it, tree_.end());
 }
 
-TEST_F(RBTreeTest, IteratorDecrementOnEmptyTree) {
+TEST_F(MapTest, IteratorDecrementOnEmptyTree) {
   ASSERT_EQ(tree_.size(), 0);
 
   auto it = tree_.begin();
@@ -708,7 +708,7 @@ TEST_F(RBTreeTest, IteratorDecrementOnEmptyTree) {
   ASSERT_THROW(*it, std::out_of_range);
 }
 
-TEST_F(RBTreeTest, PredecessorNoLeftChildViaOperator) {
+TEST_F(MapTest, PredecessorNoLeftChildViaOperator) {
   tree_.insert("key3", 3);
   tree_.insert("key2", 2);
   tree_.insert("key4", 4);
@@ -722,7 +722,7 @@ TEST_F(RBTreeTest, PredecessorNoLeftChildViaOperator) {
   ASSERT_EQ(it, tree_.end());
 }
 
-TEST_F(RBTreeTest, ConstIteratorDecrementAtBegin) {
+TEST_F(MapTest, ConstIteratorDecrementAtBegin) {
   tree_.insert("key2", 2);
   tree_.insert("key1", 1);
   tree_.insert("key3", 3);
@@ -744,7 +744,7 @@ TEST_F(RBTreeTest, ConstIteratorDecrementAtBegin) {
   ASSERT_EQ(it->first, "key1");
 }
 
-TEST_F(RBTreeTest, ConstIteratorDecrementFromEnd) {
+TEST_F(MapTest, ConstIteratorDecrementFromEnd) {
   tree_.insert("key2", 2);
   tree_.insert("key1", 1);
   tree_.insert("key3", 3);
@@ -764,7 +764,7 @@ TEST_F(RBTreeTest, ConstIteratorDecrementFromEnd) {
   ASSERT_EQ(it, tree_.cend());
 }
 
-TEST_F(RBTreeTest, ConstIteratorDecrementOnEmptyTree) {
+TEST_F(MapTest, ConstIteratorDecrementOnEmptyTree) {
   ASSERT_EQ(tree_.size(), 0);
 
   auto it = tree_.cbegin();
@@ -775,21 +775,21 @@ TEST_F(RBTreeTest, ConstIteratorDecrementOnEmptyTree) {
   ASSERT_THROW(*it, std::out_of_range);
 }
 
-TEST_F(RBTreeTest, ExceptionOnDereferenceInvalidIterator) {
+TEST_F(MapTest, ExceptionOnDereferenceInvalidIterator) {
   json::utils::Map<std::string, int>::Iterator it;
   ASSERT_THROW(*it, std::out_of_range);
   ASSERT_THROW(it++, std::out_of_range);
   ASSERT_THROW(it--, std::out_of_range);
 }
 
-TEST_F(RBTreeTest, ExceptionOnDereferenceInvalidConstIterator) {
+TEST_F(MapTest, ExceptionOnDereferenceInvalidConstIterator) {
   json::utils::Map<std::string, int>::ConstIterator it;
   ASSERT_THROW(*it, std::out_of_range);
   ASSERT_THROW(it++, std::out_of_range);
   ASSERT_THROW(it--, std::out_of_range);
 }
 
-TEST_F(RBTreeTest, Equality) {
+TEST_F(MapTest, Equality) {
   json::utils::Map<std::string, int> lhs;
   lhs.insert("key2", 2);
   lhs.insert("key1", 1);
@@ -805,7 +805,7 @@ TEST_F(RBTreeTest, Equality) {
   ASSERT_EQ(lhs, rhs);
 }
 
-TEST_F(RBTreeTest, InequalitySize) {
+TEST_F(MapTest, InequalitySize) {
   json::utils::Map<std::string, int> lhs;
   lhs.insert("key2", 2);
   lhs.insert("key1", 1);
@@ -820,7 +820,7 @@ TEST_F(RBTreeTest, InequalitySize) {
   ASSERT_NE(lhs, rhs);
 }
 
-TEST_F(RBTreeTest, Inequality) {
+TEST_F(MapTest, Inequality) {
   json::utils::Map<std::string, int> lhs;
   lhs.insert("key2", 2);
   lhs.insert("key1", 1);
