@@ -21,8 +21,8 @@ struct Pair {
 
   Pair& operator=(const Pair& other) {
     if (this != &other) {
-      const_cast<K&>(first) = other.first;
-      const_cast<V&>(second) = other.second;
+      first = other.first;
+      second = other.second;
     }
 
     return *this;
@@ -30,8 +30,8 @@ struct Pair {
 
   Pair& operator=(Pair&& other) noexcept {
     if (this != &other) {
-      const_cast<K&>(first) = std::move(other.first);
-      const_cast<V&>(second) = std::move(other.second);
+      first = std::move(other.first);
+      second = std::move(other.second);
     }
 
     return *this;
