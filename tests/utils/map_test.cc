@@ -1,3 +1,5 @@
+#include "utils/map.h"
+
 #include <gtest/gtest.h>
 
 #include <boost/log/trivial.hpp>
@@ -6,7 +8,6 @@
 #include <vector>
 
 #include "utils/logger.h"
-#include "utils/map.h"
 
 class MapVerifier {
  public:
