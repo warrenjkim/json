@@ -90,7 +90,7 @@ TEST_F(RBTreeTest, MoveConstructor) {
 
   // assert
   ASSERT_EQ(tree_.root(), nullptr);
-  ASSERT_EQ(tree_.size(), 0);
+  ASSERT_TRUE(tree_.empty());
   ASSERT_EQ(moved_tree.root(), original_root);
   ASSERT_EQ(moved_tree.size(), original_size);
   validate_tree_properties(moved_tree.root());
@@ -128,7 +128,7 @@ TEST_F(RBTreeTest, MoveAssignment) {
 
   // assert
   ASSERT_EQ(tree_.root(), nullptr);
-  ASSERT_EQ(tree_.size(), 0);
+  ASSERT_TRUE(tree_.empty());
   ASSERT_EQ(other.root(), original_root);
   ASSERT_EQ(other.size(), original_size);
   ASSERT_EQ(other.find(2), nullptr);
