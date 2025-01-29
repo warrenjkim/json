@@ -3,8 +3,8 @@
 #include <cstddef>  // size_t
 #include <utility>  // move
 
+#include "key.h"
 #include "less.h"
-#include "pair.h"
 
 namespace json {
 
@@ -18,18 +18,18 @@ enum class Structure { LEFT_LEFT, RIGHT_RIGHT, LEFT_RIGHT, RIGHT_LEFT };
 
 }  // namespace rbt
 
-template <typename K, typename V, class Comparator = less<K>>
+template <typename T, class Comparator = less<T>, class OrderingKey = key<T>>
 class RBTree {
  public:
   struct Node {
-    Pair<const K, V> data;
+    T data;
     Node* left;
     Node* right;
 
     rbt::Color color;
     Node* parent;
 
-    Node(const Pair<const K, V>& data)
+    Node(const T& data)
         : data(data),
           color(rbt::Color::RED),
           left(nullptr),
@@ -68,7 +68,7 @@ class RBTree {
       return rhs;
     }
 
-    Node(const K key, V value) : Node(Pair<const K, V>(std::move(key), value)) {}
+    Node(T&& data) : Node(std::move(data)) {}
 
     ~Node() = default;
 
@@ -108,11 +108,11 @@ class RBTree {
   constexpr size_t size() const noexcept;
 
  public:
-  void insert(const K& key, const V& value);
-  void erase(const K& key);
+  void insert(const T& data);
+  void erase(const T& data);
   void clear();
-  Node* find(const K& key) noexcept;
-  const Node* find(const K& key) const noexcept;
+  Node* find(const T& data) noexcept;
+  const Node* find(const T& data) const noexcept;
 
  public:
   bool operator==(const RBTree& other) const noexcept;
@@ -123,12 +123,9 @@ class RBTree {
   size_t size_ = 0;
 
  private:
-  Node* recursive_insert(Node* root, const K& key, V value, Node*& z);
-
-  Node* recursive_remove(Node* key);
-
-  Node* recursive_find(Node* root, const K& key) noexcept;
-
+  Node* recursive_insert(Node* root, const T& data, Node** z);
+  Node* recursive_erase(Node* key);
+  Node* recursive_find(Node* root, const T& data) noexcept;
   void recursive_clear(Node* node);
 
  private:
