@@ -173,7 +173,7 @@ template <typename T, class Comparator, class OrderingKey>
 void RBTree<T, Comparator, OrderingKey>::insert(const T& data) {
   Node* z = nullptr;
   const size_t size = size_;
-  root_ = recursive_insert(root_, data, z);
+  root_ = recursive_insert(root_, data, &z);
   if (size_ == size) {
     return;
   }
@@ -237,18 +237,19 @@ RBTree<T, Comparator, OrderingKey>::recursive_insert(Node* root, const T& data,
 
   Comparator less;
   OrderingKey ordering_key;
-  if (less(ordering_key(data), root->data.first)) {
+  if (less(ordering_key(data), ordering_key(root->data))) {
     root->left = recursive_insert(root->left, data, z);
-    if (root->left == z) {
-      *z->parent = root;
+    if (root->left == *z) {
+      (*z)->parent = root;
     }
-  } else if (less(root->data.first, ordering_key(data))) {
+  } else if (less(ordering_key(root->data), ordering_key(data))) {
     root->right = recursive_insert(root->right, data, z);
-    if (root->right == z) {
-      *z->parent = root;
+    if (root->right == *z) {
+      (*z)->parent = root;
     }
   } else {
-    root->data = data;
+    root->data.~T();
+    new (&root->data) T(data);
   }
 
   return root;
@@ -313,9 +314,9 @@ RBTree<T, Comparator, OrderingKey>::recursive_find(Node* root,
 
   Comparator less;
   OrderingKey ordering_key;
-  if (less(ordering_key(data), root->data.first)) {
+  if (less(ordering_key(data), ordering_key(root->data))) {
     return recursive_find(root->left, data);
-  } else if (less(root->data.first, ordering_key(data))) {
+  } else if (less(ordering_key(root->data), ordering_key(data))) {
     return recursive_find(root->right, data);
   }
 
