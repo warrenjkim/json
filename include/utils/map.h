@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstddef>
+#include <cstddef>  // size_t
 #include <optional>
 
 #include "less.h"
