@@ -36,7 +36,7 @@ bool Map<K, V>::contains(const K& key) const {
 }
 
 template <typename K, typename V>
-const std::optional<V> Map<K, V>::at(const K& key) const {
+const std::optional<V> Map<K, V>::at(const K& key) const noexcept {
   const Map<K, V>::MapNode* node = tree_.find({key, V()});
   if (!node) {
     return std::nullopt;

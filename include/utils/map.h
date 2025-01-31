@@ -35,7 +35,7 @@ class Map {
   bool contains(const K& key) const;
 
   V& operator[](const K& key);
-  const std::optional<V> at(const K& key) const;
+  const std::optional<V> at(const K& key) const noexcept;
 
  public:
   void insert(const K& key, V value);
