@@ -119,8 +119,6 @@ class Value {
   template <ReasonableString T>
   operator T() const;
 
-  // TODO(ReasonableString should be T&)
-  // TODO(Add a const char* overload)
  public:
   template <ReasonableInteger T>
   Value& operator[](const T index);
