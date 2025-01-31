@@ -124,13 +124,8 @@ Value& Value::operator[](const T index) {
   return cache_[key];
 }
 
-template <ReasonableInteger T>
-Value& Value::operator[](const T index) const {
-  return const_cast<Value*>(this)->operator[](index);
-}
-
 template <ReasonableString T>
-Value& Value::operator[](const T key) {
+Value& Value::operator[](const T& key) {
   if (!node_ || (parent_ && *node_ == Null())) {
     node_ = new Object();
   }
@@ -147,11 +142,6 @@ Value& Value::operator[](const T key) {
   cache_[key].key_ = key;
 
   return cache_[key];
-}
-
-template <ReasonableString T>
-Value& Value::operator[](const T& key) const {
-  return const_cast<Value*>(this)->operator[](key);
 }
 
 template <ReasonableNumber T>

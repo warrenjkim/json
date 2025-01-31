@@ -215,6 +215,25 @@ Value::operator const char*() const {
   return visitor.result().c_str();
 }
 
+Value& Value::operator[](const char* key) {
+  if (!node_ || (parent_ && *node_ == Null())) {
+    node_ = new Object();
+  }
+
+  if (cache_.contains(key)) {
+    return cache_[key];
+  }
+
+  visitors::GetVisitor visitor(key);
+  node_->accept(visitor);
+  cache_.insert(key, Value());
+  cache_[key].node_ = visitor.result();
+  cache_[key].parent_ = this;
+  cache_[key].key_ = key;
+
+  return cache_[key];
+}
+
 Value& Value::operator=(const bool value) {
   if (parent_ && key_) {
     parent_->cache_.remove(*key_);

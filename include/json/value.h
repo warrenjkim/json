@@ -65,6 +65,8 @@ class Value {
   operator nullptr_t() const;
   operator const char*() const;
 
+  Value& operator[](const char* key);
+
  public:
   Value& operator=(const bool value);
   Value& operator=(const char* value);
@@ -125,14 +127,8 @@ class Value {
   template <ReasonableInteger T>
   Value& operator[](const T index);
 
-  template <ReasonableInteger T>
-  Value& operator[](const T index) const;
-
   template <ReasonableString T>
-  Value& operator[](const T key);
-
-  template <ReasonableString T>
-  Value& operator[](const T& key) const;
+  Value& operator[](const T& key);
 
  public:
   template <ReasonableNumber T>
