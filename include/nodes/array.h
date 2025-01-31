@@ -33,9 +33,6 @@ class Array : public Node {
   std::vector<Node*>& get();
   const std::vector<Node*>& get() const;
 
- public:
-  operator std::vector<Node*>&();
-
  private:
   std::vector<Node*> array_;
 };
