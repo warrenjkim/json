@@ -98,7 +98,7 @@ Value::Value(const bool value) : node_(new Boolean(value)), parent_(nullptr) {}
 
 Value::Value(const char* value) : node_(new String(value)), parent_(nullptr) {}
 
-void Value::add(const nullptr_t) {
+void Value::push_back(const nullptr_t) {
   if (!node_) {
     node_ = new Array();
   }
@@ -109,7 +109,7 @@ void Value::add(const nullptr_t) {
   visitor.result().push_back(new Null());
 }
 
-void Value::add(const bool value) {
+void Value::push_back(const bool value) {
   if (!node_) {
     node_ = new Array();
   }
@@ -120,7 +120,7 @@ void Value::add(const bool value) {
   visitor.result().push_back(new Boolean(value));
 }
 
-void Value::add(const char* value) {
+void Value::push_back(const char* value) {
   if (!node_) {
     node_ = new Array();
   }
@@ -131,7 +131,7 @@ void Value::add(const char* value) {
   visitor.result().push_back(new String(value));
 }
 
-void Value::add(const Value& value) {
+void Value::push_back(const Value& value) {
   if (!node_) {
     node_ = new Array();
   }

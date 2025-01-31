@@ -42,7 +42,7 @@ TEST_F(SetVisitorTest, SetArrayValue) {
   json::Array* root = new json::Array();
   json::Node* string = new json::String("value");
   json::Number num(123);
-  root->add(string);
+  root->push_back(string);
 
   // act
   json::visitors::SetVisitor visitor(&string, num.clone(), "0");
@@ -50,7 +50,7 @@ TEST_F(SetVisitorTest, SetArrayValue) {
 
   // assert
   json::Array* expected_root = new json::Array();
-  expected_root->add(num.clone());
+  expected_root->push_back(num.clone());
   ASSERT_EQ(json::Value(root), json::Value(expected_root));
 }
 

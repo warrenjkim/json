@@ -25,13 +25,16 @@ class Array : public Node {
   Array& operator=(const Array&) = delete;
 
  public:
-  void add(Node* element);
+  void push_back(Node* element);
   const size_t size() const;
   const bool empty() const;
 
  public:
   std::vector<Node*>& get();
   const std::vector<Node*>& get() const;
+
+ public:
+  operator std::vector<Node*>&();
 
  private:
   std::vector<Node*> array_;

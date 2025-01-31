@@ -6,7 +6,6 @@
 #include <stdexcept>
 
 #include "json/exception.h"
-#include "json/value.h"
 #include "nodes/array.h"
 #include "nodes/boolean.h"
 #include "nodes/node.h"
@@ -24,10 +23,10 @@ class GetVisitorTest : public ::testing::Test {
     object_->add("key", new json::String("value"));
 
     array_ = new json::Array();
-    array_->add(new json::Number(1));
-    array_->add(new json::Boolean(true));
-    array_->add(new json::String("string"));
-    array_->add(new json::Null());
+    array_->push_back(new json::Number(1));
+    array_->push_back(new json::Boolean(true));
+    array_->push_back(new json::String("string"));
+    array_->push_back(new json::Null());
   }
 
   void TearDown() override {

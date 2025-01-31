@@ -49,10 +49,10 @@ class Value {
   Value(const char* value);
 
  public:
-  void add(const nullptr_t);
-  void add(const bool value);
-  void add(const char* value);
-  void add(const Value& value);
+  void push_back(const nullptr_t);
+  void push_back(const bool value);
+  void push_back(const char* value);
+  void push_back(const Value& value);
 
  public:
   void put(const std::string&, const nullptr_t);
@@ -90,13 +90,12 @@ class Value {
   template <ReasonableString T>
   Value(const T& value);
 
-  // TODO(add -> push_back)
  public:
   template <ReasonableNumber T>
-  void add(const T value);
+  void push_back(const T value);
 
   template <ReasonableString T>
-  void add(const T& value);
+  void push_back(const T& value);
 
   // TODO(put -> insert)
  public:

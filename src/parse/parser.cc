@@ -119,7 +119,7 @@ Array* Parser::parse_array(json::utils::Queue<Token>& tokens,
       return nullptr;
     }
 
-    array->add(value);
+    array->push_back(value);
 
     std::optional<Token> token = tokens.dequeue();
     if (!token) {

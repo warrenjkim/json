@@ -26,7 +26,7 @@ template <ReasonableString T>
 Value::Value(const T& value) : node_(new String(value)), parent_(nullptr) {}
 
 template <ReasonableNumber T>
-void Value::add(const T value) {
+void Value::push_back(const T value) {
   if (!node_) {
     node_ = new Array();
   }
@@ -38,7 +38,7 @@ void Value::add(const T value) {
 }
 
 template <ReasonableString T>
-void Value::add(const T& value) {
+void Value::push_back(const T& value) {
   if (!node_) {
     node_ = new Array();
   }

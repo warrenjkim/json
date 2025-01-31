@@ -4,7 +4,6 @@
 
 #include <boost/log/trivial.hpp>
 #include <cstddef>
-#include <stdexcept>  // out_of_range
 #include <string>
 
 #include "json/exception.h"
@@ -28,10 +27,10 @@ class ValueTest : public ::testing::Test {
     root_->add("string", new json::String("hello"));
 
     array_ = new json::Array();
-    array_->add(new json::Number(1));
-    array_->add(new json::String("two"));
-    array_->add(new json::Boolean(false));
-    array_->add(new json::Null());
+    array_->push_back(new json::Number(1));
+    array_->push_back(new json::String("two"));
+    array_->push_back(new json::Boolean(false));
+    array_->push_back(new json::Null());
     root_->add("array", array_);
 
     nested_obj_ = new json::Object();
@@ -320,12 +319,12 @@ TEST_F(ValueTest, AddToEmptyObject) {
 
 TEST_F(ValueTest, AddToEmptyArrayNumberFirst) {
   json::Array array;
-  array.add(new json::Number(10));
-  array.add(new json::Boolean(true));
+  array.push_back(new json::Number(10));
+  array.push_back(new json::Boolean(true));
 
   json::Value value;
-  value.add(10);
-  value.add(true);
+  value.push_back(10);
+  value.push_back(true);
 
   ASSERT_EQ(value, array);
   ASSERT_EQ(array, value);
@@ -333,12 +332,12 @@ TEST_F(ValueTest, AddToEmptyArrayNumberFirst) {
 
 TEST_F(ValueTest, AddToEmptyArrayBooleanFirst) {
   json::Array array;
-  array.add(new json::Boolean(true));
-  array.add(new json::Number(10));
+  array.push_back(new json::Boolean(true));
+  array.push_back(new json::Number(10));
 
   json::Value value;
-  value.add(true);
-  value.add(10);
+  value.push_back(true);
+  value.push_back(10);
 
   ASSERT_EQ(value, array);
   ASSERT_EQ(array, value);
@@ -346,12 +345,12 @@ TEST_F(ValueTest, AddToEmptyArrayBooleanFirst) {
 
 TEST_F(ValueTest, AddToEmptyArrayNullFirst) {
   json::Array array;
-  array.add(new json::Null());
-  array.add(new json::Boolean(true));
+  array.push_back(new json::Null());
+  array.push_back(new json::Boolean(true));
 
   json::Value value;
-  value.add(nullptr);
-  value.add(true);
+  value.push_back(nullptr);
+  value.push_back(true);
 
   ASSERT_EQ(value, array);
   ASSERT_EQ(array, value);
@@ -359,12 +358,12 @@ TEST_F(ValueTest, AddToEmptyArrayNullFirst) {
 
 TEST_F(ValueTest, AddToEmptyArrayCStringFirst) {
   json::Array array;
-  array.add(new json::String("string"));
-  array.add(new json::Null());
+  array.push_back(new json::String("string"));
+  array.push_back(new json::Null());
 
   json::Value value;
-  value.add("string");
-  value.add(nullptr);
+  value.push_back("string");
+  value.push_back(nullptr);
 
   ASSERT_EQ(value, array);
   ASSERT_EQ(array, value);
@@ -372,12 +371,12 @@ TEST_F(ValueTest, AddToEmptyArrayCStringFirst) {
 
 TEST_F(ValueTest, AddToEmptyArrayStringFirst) {
   json::Array array;
-  array.add(new json::String("string"));
-  array.add(new json::Null());
+  array.push_back(new json::String("string"));
+  array.push_back(new json::Null());
 
   json::Value value;
-  value.add(std::string("string"));
-  value.add(nullptr);
+  value.push_back(std::string("string"));
+  value.push_back(nullptr);
 
   ASSERT_EQ(value, array);
   ASSERT_EQ(array, value);
@@ -387,12 +386,12 @@ TEST_F(ValueTest, AddToEmptyArrayValueFirst) {
   json::Value num(new json::Number(8));
 
   json::Array array;
-  array.add(new json::Number(8));
-  array.add(new json::String("string"));
+  array.push_back(new json::Number(8));
+  array.push_back(new json::String("string"));
 
   json::Value value;
-  value.add(num);
-  value.add("string");
+  value.push_back(num);
+  value.push_back("string");
 
   ASSERT_EQ(value, array);
   ASSERT_EQ(array, value);
@@ -402,12 +401,12 @@ TEST_F(ValueTest, AddToEmptyArrayEmptyValueFirst) {
   json::Value null_value;
 
   json::Array array;
-  array.add(new json::Null());
-  array.add(new json::String("string"));
+  array.push_back(new json::Null());
+  array.push_back(new json::String("string"));
 
   json::Value value;
-  value.add(null_value);
-  value.add("string");
+  value.push_back(null_value);
+  value.push_back("string");
 
   ASSERT_EQ(value, array);
   ASSERT_EQ(array, value);
@@ -536,7 +535,7 @@ TEST_F(ValueTest, ObjectChangesPropagateToCache) {
 
 TEST_F(ValueTest, ArrayChangesPropagateToCache) {
   json::Value val;
-  val.add(10);
+  val.push_back(10);
   ASSERT_EQ(val[0], 10);
 
   val[0] = "20";
@@ -591,13 +590,13 @@ TEST_F(ValueTest, ObjectMoveSemantics) {
 TEST_F(ValueTest, ArrayMoveSemantics) {
   // arrange
   json::Value arr1;
-  arr1.add("value1");
-  arr1.add("value2");
-  arr1.add("value3");
+  arr1.push_back("value1");
+  arr1.push_back("value2");
+  arr1.push_back("value3");
 
   json::Value arr2;
-  arr2.add("valueA");
-  arr2.add("valueB");
+  arr2.push_back("valueA");
+  arr2.push_back("valueB");
 
   // act
   arr2[1] = std::move(arr1[0]);
@@ -636,9 +635,9 @@ TEST_F(ValueTest, ObjectRemove) {
 TEST_F(ValueTest, ArrayRemove) {
   // arrange
   json::Value arr;
-  arr.add("value1");
-  arr.add("value2");
-  arr.add("value3");
+  arr.push_back("value1");
+  arr.push_back("value2");
+  arr.push_back("value3");
 
   // act
   arr.remove(1);  // Remove the element at index 1

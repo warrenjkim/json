@@ -23,10 +23,10 @@ class ArrayVisitorTest : public ::testing::Test {
 
 TEST_F(ArrayVisitorTest, Array) {
   json::Array array;
-  array.add(new json::Null());
-  array.add(new json::Number(42));
-  array.add(new json::Boolean(true));
-  array.add(new json::String("string"));
+  array.push_back(new json::Null());
+  array.push_back(new json::Number(42));
+  array.push_back(new json::Boolean(true));
+  array.push_back(new json::String("string"));
   json::visitors::ArrayVisitor visitor;
   array.accept(visitor);
   ASSERT_EQ(visitor.result(), array.get());

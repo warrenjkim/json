@@ -67,7 +67,7 @@ TEST_F(StringifyVisitorTest, OneElementArray) {
   json::visitors::StringifyVisitor visitor;
 
   json::Array arr;
-  arr.add(new json::Null());
+  arr.push_back(new json::Null());
   arr.accept(visitor);
   ASSERT_EQ(visitor.result(), "[ null ]");
 }
@@ -76,8 +76,8 @@ TEST_F(StringifyVisitorTest, MultipleElementArray) {
   json::visitors::StringifyVisitor visitor;
 
   json::Array arr;
-  arr.add(new json::Null());
-  arr.add(new json::String("10"));
+  arr.push_back(new json::Null());
+  arr.push_back(new json::String("10"));
   arr.accept(visitor);
   ASSERT_EQ(visitor.result(), "[ null, \"10\" ]");
 }
@@ -86,8 +86,8 @@ TEST_F(StringifyVisitorTest, NestedArray) {
   json::visitors::StringifyVisitor visitor;
 
   json::Array arr;
-  arr.add(new json::Array());
-  arr.add(new json::String("10"));
+  arr.push_back(new json::Array());
+  arr.push_back(new json::String("10"));
   arr.accept(visitor);
   ASSERT_EQ(visitor.result(), "[ [], \"10\" ]");
 }

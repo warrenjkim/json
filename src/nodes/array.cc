@@ -16,7 +16,7 @@ void Array::accept(visitors::ConstVisitor& visitor) const {
 Node* Array::clone() {
   Array* arr = new Array();
   for (Node* node : array_) {
-    arr->add(node->clone());
+    arr->push_back(node->clone());
   }
 
   return arr;
@@ -30,7 +30,7 @@ Array::~Array() {
   }
 }
 
-void Array::add(Node* element) { array_.push_back(element); }
+void Array::push_back(Node* element) { array_.push_back(element); }
 
 const size_t Array::size() const { return array_.size(); }
 

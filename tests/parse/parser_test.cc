@@ -62,17 +62,17 @@ TEST_F(JsonParserTest, EmptyArray) { assert_parse("[]", new json::Array()); }
 
 TEST_F(JsonParserTest, SimpleArray) {
   json::Array* arr = new json::Array();
-  arr->add(new json::Number(1));
-  arr->add(new json::Number(2));
-  arr->add(new json::Number(3));
+  arr->push_back(new json::Number(1));
+  arr->push_back(new json::Number(2));
+  arr->push_back(new json::Number(3));
   assert_parse("[1, 2, 3]", arr);
 }
 
 TEST_F(JsonParserTest, LogicalValues) {
   json::Array* arr = new json::Array();
-  arr->add(new json::Boolean(true));
-  arr->add(new json::Boolean(false));
-  arr->add(new json::Null());
+  arr->push_back(new json::Boolean(true));
+  arr->push_back(new json::Boolean(false));
+  arr->push_back(new json::Null());
   assert_parse("[true, false, null]", arr);
 }
 
@@ -82,66 +82,66 @@ TEST_F(JsonParserTest, NullValue) {
   assert_parse("{\"key\": null}", obj);
 
   json::Array* arr = new json::Array();
-  arr->add(new json::Null());
+  arr->push_back(new json::Null());
   assert_parse("[null]", arr);
 }
 
 TEST_F(JsonParserTest, IntegerNumbers) {
   json::Array* arr = new json::Array();
-  arr->add(new json::Number(0));
-  arr->add(new json::Number(42));
-  arr->add(new json::Number(0));
-  arr->add(new json::Number(-42));
+  arr->push_back(new json::Number(0));
+  arr->push_back(new json::Number(42));
+  arr->push_back(new json::Number(0));
+  arr->push_back(new json::Number(-42));
   assert_parse("[0,42,-0,-42]", arr);
 }
 
 TEST_F(JsonParserTest, FloatingPointNumbers) {
   json::Array* arr = new json::Array();
-  arr->add(new json::Number(3.14));
-  arr->add(new json::Number(-3.14));
+  arr->push_back(new json::Number(3.14));
+  arr->push_back(new json::Number(-3.14));
   assert_parse("[3.14,-3.14]", arr);
 }
 
 TEST_F(JsonParserTest, ScientificNotationNumbers) {
   json::Array* arr = new json::Array();
-  arr->add(new json::Number(static_cast<int64_t>(1e10)));
-  arr->add(new json::Number(1e-10));
-  arr->add(new json::Number(1.23e10));
-  arr->add(new json::Number(-1.23e-10));
+  arr->push_back(new json::Number(static_cast<int64_t>(1e10)));
+  arr->push_back(new json::Number(1e-10));
+  arr->push_back(new json::Number(1.23e10));
+  arr->push_back(new json::Number(-1.23e-10));
   assert_parse("[1e10,1e-10,1.23e+10,-1.23E-10]", arr);
 }
 
 TEST_F(JsonParserTest, ZeroWithExponent) {
   json::Array* arr = new json::Array();
-  arr->add(new json::Number(0));  // 0e0
-  arr->add(new json::Number(0));  // -0e-0
+  arr->push_back(new json::Number(0));  // 0e0
+  arr->push_back(new json::Number(0));  // -0e-0
   assert_parse("[0e0,-0e-0]", arr);
 }
 
 TEST_F(JsonParserTest, LargeExponents) {
   json::Array* arr = new json::Array();
-  arr->add(new json::Number(1e-123));
-  arr->add(new json::Number(1e123));
-  arr->add(new json::Number(1e308));
+  arr->push_back(new json::Number(1e-123));
+  arr->push_back(new json::Number(1e123));
+  arr->push_back(new json::Number(1e308));
   assert_parse("[1e-123,1e+123,1e308]", arr);
 }
 
 TEST_F(JsonParserTest, VerySmallAndLargeNumbers) {
   json::Array* arr = new json::Array();
-  arr->add(new json::Number(0.0000000000000000000001));
-  arr->add(new json::Number(9999999999999999999999.0));
+  arr->push_back(new json::Number(0.0000000000000000000001));
+  arr->push_back(new json::Number(9999999999999999999999.0));
   assert_parse("[0.0000000000000000000001,9999999999999999999999]", arr);
 }
 
 TEST_F(JsonParserTest, SimpleString) {
   json::Array* arr = new json::Array();
-  arr->add(new json::String("Hello, World!"));
+  arr->push_back(new json::String("Hello, World!"));
   assert_parse("[\"Hello, World!\"]", arr);
 }
 
 TEST_F(JsonParserTest, EscapedString) {
   json::Array* arr = new json::Array();
-  arr->add(new json::String("Escaped \\\"Quote\\\""));
+  arr->push_back(new json::String("Escaped \\\"Quote\\\""));
   assert_parse("[\"Escaped \\\"Quote\\\"\"]", arr);
 }
 
@@ -155,8 +155,8 @@ TEST_F(JsonParserTest, ComplexStructure) {
   obj->add("isStudent", new json::Boolean(false));
 
   json::Array* hobbies = new json::Array();
-  hobbies->add(new json::String("reading"));
-  hobbies->add(new json::String("cycling"));
+  hobbies->push_back(new json::String("reading"));
+  hobbies->push_back(new json::String("cycling"));
 
   obj->add("hobbies", hobbies);
   obj->add("address", new json::Null());
