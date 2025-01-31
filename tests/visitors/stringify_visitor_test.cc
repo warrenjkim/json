@@ -103,7 +103,7 @@ TEST_F(StringifyVisitorTest, OneElementObject) {
   json::visitors::StringifyVisitor visitor;
 
   json::Object obj;
-  obj.add("null", new json::Null());
+  obj.insert("null", new json::Null());
   obj.accept(visitor);
   ASSERT_EQ(visitor.result(), "{ \"null\": null }");
 }
@@ -112,8 +112,8 @@ TEST_F(StringifyVisitorTest, MultipleElementObject) {
   json::visitors::StringifyVisitor visitor;
 
   json::Object obj;
-  obj.add("null", new json::Null());
-  obj.add("string", new json::String("10"));
+  obj.insert("null", new json::Null());
+  obj.insert("string", new json::String("10"));
   obj.accept(visitor);
   ASSERT_EQ(visitor.result(), "{ \"null\": null, \"string\": \"10\" }");
 }
@@ -122,8 +122,8 @@ TEST_F(StringifyVisitorTest, NestedObject) {
   json::visitors::StringifyVisitor visitor;
 
   json::Object obj;
-  obj.add("object", new json::Object());
-  obj.add("string", new json::String("10"));
+  obj.insert("object", new json::Object());
+  obj.insert("string", new json::String("10"));
   obj.accept(visitor);
   ASSERT_EQ(visitor.result(), "{ \"object\": {}, \"string\": \"10\" }");
 }

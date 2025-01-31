@@ -49,7 +49,7 @@ void Value::push_back(const T& value) {
 }
 
 template <ReasonableNumber T>
-void Value::put(const std::string& key, const T value) {
+void Value::insert(const std::string& key, const T value) {
   if (!node_) {
     node_ = new Object();
   }
@@ -61,7 +61,7 @@ void Value::put(const std::string& key, const T value) {
 }
 
 template <ReasonableString T>
-void Value::put(const std::string& key, const T& value) {
+void Value::insert(const std::string& key, const T& value) {
   if (!node_) {
     node_ = new Object();
   }

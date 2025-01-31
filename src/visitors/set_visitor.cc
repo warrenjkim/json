@@ -49,7 +49,7 @@ void SetVisitor::visit(Object& parent) {
   }
 
   *target_ = value_;
-  parent.put(key_, *target_);
+  parent.insert(key_, *target_);
 }
 
 void SetVisitor::visit(String& parent) {

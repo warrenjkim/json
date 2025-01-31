@@ -16,7 +16,7 @@ void Object::accept(visitors::ConstVisitor& visitor) const {
 Node* Object::clone() {
   Object* obj = new Object();
   for (auto& [key, value] : properties_) {
-    obj->add(key, value->clone());
+    obj->insert(key, value->clone());
   }
 
   return obj;
@@ -34,11 +34,7 @@ Object::~Object() {
   }
 }
 
-void Object::add(const std::string& key, Node* value) {
-  properties_[key] = value;
-}
-
-void Object::put(const std::string& key, Node* value) {
+void Object::insert(const std::string& key, Node* value) {
   properties_.insert(key, value);
 }
 

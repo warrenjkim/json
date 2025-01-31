@@ -21,21 +21,21 @@ class ValueTest : public ::testing::Test {
   void SetUp() override {
     json::utils::init_logging(boost::log::trivial::debug);
     root_ = new json::Object();
-    root_->add("null", new json::Null());
-    root_->add("bool", new json::Boolean(true));
-    root_->add("number", new json::Number(42.5));
-    root_->add("string", new json::String("hello"));
+    root_->insert("null", new json::Null());
+    root_->insert("bool", new json::Boolean(true));
+    root_->insert("number", new json::Number(42.5));
+    root_->insert("string", new json::String("hello"));
 
     array_ = new json::Array();
     array_->push_back(new json::Number(1));
     array_->push_back(new json::String("two"));
     array_->push_back(new json::Boolean(false));
     array_->push_back(new json::Null());
-    root_->add("array", array_);
+    root_->insert("array", array_);
 
     nested_obj_ = new json::Object();
-    nested_obj_->add("key", new json::String("value"));
-    root_->add("object", nested_obj_);
+    nested_obj_->insert("key", new json::String("value"));
+    root_->insert("object", nested_obj_);
   }
 
   void TearDown() override {}
@@ -414,12 +414,12 @@ TEST_F(ValueTest, AddToEmptyArrayEmptyValueFirst) {
 
 TEST_F(ValueTest, AddToEmptyObjectNumberFirst) {
   json::Object object;
-  object.add("num", new json::Number(10));
-  object.add("bool", new json::Boolean(true));
+  object.insert("num", new json::Number(10));
+  object.insert("bool", new json::Boolean(true));
 
   json::Value value;
-  value.put("num", 10);
-  value.put("bool", true);
+  value.insert("num", 10);
+  value.insert("bool", true);
 
   ASSERT_EQ(value, object);
   ASSERT_EQ(object, value);
@@ -427,12 +427,12 @@ TEST_F(ValueTest, AddToEmptyObjectNumberFirst) {
 
 TEST_F(ValueTest, AddToEmptyObjectBooleanFirst) {
   json::Object object;
-  object.add("bool", new json::Boolean(true));
-  object.add("num", new json::Number(10));
+  object.insert("bool", new json::Boolean(true));
+  object.insert("num", new json::Number(10));
 
   json::Value value;
-  value.put("bool", true);
-  value.put("num", 10);
+  value.insert("bool", true);
+  value.insert("num", 10);
 
   ASSERT_EQ(value, object);
   ASSERT_EQ(object, value);
@@ -440,12 +440,12 @@ TEST_F(ValueTest, AddToEmptyObjectBooleanFirst) {
 
 TEST_F(ValueTest, AddToEmptyObjectNullFirst) {
   json::Object object;
-  object.add("null", new json::Null());
-  object.add("bool", new json::Boolean(true));
+  object.insert("null", new json::Null());
+  object.insert("bool", new json::Boolean(true));
 
   json::Value value;
-  value.put("null", nullptr);
-  value.put("bool", true);
+  value.insert("null", nullptr);
+  value.insert("bool", true);
 
   ASSERT_EQ(value, object);
   ASSERT_EQ(object, value);
@@ -453,12 +453,12 @@ TEST_F(ValueTest, AddToEmptyObjectNullFirst) {
 
 TEST_F(ValueTest, AddToEmptyObjectCStringFirst) {
   json::Object object;
-  object.add("str", new json::String("string"));
-  object.add("null", new json::Null());
+  object.insert("str", new json::String("string"));
+  object.insert("null", new json::Null());
 
   json::Value value;
-  value.put("str", "string");
-  value.put("null", nullptr);
+  value.insert("str", "string");
+  value.insert("null", nullptr);
 
   ASSERT_EQ(value, object);
   ASSERT_EQ(object, value);
@@ -466,12 +466,12 @@ TEST_F(ValueTest, AddToEmptyObjectCStringFirst) {
 
 TEST_F(ValueTest, AddToEmptyObjectStringFirst) {
   json::Object object;
-  object.add("str", new json::String("string"));
-  object.add("null", new json::Null());
+  object.insert("str", new json::String("string"));
+  object.insert("null", new json::Null());
 
   json::Value value;
-  value.put("str", std::string("string"));
-  value.put("null", nullptr);
+  value.insert("str", std::string("string"));
+  value.insert("null", nullptr);
 
   ASSERT_EQ(value, object);
   ASSERT_EQ(object, value);
@@ -481,12 +481,12 @@ TEST_F(ValueTest, AddToEmptyObjectValueFirst) {
   json::Value num(new json::Number(8));
 
   json::Object object;
-  object.add("val", new json::Number(8));
-  object.add("str", new json::String("string"));
+  object.insert("val", new json::Number(8));
+  object.insert("str", new json::String("string"));
 
   json::Value value;
-  value.put("val", num);
-  value.put("str", "string");
+  value.insert("val", num);
+  value.insert("str", "string");
 
   ASSERT_EQ(value, object);
   ASSERT_EQ(object, value);
@@ -496,12 +496,12 @@ TEST_F(ValueTest, AddToEmptyObjectEmptyValueFirst) {
   json::Value null_value;
 
   json::Object object;
-  object.add("empty_val", new json::Null());
-  object.add("str", new json::String("string"));
+  object.insert("empty_val", new json::Null());
+  object.insert("str", new json::String("string"));
 
   json::Value value;
-  value.put("empty_val", null_value);
-  value.put("str", "string");
+  value.insert("empty_val", null_value);
+  value.insert("str", "string");
 
   ASSERT_EQ(value, object);
   ASSERT_EQ(object, value);

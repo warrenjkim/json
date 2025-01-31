@@ -55,10 +55,10 @@ class Value {
   void push_back(const Value& value);
 
  public:
-  void put(const std::string&, const nullptr_t);
-  void put(const std::string&, const bool value);
-  void put(const std::string&, const char* value);
-  void put(const std::string&, const Value& value);
+  void insert(const std::string&, const nullptr_t);
+  void insert(const std::string&, const bool value);
+  void insert(const std::string&, const char* value);
+  void insert(const std::string&, const Value& value);
 
  public:
   operator bool() const;
@@ -97,13 +97,13 @@ class Value {
   template <ReasonableString T>
   void push_back(const T& value);
 
-  // TODO(put -> insert)
+  // TODO(insert -> insert)
  public:
   template <ReasonableNumber T>
-  void put(const std::string& key, const T value);
+  void insert(const std::string& key, const T value);
 
   template <ReasonableString T>
-  void put(const std::string& key, const T& value);
+  void insert(const std::string& key, const T& value);
 
   // TODO(add erase() once iterators are implemented)
  public:

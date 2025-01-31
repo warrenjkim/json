@@ -20,7 +20,7 @@ class GetVisitorTest : public ::testing::Test {
   void SetUp() override {
     json::utils::init_logging(boost::log::trivial::debug);
     object_ = new json::Object();
-    object_->add("key", new json::String("value"));
+    object_->insert("key", new json::String("value"));
 
     array_ = new json::Array();
     array_->push_back(new json::Number(1));

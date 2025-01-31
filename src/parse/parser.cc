@@ -65,7 +65,7 @@ Object* Parser::parse_object(json::utils::Queue<Token>& tokens,
       return nullptr;
     }
 
-    object->add(key_value->first, key_value->second);
+    object->insert(key_value->first, key_value->second);
 
     std::optional<Token> token = tokens.dequeue();
     if (!token) {

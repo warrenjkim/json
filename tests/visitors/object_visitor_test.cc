@@ -47,10 +47,10 @@ TEST_F(ObjectVisitorTest, NumberBadCast) {
 
 TEST_F(ObjectVisitorTest, Object) {
   json::Object object;
-  object.add("null", new json::Null());
-  object.add("number", new json::Number(42));
-  object.add("boolean", new json::Boolean(true));
-  object.add("string", new json::String("string"));
+  object.insert("null", new json::Null());
+  object.insert("number", new json::Number(42));
+  object.insert("boolean", new json::Boolean(true));
+  object.insert("string", new json::String("string"));
   json::visitors::ObjectVisitor visitor;
   object.accept(visitor);
   ASSERT_EQ(visitor.result(), object.get());

@@ -146,7 +146,7 @@ void Value::push_back(const Value& value) {
   }
 }
 
-void Value::put(const std::string& key, const nullptr_t) {
+void Value::insert(const std::string& key, const nullptr_t) {
   if (!node_) {
     node_ = new Object();
   }
@@ -157,7 +157,7 @@ void Value::put(const std::string& key, const nullptr_t) {
   visitor.result().insert(key, new Null());
 }
 
-void Value::put(const std::string& key, bool value) {
+void Value::insert(const std::string& key, bool value) {
   if (!node_) {
     node_ = new Object();
   }
@@ -168,7 +168,7 @@ void Value::put(const std::string& key, bool value) {
   visitor.result().insert(key, new Boolean(value));
 }
 
-void Value::put(const std::string& key, const char* value) {
+void Value::insert(const std::string& key, const char* value) {
   if (!node_) {
     node_ = new Object();
   }
@@ -179,7 +179,7 @@ void Value::put(const std::string& key, const char* value) {
   visitor.result().insert(key, new String(value));
 }
 
-void Value::put(const std::string& key, const Value& value) {
+void Value::insert(const std::string& key, const Value& value) {
   if (!node_) {
     node_ = new Object();
   }

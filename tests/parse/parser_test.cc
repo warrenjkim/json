@@ -54,7 +54,7 @@ TEST_F(JsonParserTest, EmptyObject) { assert_parse("{}", new json::Object()); }
 
 TEST_F(JsonParserTest, SimpleObject) {
   json::Object* obj = new json::Object();
-  obj->add("key", new json::String("value"));
+  obj->insert("key", new json::String("value"));
   assert_parse("{\"key\": \"value\"}", obj);
 }
 
@@ -78,7 +78,7 @@ TEST_F(JsonParserTest, LogicalValues) {
 
 TEST_F(JsonParserTest, NullValue) {
   json::Object* obj = new json::Object();
-  obj->add("key", new json::Null());
+  obj->insert("key", new json::Null());
   assert_parse("{\"key\": null}", obj);
 
   json::Array* arr = new json::Array();
@@ -148,18 +148,18 @@ TEST_F(JsonParserTest, EscapedString) {
 TEST_F(JsonParserTest, ComplexStructure) {
   json::Object* obj = new json::Object();
   json::Object* inner_obj = new json::Object();
-  inner_obj->add("first", new json::String("John"));
-  inner_obj->add("last", new json::String("Doe"));
-  obj->add("name", inner_obj);
-  obj->add("age", new json::Number(30));
-  obj->add("isStudent", new json::Boolean(false));
+  inner_obj->insert("first", new json::String("John"));
+  inner_obj->insert("last", new json::String("Doe"));
+  obj->insert("name", inner_obj);
+  obj->insert("age", new json::Number(30));
+  obj->insert("isStudent", new json::Boolean(false));
 
   json::Array* hobbies = new json::Array();
   hobbies->push_back(new json::String("reading"));
   hobbies->push_back(new json::String("cycling"));
 
-  obj->add("hobbies", hobbies);
-  obj->add("address", new json::Null());
+  obj->insert("hobbies", hobbies);
+  obj->insert("address", new json::Null());
 
   assert_parse(R"({
     "name": {

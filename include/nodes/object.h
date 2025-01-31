@@ -27,8 +27,7 @@ class Object : public Node {
   Object& operator=(const Object&) = delete;
 
  public:
-  void add(const std::string& key, Node* value);
-  void put(const std::string& key, Node* value);
+  void insert(const std::string& key, Node* value);
   const size_t size() const;
   const bool empty() const;
 
