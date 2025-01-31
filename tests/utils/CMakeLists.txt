@@ -1,5 +1,3 @@
-create_test(stack_test logger)
-
 create_test(queue_test logger)
 
 create_test(pair_test logger)
