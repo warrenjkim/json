@@ -97,7 +97,6 @@ class Value {
   template <ReasonableString T>
   void push_back(const T& value);
 
-  // TODO(insert -> insert)
  public:
   template <ReasonableNumber T>
   void insert(const std::string& key, const T value);
