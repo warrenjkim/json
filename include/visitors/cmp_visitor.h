@@ -15,19 +15,19 @@ namespace visitors {
 
 class CmpVisitor : public ConstVisitor {
  public:
-  CmpVisitor(Node* root);
-  CmpVisitor(const Node* root);
-  void visit(const Array& node) override;
-  void visit(const Boolean& node) override;
-  void visit(const Null& node) override;
-  void visit(const Number& node) override;
-  void visit(const Object& node) override;
-  void visit(const String& node) override;
+  CmpVisitor(Node* lhs);
+  CmpVisitor(const Node* lhs);
+  void visit(const Array& rhs) override;
+  void visit(const Boolean& rhs) override;
+  void visit(const Null& rhs) override;
+  void visit(const Number& rhs) override;
+  void visit(const Object& rhs) override;
+  void visit(const String& rhs) override;
   bool result() const;
 
  private:
   bool result_;
-  Node* expected_;
+  Node* lhs_;
 };
 
 }  // namespace visitors
