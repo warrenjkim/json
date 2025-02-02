@@ -31,4 +31,8 @@ class UnexpectedParentException : public JsonException {
   using JsonException::JsonException;
 };
 
+class NonIterableTypeException : public JsonException {
+  using JsonException::JsonException;
+};
+
 }  // namespace json
