@@ -9,6 +9,12 @@
 
 namespace json {
 
+namespace visitors {
+
+class IteratorVisitor;
+
+}  // namespace visitors
+
 class Value;
 
 }  // namespace json
@@ -35,6 +41,10 @@ namespace json {
 
 class Value {
  public:
+  class Iterator;
+  class ConstIterator;
+
+ public:
   Value();
   ~Value();
   Value(Value&& other);
@@ -59,6 +69,10 @@ class Value {
   void insert(const std::string&, const bool value);
   void insert(const std::string&, const char* value);
   void insert(const std::string&, const Value& value);
+
+ public:
+  Iterator begin();
+  Iterator end();
 
  public:
   operator bool() const;
@@ -145,6 +159,64 @@ class Value {
   Value* parent_;
   std::optional<std::string> key_;
   utils::Map<std::string, Value> cache_;
+
+ public:
+  class Iterator {
+   private:
+    union ContainerIterator;
+
+   public:
+    using iterator_category = std::bidirectional_iterator_tag;
+    using value_type = Value;
+    using difference_type = std::ptrdiff_t;
+    using pointer = value_type*;
+    using reference = value_type&;
+
+   public:
+    Iterator();
+    ~Iterator();
+
+   public:
+    Iterator(const Iterator&) = default;
+    Iterator(Iterator&&) noexcept = default;
+    Iterator& operator=(const Iterator&) = default;
+    Iterator& operator=(Iterator&&) noexcept = default;
+
+   public:
+    Iterator(Node* node, Value* value, ContainerIterator& it);
+
+   public:
+    Iterator& operator++();
+    Iterator operator++(int);
+
+    Iterator& operator--();
+    Iterator operator--(int);
+
+    reference operator*() const;
+    pointer operator->() const;
+
+    bool operator==(const Iterator& other) const;
+    bool operator!=(const Iterator& other) const;
+
+   private:
+    Value* curr_ = nullptr;
+    Value* value_ = nullptr;
+    union ContainerIterator {
+      std::vector<Node*>::iterator* array_it;
+      utils::Map<std::string, Node*>::Iterator* map_it;
+    } it_;
+
+   private:
+    Iterator(Value* value);
+
+   private:
+    friend class Value;
+    friend class ConstIterator;
+    friend class visitors::IteratorVisitor;
+  };
+
+ private:
+  friend class visitors::IteratorVisitor;
 };
 
 }  // namespace json
