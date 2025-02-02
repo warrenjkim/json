@@ -192,6 +192,7 @@ class Value {
     Iterator& operator--();
     Iterator operator--(int);
 
+    // TODO(fix this. Should not be const)
     reference operator*() const;
     pointer operator->() const;
 
