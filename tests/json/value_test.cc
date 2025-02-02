@@ -912,3 +912,96 @@ TEST_F(ValueTest, ArrayRemove) {
 
   ASSERT_EQ(arr, expected_arr);
 }
+
+TEST_F(ValueTest, ArrayIteratorBasic) {
+  // arrange
+  json::Value arr;
+  arr.push_back("value1");
+  arr.push_back("value2");
+  arr.push_back("value3");
+
+  // act
+  json::Value::Iterator it = arr.begin();
+
+  // assert
+  ASSERT_EQ(*it, "value1");
+}
+
+TEST_F(ValueTest, ArrayIteratorIncrement) {
+  // arrange
+  json::Value arr;
+  arr.push_back("value1");
+  arr.push_back("value2");
+
+  // act
+  json::Value::Iterator it = arr.begin();
+  ++it;
+
+  // assert
+  ASSERT_EQ(*it, "value2");
+}
+
+TEST_F(ValueTest, ArrayIteratorDecrement) {
+  // arrange
+  json::Value arr;
+  arr.push_back("value1");
+  arr.push_back("value2");
+
+  // act
+  json::Value::Iterator it = arr.begin();
+  ++it;
+  --it;
+
+  // assert
+  ASSERT_EQ(*it, "value1");
+}
+
+TEST_F(ValueTest, ArrayIteratorEquality) {
+  // arrange
+  json::Value arr;
+  arr.push_back("value1");
+  arr.push_back("value2");
+
+  // act
+  json::Value::Iterator it1 = arr.begin();
+  json::Value::Iterator it2 = arr.begin();
+
+  // assert
+  ASSERT_EQ(it1, it2);
+  ++it1;
+  ASSERT_NE(it1, it2);
+}
+
+TEST_F(ValueTest, ArrayIteratorEndEquality) {
+  // arrange
+  json::Value arr;
+  arr.push_back("value1");
+
+  // act
+  json::Value::Iterator it = arr.begin();
+  ++it;
+
+  // assert
+  ASSERT_EQ(it, arr.end());
+}
+
+TEST_F(ValueTest, ArrayIteratorOutOfRange) {
+  // arrange
+  json::Value arr;
+  arr.push_back("value1");
+  json::Value::Iterator it = arr.begin();
+  ++it;  // now at end
+
+  // act & assert
+  ASSERT_THROW(++it, std::out_of_range);
+}
+
+TEST_F(ValueTest, ArrayIteratorDecrementBegin) {
+  // arrange
+  json::Value arr;
+  arr.push_back("value1");
+  json::Value::Iterator it = arr.begin();
+
+  // act & assert
+  ASSERT_THROW(--it, std::out_of_range);
+}
