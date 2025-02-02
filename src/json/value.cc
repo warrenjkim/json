@@ -11,6 +11,7 @@
 #include "nodes/string.h"
 #include "visitors/array_visitor.h"
 #include "visitors/boolean_visitor.h"
+#include "visitors/iterator_visitor.h"
 #include "visitors/null_visitor.h"
 #include "visitors/object_visitor.h"
 #include "visitors/string_visitor.h"
@@ -195,6 +196,26 @@ void Value::insert(const std::string& key, const Value& value) {
   }
 }
 
+Value::Iterator Value::begin() {
+  Value::Iterator it(this);
+  visitors::IteratorVisitor visitor(
+      &it.curr_, it.it_, visitors::IteratorVisitor::Operation::BEGIN);
+
+  node_->accept(visitor);
+
+  return it;
+}
+
+Value::Iterator Value::end() {
+  Value::Iterator it(this);
+  visitors::IteratorVisitor visitor(&it.curr_, it.it_,
+                                    visitors::IteratorVisitor::Operation::END);
+
+  node_->accept(visitor);
+
+  return it;
+}
+
 Value::operator bool() const {
   visitors::BooleanVisitor visitor;
   node_->accept(visitor);
@@ -304,6 +325,72 @@ bool operator==(const Value& lhs, const Array& rhs) {
 
 bool operator==(const Value& lhs, const Object& rhs) {
   return lhs.node_ && *lhs.node_ == rhs;
+}
+
+}  // namespace json
+
+namespace json {
+
+Value::Iterator::Iterator()
+    : curr_((Value*)::operator new(sizeof(Value))), value_(nullptr) {}
+
+Value::Iterator::~Iterator() { ::operator delete(curr_); }
+
+Value::Iterator::Iterator(Node* node, Value* value, ContainerIterator& it)
+    : curr_((Value*)::operator new(sizeof(Value))), value_(value), it_(it) {
+  new (curr_) Value(node);
+  curr_->parent_ = value_;
+}
+
+Value::Iterator::Iterator(Value* value)
+    : curr_((Value*)::operator new(sizeof(Value))), value_(value) {
+  curr_->parent_ = value_;
+}
+
+Value::Iterator& Value::Iterator::operator++() {
+  visitors::IteratorVisitor visitor(
+      &curr_, it_, visitors::IteratorVisitor::Operation::INCREMENT);
+
+  value_->node_->accept(visitor);
+
+  return *this;
+}
+
+Value::Iterator Value::Iterator::operator++(int) {
+  Iterator temp = *this;
+  ++(*this);
+
+  return temp;
+}
+
+Value::Iterator& Value::Iterator::operator--() {
+  visitors::IteratorVisitor visitor(
+      &curr_, it_, visitors::IteratorVisitor::Operation::DECREMENT);
+
+  value_->node_->accept(visitor);
+
+  return *this;
+}
+
+Value::Iterator Value::Iterator::operator--(int) {
+  Iterator temp = *this;
+  --(*this);
+
+  return temp;
+}
+
+Value::Iterator::reference Value::Iterator::operator*() const { return *curr_; }
+
+Value::Iterator::pointer Value::Iterator::operator->() const {
+  return &(operator*());
+}
+
+bool Value::Iterator::operator==(const Iterator& other) const {
+  return value_ == other.value_ && curr_->node_ == other.curr_->node_;
+}
+
+bool Value::Iterator::operator!=(const Iterator& other) const {
+  return !(*this == other);
 }
 
 }  // namespace json
