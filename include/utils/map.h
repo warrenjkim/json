@@ -70,7 +70,6 @@ class Map {
  private:
   MapTree tree_;
 
- private:
  public:
   class Iterator {
    public:
