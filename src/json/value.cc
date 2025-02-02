@@ -88,11 +88,7 @@ Value& Value::operator=(const Value& other) {
   return *this;
 }
 
-Value::Value(Node* node) : node_(node), parent_(nullptr) {
-  if (!node) {
-    throw ParseException("Parsing failed.");
-  }
-}
+Value::Value(Node* node) : node_(node), parent_(nullptr) {}
 
 Value::Value(const nullptr_t) : node_(new Null()), parent_(nullptr) {}
 
