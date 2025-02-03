@@ -10,11 +10,10 @@ namespace visitors {
 
 class IteratorVisitor : public Visitor {
  public:
-  enum class Operation { BEGIN, END, INCREMENT, DECREMENT };
+  enum class Operation { INIT, BEGIN, END, INCREMENT, DECREMENT, DESTROY };
 
  public:
-  IteratorVisitor(Value** curr, Value::Iterator::ContainerIterator& it,
-                  Operation op);
+  IteratorVisitor(Value::Iterator& it, const Operation op);
 
  public:
   void visit(Array& node) override;
@@ -24,14 +23,14 @@ class IteratorVisitor : public Visitor {
   void visit(Object& node) override;
   void visit(String& node) override;
 
-  Value::Iterator result();
+  IteratorVisitor& init();
 
  public:
+  IteratorVisitor() = delete;
   ~IteratorVisitor() = default;
 
  private:
-  Value** curr_ = nullptr;
-  Value::Iterator::ContainerIterator it_;
+  Value::Iterator& it_;
   Operation op_;
 };
 

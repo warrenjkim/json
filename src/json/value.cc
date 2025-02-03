@@ -193,20 +193,22 @@ void Value::insert(const std::string& key, const Value& value) {
 }
 
 Value::Iterator Value::begin() {
-  Value::Iterator it(this);
-  visitors::IteratorVisitor visitor(
-      &it.curr_, it.it_, visitors::IteratorVisitor::Operation::BEGIN);
-
+  Value::Iterator it;
+  it.value_ = this;
+  visitors::IteratorVisitor visitor =
+      visitors::IteratorVisitor(it, visitors::IteratorVisitor::Operation::BEGIN)
+          .init();
   node_->accept(visitor);
 
   return it;
 }
 
 Value::Iterator Value::end() {
-  Value::Iterator it(this);
-  visitors::IteratorVisitor visitor(&it.curr_, it.it_,
-                                    visitors::IteratorVisitor::Operation::END);
-
+  Value::Iterator it;
+  it.value_ = this;
+  visitors::IteratorVisitor visitor =
+      visitors::IteratorVisitor(it, visitors::IteratorVisitor::Operation::END)
+          .init();
   node_->accept(visitor);
 
   return it;
@@ -327,10 +329,13 @@ bool operator==(const Value& lhs, const Object& rhs) {
 
 namespace json {
 
-Value::Iterator::Iterator()
-    : curr_((Value*)::operator new(sizeof(Value))), value_(nullptr) {}
-
-Value::Iterator::~Iterator() { ::operator delete(curr_); }
+Value::Iterator::~Iterator() {
+  visitors::IteratorVisitor visitor =
+      visitors::IteratorVisitor(*this,
+                                visitors::IteratorVisitor::Operation::DESTROY)
+          .init();
+  value_->node_->accept(visitor);
+}
 
 Value::Iterator::Iterator(Node* node, Value* value, ContainerIterator& it)
     : curr_((Value*)::operator new(sizeof(Value))), value_(value), it_(it) {
@@ -340,13 +345,15 @@ Value::Iterator::Iterator(Node* node, Value* value, ContainerIterator& it)
 
 Value::Iterator::Iterator(Value* value)
     : curr_((Value*)::operator new(sizeof(Value))), value_(value) {
+  new (curr_) Value();
   curr_->parent_ = value_;
 }
 
 Value::Iterator& Value::Iterator::operator++() {
-  visitors::IteratorVisitor visitor(
-      &curr_, it_, visitors::IteratorVisitor::Operation::INCREMENT);
-
+  visitors::IteratorVisitor visitor =
+      visitors::IteratorVisitor(*this,
+                                visitors::IteratorVisitor::Operation::INCREMENT)
+          .init();
   value_->node_->accept(visitor);
 
   return *this;
@@ -360,9 +367,10 @@ Value::Iterator Value::Iterator::operator++(int) {
 }
 
 Value::Iterator& Value::Iterator::operator--() {
-  visitors::IteratorVisitor visitor(
-      &curr_, it_, visitors::IteratorVisitor::Operation::DECREMENT);
-
+  visitors::IteratorVisitor visitor =
+      visitors::IteratorVisitor(*this,
+                                visitors::IteratorVisitor::Operation::DECREMENT)
+          .init();
   value_->node_->accept(visitor);
 
   return *this;
@@ -375,9 +383,9 @@ Value::Iterator Value::Iterator::operator--(int) {
   return temp;
 }
 
-Value::Iterator::reference Value::Iterator::operator*() const { return *curr_; }
+Value::Iterator::reference Value::Iterator::operator*() { return *curr_; }
 
-Value::Iterator::pointer Value::Iterator::operator->() const {
+Value::Iterator::pointer Value::Iterator::operator->() {
   return &(operator*());
 }
 

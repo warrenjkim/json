@@ -1005,3 +1005,111 @@ TEST_F(ValueTest, ArrayIteratorDecrementBegin) {
   // act & assert
   ASSERT_THROW(--it, std::out_of_range);
 }
+
+TEST_F(ValueTest, ObjectIteratorBasic) {
+  // arrange
+  json::Value obj;
+  obj.insert("key1", "value1");
+  obj.insert("key2", "value2");
+  obj.insert("key3", "value3");
+
+  // act
+  json::Value::Iterator it = obj.begin();
+
+  // assert
+  ASSERT_EQ(*it, "value1");
+}
+
+TEST_F(ValueTest, ObjectIteratorIncrement) {
+  // arrange
+  json::Value obj;
+  obj.insert("key1", "value1");
+  obj.insert("key2", "value2");
+
+  // act
+  json::Value::Iterator it = obj.begin();
+  ++it;
+
+  // assert
+  ASSERT_EQ(*it, "value2");
+}
+
+TEST_F(ValueTest, ObjectIteratorDecrement) {
+  // arrange
+  json::Value obj;
+  obj.insert("key1", "value1");
+  obj.insert("key2", "value2");
+
+  // act
+  json::Value::Iterator it = obj.begin();
+  ++it;
+  --it;
+
+  // assert
+  ASSERT_EQ(*it, "value1");
+}
+
+TEST_F(ValueTest, ObjectIteratorEquality) {
+  // arrange
+  json::Value obj;
+  obj.insert("key1", "value1");
+  obj.insert("key2", "value2");
+
+  // act
+  json::Value::Iterator it1 = obj.begin();
+  json::Value::Iterator it2 = obj.begin();
+
+  // assert
+  ASSERT_EQ(it1, it2);
+  ++it1;
+  ASSERT_NE(it1, it2);
+}
+
+TEST_F(ValueTest, ObjectIteratorEndEquality) {
+  // arrange
+  json::Value obj;
+  obj.insert("key1", "value1");
+
+  // act
+  json::Value::Iterator it = obj.begin();
+  ++it;
+
+  // assert
+  ASSERT_EQ(it, obj.end());
+}
+
+TEST_F(ValueTest, ObjectIteratorOutOfRange) {
+  // arrange
+  json::Value obj;
+  obj.insert("key1", "value1");
+  json::Value::Iterator it = obj.begin();
+  ++it;  // now at end
+
+  // act & assert
+  ASSERT_THROW(++it, std::out_of_range);
+}
+
+TEST_F(ValueTest, ObjectIteratorDecrementBegin) {
+  // arrange
+  json::Value obj;
+  obj.insert("key1", "value1");
+  json::Value::Iterator it = obj.begin();
+
+  // act & assert
+  ASSERT_THROW(--it, std::out_of_range);
+}
+
+TEST_F(ValueTest, ObjectIteratorModification) {
+  // arrange
+  json::Value obj;
+  obj.insert("key1", "value1");
+  obj.insert("key2", "value2");
+
+  // act
+  json::Value::Iterator it = obj.begin();
+
+  *it = 10;
+
+  // assert
+  ASSERT_EQ(obj["key1"], 10);
+}

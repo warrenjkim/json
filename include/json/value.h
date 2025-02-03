@@ -173,12 +173,12 @@ class Value {
     using reference = value_type&;
 
    public:
-    Iterator();
     ~Iterator();
 
    public:
-    Iterator(const Iterator&) = default;
+    Iterator() = default;
     Iterator(Iterator&&) noexcept = default;
+    Iterator(const Iterator& other) = default;
     Iterator& operator=(const Iterator&) = default;
     Iterator& operator=(Iterator&&) noexcept = default;
 
@@ -192,9 +192,9 @@ class Value {
     Iterator& operator--();
     Iterator operator--(int);
 
-    // TODO(fix this. Should not be const)
-    reference operator*() const;
-    pointer operator->() const;
+    // TODO(create const versions)
+    reference operator*();
+    pointer operator->();
 
     bool operator==(const Iterator& other) const;
     bool operator!=(const Iterator& other) const;
@@ -203,7 +203,7 @@ class Value {
     Value* curr_ = nullptr;
     Value* value_ = nullptr;
     union ContainerIterator {
-      std::vector<Node*>::iterator* array_it;
+      std::vector<Node*>::iterator* array_it = nullptr;
       utils::Map<std::string, Node*>::Iterator* map_it;
     } it_;
 
