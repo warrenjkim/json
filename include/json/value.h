@@ -183,9 +183,6 @@ class Value {
     Iterator& operator=(Iterator&&) noexcept = default;
 
    public:
-    Iterator(Node* node, Value* value, ContainerIterator& it);
-
-   public:
     Iterator& operator++();
     Iterator operator++(int);
 

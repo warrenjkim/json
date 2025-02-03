@@ -193,8 +193,7 @@ void Value::insert(const std::string& key, const Value& value) {
 }
 
 Value::Iterator Value::begin() {
-  Value::Iterator it;
-  it.value_ = this;
+  Value::Iterator it(this);
   visitors::IteratorVisitor visitor =
       visitors::IteratorVisitor(it, visitors::IteratorVisitor::Operation::BEGIN)
           .init();
@@ -204,8 +203,7 @@ Value::Iterator Value::begin() {
 }
 
 Value::Iterator Value::end() {
-  Value::Iterator it;
-  it.value_ = this;
+  Value::Iterator it(this);
   visitors::IteratorVisitor visitor =
       visitors::IteratorVisitor(it, visitors::IteratorVisitor::Operation::END)
           .init();
@@ -337,17 +335,7 @@ Value::Iterator::~Iterator() {
   value_->node_->accept(visitor);
 }
 
-Value::Iterator::Iterator(Node* node, Value* value, ContainerIterator& it)
-    : curr_((Value*)::operator new(sizeof(Value))), value_(value), it_(it) {
-  new (curr_) Value(node);
-  curr_->parent_ = value_;
-}
-
-Value::Iterator::Iterator(Value* value)
-    : curr_((Value*)::operator new(sizeof(Value))), value_(value) {
-  new (curr_) Value();
-  curr_->parent_ = value_;
-}
+Value::Iterator::Iterator(Value* value) : curr_(nullptr), value_(value) {}
 
 Value::Iterator& Value::Iterator::operator++() {
   visitors::IteratorVisitor visitor =
