@@ -10,6 +10,7 @@ add_library(visitors STATIC
   string_visitor.cc
   stringify_visitor.cc
   iterator_visitor.cc
+  const_iterator_visitor.cc
 )
 
 target_link_libraries(visitors PRIVATE

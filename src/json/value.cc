@@ -11,6 +11,7 @@
 #include "nodes/string.h"
 #include "visitors/array_visitor.h"
 #include "visitors/boolean_visitor.h"
+#include "visitors/const_iterator_visitor.h"
 #include "visitors/iterator_visitor.h"
 #include "visitors/null_visitor.h"
 #include "visitors/object_visitor.h"
@@ -212,6 +213,28 @@ Value::Iterator Value::end() {
   return it;
 }
 
+Value::ConstIterator Value::cbegin() {
+  Value::ConstIterator cit(this);
+  visitors::ConstIteratorVisitor visitor =
+      visitors::ConstIteratorVisitor(
+          cit, visitors::ConstIteratorVisitor::Operation::BEGIN)
+          .init();
+  node_->accept(visitor);
+
+  return cit;
+}
+
+Value::ConstIterator Value::cend() {
+  Value::ConstIterator cit(this);
+  visitors::ConstIteratorVisitor visitor =
+      visitors::ConstIteratorVisitor(
+          cit, visitors::ConstIteratorVisitor::Operation::END)
+          .init();
+  node_->accept(visitor);
+
+  return cit;
+}
+
 Value::operator bool() const {
   visitors::BooleanVisitor visitor;
   node_->accept(visitor);
@@ -382,6 +405,71 @@ bool Value::Iterator::operator==(const Iterator& other) const {
 }
 
 bool Value::Iterator::operator!=(const Iterator& other) const {
+  return !(*this == other);
+}
+
+}  // namespace json
+
+namespace json {
+
+Value::ConstIterator::~ConstIterator() {
+  visitors::ConstIteratorVisitor visitor =
+      visitors::ConstIteratorVisitor(
+          *this, visitors::ConstIteratorVisitor::Operation::DESTROY)
+          .init();
+  value_->node_->accept(visitor);
+}
+
+Value::ConstIterator::ConstIterator(Value* value)
+    : curr_(nullptr), value_(value) {}
+
+Value::ConstIterator& Value::ConstIterator::operator++() {
+  visitors::ConstIteratorVisitor visitor =
+      visitors::ConstIteratorVisitor(
+          *this, visitors::ConstIteratorVisitor::Operation::INCREMENT)
+          .init();
+  value_->node_->accept(visitor);
+
+  return *this;
+}
+
+Value::ConstIterator Value::ConstIterator::operator++(int) {
+  ConstIterator temp = *this;
+  ++(*this);
+
+  return temp;
+}
+
+Value::ConstIterator& Value::ConstIterator::operator--() {
+  visitors::ConstIteratorVisitor visitor =
+      visitors::ConstIteratorVisitor(
+          *this, visitors::ConstIteratorVisitor::Operation::DECREMENT)
+          .init();
+  value_->node_->accept(visitor);
+
+  return *this;
+}
+
+Value::ConstIterator Value::ConstIterator::operator--(int) {
+  ConstIterator temp = *this;
+  --(*this);
+
+  return temp;
+}
+
+Value::ConstIterator::reference Value::ConstIterator::operator*() const {
+  return *curr_;
+}
+
+Value::ConstIterator::pointer Value::ConstIterator::operator->() const {
+  return &(operator*());
+}
+
+bool Value::ConstIterator::operator==(const ConstIterator& other) const {
+  return value_ == other.value_ && curr_->node_ == other.curr_->node_;
+}
+
+bool Value::ConstIterator::operator!=(const ConstIterator& other) const {
   return !(*this == other);
 }
 

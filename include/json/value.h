@@ -12,6 +12,7 @@ namespace json {
 namespace visitors {
 
 class IteratorVisitor;
+class ConstIteratorVisitor;
 
 }  // namespace visitors
 
@@ -73,6 +74,9 @@ class Value {
  public:
   Iterator begin();
   Iterator end();
+
+  ConstIterator cbegin();
+  ConstIterator cend();
 
  public:
   operator bool() const;
@@ -213,8 +217,62 @@ class Value {
     friend class visitors::IteratorVisitor;
   };
 
+ public:
+  class ConstIterator {
+   private:
+    union ContainerConstIterator;
+
+   public:
+    using iterator_category = std::bidirectional_iterator_tag;
+    using value_type = Value;
+    using difference_type = std::ptrdiff_t;
+    using pointer = value_type*;
+    using reference = value_type&;
+
+   public:
+    ~ConstIterator();
+
+   public:
+    ConstIterator() = default;
+    ConstIterator(ConstIterator&&) noexcept = default;
+    ConstIterator(const ConstIterator& other) = default;
+    ConstIterator& operator=(const ConstIterator&) = default;
+    ConstIterator& operator=(ConstIterator&&) noexcept = default;
+
+   public:
+    ConstIterator& operator++();
+    ConstIterator operator++(int);
+
+    ConstIterator& operator--();
+    ConstIterator operator--(int);
+
+    // TODO(create const versions)
+    reference operator*() const;
+    pointer operator->() const;
+
+    bool operator==(const ConstIterator& other) const;
+    bool operator!=(const ConstIterator& other) const;
+
+   private:
+    Value* curr_ = nullptr;
+    Value* value_ = nullptr;
+    union ContainerConstIterator {
+      std::vector<Node*>::const_iterator* array_it = nullptr;
+      utils::Map<std::string, Node*>::ConstIterator* map_it;
+    } it_;
+
+   private:
+    ConstIterator(Value* value);
+
+   private:
+    friend class Value;
+    friend class ConstConstIterator;
+    friend class visitors::ConstIteratorVisitor;
+  };
+
  private:
   friend class visitors::IteratorVisitor;
+  friend class visitors::ConstIteratorVisitor;
 };
 
 }  // namespace json
