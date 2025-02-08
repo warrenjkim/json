@@ -226,8 +226,8 @@ class Value {
     using iterator_category = std::bidirectional_iterator_tag;
     using value_type = Value;
     using difference_type = std::ptrdiff_t;
-    using pointer = value_type*;
-    using reference = value_type&;
+    using const_pointer = value_type*;
+    using const_reference = value_type&;
 
    public:
     ~ConstIterator();
@@ -246,9 +246,8 @@ class Value {
     ConstIterator& operator--();
     ConstIterator operator--(int);
 
-    // TODO(create const versions)
-    reference operator*() const;
-    pointer operator->() const;
+    const_reference operator*() const;
+    const_pointer operator->() const;
 
     bool operator==(const ConstIterator& other) const;
     bool operator!=(const ConstIterator& other) const;

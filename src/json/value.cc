@@ -457,11 +457,11 @@ Value::ConstIterator Value::ConstIterator::operator--(int) {
   return temp;
 }
 
-Value::ConstIterator::reference Value::ConstIterator::operator*() const {
+Value::ConstIterator::const_reference Value::ConstIterator::operator*() const {
   return *curr_;
 }
 
-Value::ConstIterator::pointer Value::ConstIterator::operator->() const {
+Value::ConstIterator::const_pointer Value::ConstIterator::operator->() const {
   return &(operator*());
 }
 
