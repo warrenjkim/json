@@ -193,7 +193,6 @@ class Value {
     Iterator& operator--();
     Iterator operator--(int);
 
-    // TODO(create const versions)
     reference operator*();
     pointer operator->();
 
