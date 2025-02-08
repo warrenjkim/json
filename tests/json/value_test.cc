@@ -1113,3 +1113,165 @@ TEST_F(ValueTest, ObjectIteratorModification) {
   // assert
   ASSERT_EQ(obj["key1"], 10);
 }
+
+TEST_F(ValueTest, ArrayConstIteratorBasic) {
+  // arrange
+  json::Value arr;
+  arr.push_back("value1");
+  arr.push_back("value2");
+  arr.push_back("value3");
+  // act
+  json::Value::ConstIterator it = arr.cbegin();
+  // assert
+  ASSERT_EQ(*it, "value1");
+}
+
+TEST_F(ValueTest, ArrayConstIteratorIncrement) {
+  // arrange
+  json::Value arr;
+  arr.push_back("value1");
+  arr.push_back("value2");
+  // act
+  json::Value::ConstIterator it = arr.cbegin();
+  ++it;
+  // assert
+  ASSERT_EQ(*it, "value2");
+}
+
+TEST_F(ValueTest, ArrayConstIteratorDecrement) {
+  // arrange
+  json::Value arr;
+  arr.push_back("value1");
+  arr.push_back("value2");
+  // act
+  json::Value::ConstIterator it = arr.cbegin();
+  ++it;
+  --it;
+  // assert
+  ASSERT_EQ(*it, "value1");
+}
+
+TEST_F(ValueTest, ArrayConstIteratorEquality) {
+  // arrange
+  json::Value arr;
+  arr.push_back("value1");
+  arr.push_back("value2");
+  // act
+  json::Value::ConstIterator it1 = arr.cbegin();
+  json::Value::ConstIterator it2 = arr.cbegin();
+  // assert
+  ASSERT_EQ(it1, it2);
+  ++it1;
+  ASSERT_NE(it1, it2);
+}
+
+TEST_F(ValueTest, ArrayConstIteratorEndEquality) {
+  // arrange
+  json::Value arr;
+  arr.push_back("value1");
+  // act
+  json::Value::ConstIterator it = arr.cbegin();
+  ++it;
+  // assert
+  ASSERT_EQ(it, arr.cend());
+}
+
+TEST_F(ValueTest, ArrayConstIteratorOutOfRange) {
+  // arrange
+  json::Value arr;
+  arr.push_back("value1");
+  json::Value::ConstIterator it = arr.cbegin();
+  ++it;  // now at end
+  // act & assert
+  ASSERT_THROW(++it, std::out_of_range);
+}
+
+TEST_F(ValueTest, ArrayConstIteratorDecrementBegin) {
+  // arrange
+  json::Value arr;
+  arr.push_back("value1");
+  json::Value::ConstIterator it = arr.cbegin();
+  // act & assert
+  ASSERT_THROW(--it, std::out_of_range);
+}
+
+TEST_F(ValueTest, ObjectConstIteratorBasic) {
+  // arrange
+  json::Value obj;
+  obj.insert("key1", "value1");
+  obj.insert("key2", "value2");
+  obj.insert("key3", "value3");
+  // act
+  json::Value::ConstIterator it = obj.cbegin();
+  // assert
+  ASSERT_EQ(*it, "value1");
+}
+
+TEST_F(ValueTest, ObjectConstIteratorIncrement) {
+  // arrange
+  json::Value obj;
+  obj.insert("key1", "value1");
+  obj.insert("key2", "value2");
+  // act
+  json::Value::ConstIterator it = obj.cbegin();
+  ++it;
+  // assert
+  ASSERT_EQ(*it, "value2");
+}
+
+TEST_F(ValueTest, ObjectConstIteratorDecrement) {
+  // arrange
+  json::Value obj;
+  obj.insert("key1", "value1");
+  obj.insert("key2", "value2");
+  // act
+  json::Value::ConstIterator it = obj.cbegin();
+  ++it;
+  --it;
+  // assert
+  ASSERT_EQ(*it, "value1");
+}
+
+TEST_F(ValueTest, ObjectConstIteratorEquality) {
+  // arrange
+  json::Value obj;
+  obj.insert("key1", "value1");
+  obj.insert("key2", "value2");
+  // act
+  json::Value::ConstIterator it1 = obj.cbegin();
+  json::Value::ConstIterator it2 = obj.cbegin();
+  // assert
+  ASSERT_EQ(it1, it2);
+  ++it1;
+  ASSERT_NE(it1, it2);
+}
+
+TEST_F(ValueTest, ObjectConstIteratorEndEquality) {
+  // arrange
+  json::Value obj;
+  obj.insert("key1", "value1");
+  // act
+  json::Value::ConstIterator it = obj.cbegin();
+  ++it;
+  // assert
+  ASSERT_EQ(it, obj.cend());
+}
+
+TEST_F(ValueTest, ObjectConstIteratorOutOfRange) {
+  // arrange
+  json::Value obj;
+  obj.insert("key1", "value1");
+  json::Value::ConstIterator it = obj.cbegin();
+  ++it;  // now at end
+  // act & assert
+  ASSERT_THROW(++it, std::out_of_range);
+}
+
+TEST_F(ValueTest, ObjectConstIteratorDecrementBegin) {
+  // arrange
+  json::Value obj;
+  obj.insert("key1", "value1");
+  json::Value::ConstIterator it = obj.cbegin();
+  // act & assert
+  ASSERT_THROW(--it, std::out_of_range);
+}
