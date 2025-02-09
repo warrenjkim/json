@@ -13,74 +13,65 @@
 #include "nodes/number.h"
 #include "nodes/object.h"
 #include "nodes/string.h"
-#include "utils/logger.h"
 
 class GetVisitorTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    json::utils::init_logging(boost::log::trivial::debug);
-    object_ = new json::Object();
-    object_->insert("key", new json::String("value"));
+    object_.insert("key", new json::String("value"));
 
-    array_ = new json::Array();
-    array_->push_back(new json::Number(1));
-    array_->push_back(new json::Boolean(true));
-    array_->push_back(new json::String("string"));
-    array_->push_back(new json::Null());
+    array_.push_back(new json::Number(1));
+    array_.push_back(new json::Boolean(true));
+    array_.push_back(new json::String("string"));
+    array_.push_back(new json::Null());
   }
 
-  void TearDown() override {
-    delete object_;
-    delete array_;
-  }
-
-  json::Object* object_;
-  json::Array* array_;
+  json::Object object_;
+  json::Array array_;
 };
 
 TEST_F(GetVisitorTest, Object) {
   json::visitors::GetVisitor visitor("");
-  object_->accept(visitor);
-  ASSERT_EQ(*visitor.result(), *object_);
+  object_.accept(visitor);
+  ASSERT_EQ(*visitor.result(), object_);
 }
 
 TEST_F(GetVisitorTest, ObjectKey) {
   json::visitors::GetVisitor visitor("key");
-  object_->accept(visitor);
-  ASSERT_EQ(*visitor.result(), *(new json::String("value")));
+  object_.accept(visitor);
+  ASSERT_EQ(*visitor.result(), json::String("value"));
 }
 
 TEST_F(GetVisitorTest, CreateNewObject) {
   json::visitors::GetVisitor visitor("new_key");
-  object_->accept(visitor);
-  ASSERT_EQ(*visitor.result(), *(new json::Null()));
+  object_.accept(visitor);
+  ASSERT_EQ(*visitor.result(), json::Null());
 }
 
 TEST_F(GetVisitorTest, ObjectBadAccesIndex) {
   json::visitors::GetVisitor visitor(0);
-  ASSERT_THROW(object_->accept(visitor), json::BadAccessException);
+  ASSERT_THROW(object_.accept(visitor), json::BadAccessException);
 }
 
 TEST_F(GetVisitorTest, Array) {
   json::visitors::GetVisitor visitor;
-  array_->accept(visitor);
-  ASSERT_EQ(*visitor.result(), *array_);
+  array_.accept(visitor);
+  ASSERT_EQ(*visitor.result(), array_);
 }
 
 TEST_F(GetVisitorTest, ArrayOutOfBounds) {
   json::visitors::GetVisitor visitor(99);
-  ASSERT_THROW(array_->accept(visitor), std::out_of_range);
+  ASSERT_THROW(array_.accept(visitor), std::out_of_range);
 }
 
 TEST_F(GetVisitorTest, ArrayInvalidIndex) {
   json::visitors::GetVisitor visitor("invalid");
-  ASSERT_THROW(array_->accept(visitor), json::BadAccessException);
+  ASSERT_THROW(array_.accept(visitor), json::BadAccessException);
 }
 
 TEST_F(GetVisitorTest, Number) {
   json::visitors::GetVisitor visitor(0);
-  array_->accept(visitor);
-  ASSERT_EQ(*(visitor.result()), *(new json::Number(1)));
+  array_.accept(visitor);
+  ASSERT_EQ(*(visitor.result()), json::Number(1));
 }
 
 TEST_F(GetVisitorTest, NumberBadAccessKey) {
@@ -97,8 +88,8 @@ TEST_F(GetVisitorTest, NumberBadAccessIndex) {
 
 TEST_F(GetVisitorTest, Boolean) {
   json::visitors::GetVisitor visitor(1);
-  array_->accept(visitor);
-  ASSERT_EQ(*(visitor.result()), *(new json::Boolean(true)));
+  array_.accept(visitor);
+  ASSERT_EQ(*(visitor.result()), json::Boolean(true));
 }
 
 TEST_F(GetVisitorTest, BooleanBadAccessKey) {
@@ -115,8 +106,8 @@ TEST_F(GetVisitorTest, BooleanBadAccessIndex) {
 
 TEST_F(GetVisitorTest, String) {
   json::visitors::GetVisitor visitor(2);
-  array_->accept(visitor);
-  ASSERT_EQ(*(visitor.result()), *(new json::String("string")));
+  array_.accept(visitor);
+  ASSERT_EQ(*(visitor.result()), json::String("string"));
 }
 
 TEST_F(GetVisitorTest, StringBadAccessKey) {
@@ -133,8 +124,8 @@ TEST_F(GetVisitorTest, StringBadAccessIndex) {
 
 TEST_F(GetVisitorTest, Null) {
   json::visitors::GetVisitor visitor(3);
-  array_->accept(visitor);
-  ASSERT_EQ(*(visitor.result()), *(new json::Null()));
+  array_.accept(visitor);
+  ASSERT_EQ(*(visitor.result()), json::Null());
 }
 
 TEST_F(GetVisitorTest, NullBadAccessKey) {
