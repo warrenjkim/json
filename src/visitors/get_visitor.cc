@@ -91,6 +91,7 @@ void GetVisitor::visit(Object& node) {
   std::optional<Node*> result = node.get().at(*key_);
   if (!result) {
     result_ = new Null();
+    node.insert(*key_, result_);
     return;
   }
 
