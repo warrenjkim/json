@@ -146,13 +146,10 @@ Value& Value::operator[](const T& key) {
 
 template <ReasonableNumber T>
 Value& Value::operator=(const T value) {
-  if (parent_ && key_) {
-    parent_->cache_.remove(*key_);
-  }
-
   if (parent_) {
     visitors::SetVisitor visitor(&node_, new Number(value), *key_);
     parent_->node_->accept(visitor);
+    parent_->cache_.remove(*key_);
   } else {
     delete node_;
     node_ = new Number(value);
@@ -163,13 +160,10 @@ Value& Value::operator=(const T value) {
 
 template <ReasonableString T>
 Value& Value::operator=(const T& value) {
-  if (parent_ && key_) {
-    parent_->cache_.remove(*key_);
-  }
-
   if (parent_) {
     visitors::SetVisitor visitor(&node_, new String(value), *key_);
     parent_->node_->accept(visitor);
+    parent_->cache_.remove(*key_);
   } else {
     delete node_;
     node_ = new String(value);

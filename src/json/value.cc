@@ -235,13 +235,10 @@ Value& Value::operator[](const char* key) {
 }
 
 Value& Value::operator=(const bool value) {
-  if (parent_ && key_) {
-    parent_->cache_.remove(*key_);
-  }
-
   if (parent_) {
     visitors::SetVisitor visitor(&node_, new Boolean(value), *key_);
     parent_->node_->accept(visitor);
+    parent_->cache_.remove(*key_);
   } else {
     delete node_;
     node_ = new Boolean(value);
@@ -251,13 +248,10 @@ Value& Value::operator=(const bool value) {
 }
 
 Value& Value::operator=(const char* value) {
-  if (parent_ && key_) {
-    parent_->cache_.remove(*key_);
-  }
-
   if (parent_) {
     visitors::SetVisitor visitor(&node_, new String(value), *key_);
     parent_->node_->accept(visitor);
+    parent_->cache_.remove(*key_);
   } else {
     delete node_;
     node_ = new String(value);
@@ -267,13 +261,10 @@ Value& Value::operator=(const char* value) {
 }
 
 Value& Value::operator=(const nullptr_t value) {
-  if (parent_ && key_) {
-    parent_->cache_.remove(*key_);
-  }
-
   if (parent_) {
     visitors::SetVisitor visitor(&node_, new Null(), *key_);
     parent_->node_->accept(visitor);
+    parent_->cache_.remove(*key_);
   } else {
     delete node_;
     node_ = new Null();
