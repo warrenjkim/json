@@ -27,15 +27,17 @@ class JsonParserTest : public ::testing::Test {
     ASSERT_TRUE(result) << "Parser returned nullptr for valid input";
     ASSERT_EQ(*result, *expected_ast)
         << "Parsed result does not match expected AST";
+
+    delete result;
   }
 
   void assert_parse_failure(const std::string_view input) {
-    std::unique_ptr<json::Node> result(json::Parser::parse(input));
+    json::Node* result = json::Parser::parse(input);
     ASSERT_FALSE(result) << "Parser did not fail for invalid input";
   }
 
   void assert_parse_failure(json::utils::Queue<json::Token> input) {
-    std::unique_ptr<json::Node> result(json::Parser::parse(input));
+    json::Node* result = json::Parser::parse(input);
     ASSERT_FALSE(result) << "Parser did not fail for invalid input";
   }
 
@@ -486,7 +488,7 @@ TEST_F(JsonParserTest, InvalidJsonParseKeyValue) {
        {"key", json::TokenType::STRING},
        {"\"", json::TokenType::QUOTE},
        {".", json::TokenType::COLON},
-       {"]", json::TokenType::ARRAY_END}}));  // Token string and node mistmatch
+       {"]", json::TokenType::ARRAY_END}}));  // Token string and node mismatch
   assert_parse_failure(make_token_queue(
       {{"[", json::TokenType::ARRAY_START},
        {"{", json::TokenType::OBJECT_START},

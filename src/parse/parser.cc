@@ -76,12 +76,14 @@ Object* Parser::parse_object(json::utils::Queue<Token>& tokens,
     switch (token->type) {
       case TokenType::OBJECT_END:
         if (token->value != "}") {
+          delete object;
           return nullptr;
         }
 
         return object;
       case TokenType::COMMA:
         if (token->value != ",") {
+          delete object;
           return nullptr;
         }
 
@@ -130,12 +132,14 @@ Array* Parser::parse_array(json::utils::Queue<Token>& tokens,
     switch (token->type) {
       case TokenType::ARRAY_END:
         if (token->value != "]") {
+          delete array;
           return nullptr;
         }
 
         return array;
       case TokenType::COMMA:
         if (token->value != ",") {
+          delete array;
           return nullptr;
         }
 
@@ -220,6 +224,7 @@ std::optional<utils::Pair<std::string, Node*>> Parser::parse_key_value(
     json::utils::Queue<Token>& tokens, const size_t indent_level) {
   String* string = parse_string(tokens, indent_level);
   if (!string) {
+    delete string;
     return std::nullopt;
   }
 
@@ -232,6 +237,7 @@ std::optional<utils::Pair<std::string, Node*>> Parser::parse_key_value(
 
   Node* value = parse_value(tokens, indent_level + 1);
   if (!value) {
+    delete value;
     return std::nullopt;
   }
 
