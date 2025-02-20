@@ -58,42 +58,58 @@ TEST_F(SetVisitorTest, SetBooleanValueThrowsException) {
   // arrange
   json::Boolean* root = new json::Boolean(true);
   json::Node* string = new json::String("value");
-  json::Number num(123);
+  json::Number* num = new json::Number(123);
 
   // act + assert
-  json::visitors::SetVisitor visitor(&string, num.clone(), "key");
+  json::visitors::SetVisitor visitor(&string, num, "key");
   ASSERT_THROW(root->accept(visitor), json::UnexpectedParentException);
+
+  delete root;
+  delete string;
+  delete num;
 }
 
 TEST_F(SetVisitorTest, SetNullValueThrowsException) {
   // arrange
   json::Null* root = new json::Null();
   json::Node* string = new json::String("value");
-  json::Number num(123);
+  json::Number* num = new json::Number(123);
 
   // act + assert
-  json::visitors::SetVisitor visitor(&string, num.clone(), "key");
+  json::visitors::SetVisitor visitor(&string, num, "key");
   ASSERT_THROW(root->accept(visitor), json::UnexpectedParentException);
+
+  delete root;
+  delete string;
+  delete num;
 }
 
 TEST_F(SetVisitorTest, SetNumberValueThrowsException) {
   // arrange
   json::Number* root = new json::Number(42);
   json::Node* string = new json::String("value");
-  json::Number num(123);
+  json::Number* num = new json::Number(123);
 
   // act + assert
-  json::visitors::SetVisitor visitor(&string, num.clone(), "key");
+  json::visitors::SetVisitor visitor(&string, num, "key");
   ASSERT_THROW(root->accept(visitor), json::UnexpectedParentException);
+
+  delete root;
+  delete num;
+  delete string;
 }
 
 TEST_F(SetVisitorTest, SetStringValueThrowsException) {
   // arrange
   json::String* root = new json::String("test");
   json::Node* string = new json::String("value");
-  json::Number num(123);
+  json::Number* num = new json::Number(123);
 
   // act + assert
-  json::visitors::SetVisitor visitor(&string, num.clone(), "key");
+  json::visitors::SetVisitor visitor(&string, num, "key");
   ASSERT_THROW(root->accept(visitor), json::UnexpectedParentException);
+
+  delete root;
+  delete num;
+  delete string;
 }
