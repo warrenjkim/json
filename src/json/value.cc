@@ -55,6 +55,7 @@ Value& Value::operator=(Value&& other) {
 
       // add to current AST
       parent_->node_->accept(visitor);
+      delete visitor.result()[*key_];
       visitor.result().insert(*key_, node_);
     } catch (BadCastException) {
       visitors::ArrayVisitor visitor;

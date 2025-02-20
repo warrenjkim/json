@@ -76,6 +76,7 @@ void Value::remove(const T index) {
   cache_.remove(std::to_string(index));
   visitors::ArrayVisitor visitor;
   node_->accept(visitor);
+  delete visitor.result()[index];
   visitor.result()[index] = nullptr;
 }
 
@@ -84,6 +85,7 @@ void Value::remove(const T key) {
   cache_.remove(key);
   visitors::ObjectVisitor visitor;
   node_->accept(visitor);
+  delete visitor.result()[key];
   visitor.result().remove(key);
 }
 
