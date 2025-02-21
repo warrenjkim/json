@@ -201,27 +201,13 @@ Value::Iterator Value::end() {
   return Iterator(this, Iterator::StartPosition::END);
 }
 
-// Value::ConstIterator Value::cbegin() {
-//   Value::ConstIterator cit(this);
-//   visitors::ConstIteratorVisitor visitor =
-//       visitors::ConstIteratorVisitor(
-//           cit, visitors::ConstIteratorVisitor::Operation::BEGIN)
-//           .init();
-//   node_->accept(visitor);
-//
-//   return cit;
-// }
-//
-// Value::ConstIterator Value::cend() {
-//   Value::ConstIterator cit(this);
-//   visitors::ConstIteratorVisitor visitor =
-//       visitors::ConstIteratorVisitor(
-//           cit, visitors::ConstIteratorVisitor::Operation::END)
-//           .init();
-//   node_->accept(visitor);
-//
-//   return cit;
-// }
+Value::ConstIterator Value::cbegin() {
+  return ConstIterator(this, ConstIterator::StartPosition::CBEGIN);
+}
+
+Value::ConstIterator Value::cend() {
+  return ConstIterator(this, ConstIterator::StartPosition::CEND);
+}
 
 Value::operator bool() const {
   visitors::BooleanVisitor visitor;
@@ -491,67 +477,157 @@ bool Value::Iterator::operator!=(const Iterator& other) const {
 
 }  // namespace json
 
-// namespace json {
-//
-// Value::ConstIterator::~ConstIterator() {
-//   visitors::ConstIteratorVisitor visitor = visitors::ConstIteratorVisitor(
-//       *this, visitors::ConstIteratorVisitor::Operation::DESTROY);
-//   value_->node_->accept(visitor);
-// }
-//
-// Value::ConstIterator::ConstIterator(Value* value)
-//     : curr_(nullptr), value_(value) {}
-//
-// Value::ConstIterator& Value::ConstIterator::operator++() {
-//   visitors::ConstIteratorVisitor visitor =
-//       visitors::ConstIteratorVisitor(
-//           *this, visitors::ConstIteratorVisitor::Operation::INCREMENT)
-//           .init();
-//   value_->node_->accept(visitor);
-//
-//   return *this;
-// }
-//
-// Value::ConstIterator Value::ConstIterator::operator++(int) {
-//   ConstIterator temp = *this;
-//   ++(*this);
-//
-//   return temp;
-// }
-//
-// Value::ConstIterator& Value::ConstIterator::operator--() {
-//   visitors::ConstIteratorVisitor visitor =
-//       visitors::ConstIteratorVisitor(
-//           *this, visitors::ConstIteratorVisitor::Operation::DECREMENT)
-//           .init();
-//   value_->node_->accept(visitor);
-//
-//   return *this;
-// }
-//
-// Value::ConstIterator Value::ConstIterator::operator--(int) {
-//   ConstIterator temp = *this;
-//   --(*this);
-//
-//   return temp;
-// }
-//
-// Value::ConstIterator::const_reference Value::ConstIterator::operator*() const
-// {
-//   return *curr_;
-// }
-//
-// Value::ConstIterator::const_pointer Value::ConstIterator::operator->() const
-// {
-//   return &(operator*());
-// }
-//
-// bool Value::ConstIterator::operator==(const ConstIterator& other) const {
-//   return value_ == other.value_ && curr_->node_ == other.curr_->node_;
-// }
-//
-// bool Value::ConstIterator::operator!=(const ConstIterator& other) const {
-//   return !(*this == other);
-// }
-//
-// }  // namespace json
+namespace json {
+
+Value::ConstIterator::~ConstIterator() { ::operator delete(curr_); }
+
+Value::ConstIterator::ConstIterator(const ConstIterator& other) {
+  curr_ = nullptr;
+  type_ = other.type_;
+  value_ = other.value_;
+  switch (type_) {
+    case ContainerType::ARRAY:
+      cit_.array_cit = other.cit_.array_cit;
+      new (curr_) Value(*cit_.array_cit);
+      break;
+    case ContainerType::OBJECT:
+      cit_.map_cit = other.cit_.map_cit;
+      new (curr_) Value(cit_.map_cit->second);
+      break;
+  }
+}
+
+Value::ConstIterator::ConstIterator(Value* value, const StartPosition pos)
+    : curr_(nullptr), value_(value) {
+  visitors::ContainerTypeVisitor visitor(type_);
+  value_->node_->accept(visitor);
+
+  visitors::ArrayVisitor array_visitor;
+  visitors::ObjectVisitor object_visitor;
+  switch (pos) {
+    case StartPosition::CBEGIN:
+      switch (type_) {
+        case ContainerType::ARRAY:
+          value_->node_->accept(array_visitor);
+          cit_.array_cit = array_visitor.result().cbegin();
+          break;
+        case ContainerType::OBJECT:
+          value_->node_->accept(object_visitor);
+          cit_.map_cit = object_visitor.result().cbegin();
+          break;
+      }
+      break;
+    case StartPosition::CEND:
+      switch (type_) {
+        case ContainerType::ARRAY:
+          value_->node_->accept(array_visitor);
+          cit_.array_cit = array_visitor.result().cend();
+          break;
+        case ContainerType::OBJECT:
+          value_->node_->accept(object_visitor);
+          cit_.map_cit = object_visitor.result().cend();
+          break;
+      }
+      break;
+  }
+}
+
+Value::ConstIterator& Value::ConstIterator::operator++() {
+  switch (type_) {
+    case ContainerType::ARRAY:
+      ++cit_.array_cit;
+      break;
+    case ContainerType::OBJECT:
+      ++cit_.map_cit;
+      break;
+  }
+
+  return *this;
+}
+
+Value::ConstIterator Value::ConstIterator::operator++(int) {
+  ConstIterator temp = *this;
+  ++(*this);
+
+  return temp;
+}
+
+Value::ConstIterator& Value::ConstIterator::operator--() {
+  switch (type_) {
+    case ContainerType::ARRAY:
+      --cit_.array_cit;
+      break;
+    case ContainerType::OBJECT:
+      --cit_.map_cit;
+      break;
+  }
+
+  return *this;
+}
+
+Value::ConstIterator Value::ConstIterator::operator--(int) {
+  ConstIterator temp = *this;
+  --(*this);
+
+  return temp;
+}
+
+Value::ConstIterator::const_reference Value::ConstIterator::operator*() {
+  if (!curr_) {
+    curr_ = (Value*)::operator new(sizeof(Value));
+    new (curr_) Value();
+  }
+
+  curr_->~Value();
+  switch (type_) {
+    case ContainerType::ARRAY:
+      new (curr_) Value(*cit_.array_cit);
+      break;
+    case ContainerType::OBJECT:
+      new (curr_) Value(cit_.map_cit->second);
+      break;
+  }
+
+  curr_->parent_ = value_;
+
+  switch (type_) {
+    case ContainerType::ARRAY: {
+      visitors::ArrayVisitor visitor;
+      value_->node_->accept(visitor);
+      // TODO(implement this myself)
+      curr_->key_ = std::to_string(
+          std::distance(visitor.result().cbegin(), cit_.array_cit));
+      break;
+    }
+    case ContainerType::OBJECT:
+      curr_->key_ = cit_.map_cit->first;
+      break;
+  }
+
+  return *curr_;
+}
+
+Value::ConstIterator::const_pointer Value::ConstIterator::operator->() {
+  return &(operator*());
+}
+
+bool Value::ConstIterator::operator==(const ConstIterator& other) const {
+  if (value_ != other.value_ || type_ != other.type_) {
+    return false;
+  }
+
+  switch (type_) {
+    case ContainerType::ARRAY:
+      return cit_.array_cit == other.cit_.array_cit;
+    case ContainerType::OBJECT:
+      return cit_.map_cit == other.cit_.map_cit;
+  }
+
+  return false;
+}
+
+bool Value::ConstIterator::operator!=(const ConstIterator& other) const {
+  return !(*this == other);
+}
+
+}  // namespace json

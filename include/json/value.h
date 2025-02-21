@@ -76,8 +76,8 @@ class Value {
   Iterator begin();
   Iterator end();
 
-  // ConstIterator cbegin();
-  // ConstIterator cend();
+  ConstIterator cbegin();
+  ConstIterator cend();
 
  public:
   operator bool() const;
@@ -221,9 +221,6 @@ class Value {
 
  public:
   class ConstIterator {
-   private:
-    union ContainerConstIterator;
-
    public:
     using iterator_category = std::bidirectional_iterator_tag;
     using value_type = Value;
@@ -233,11 +230,9 @@ class Value {
 
    public:
     ~ConstIterator();
-
-   public:
     ConstIterator() = default;
     ConstIterator(ConstIterator&&) noexcept = default;
-    ConstIterator(const ConstIterator& other) = default;
+    ConstIterator(const ConstIterator& other);
     ConstIterator& operator=(const ConstIterator&) = default;
     ConstIterator& operator=(ConstIterator&&) noexcept = default;
 
@@ -248,8 +243,8 @@ class Value {
     ConstIterator& operator--();
     ConstIterator operator--(int);
 
-    const_reference operator*() const;
-    const_pointer operator->() const;
+    const_reference operator*();
+    const_pointer operator->();
 
     bool operator==(const ConstIterator& other) const;
     bool operator!=(const ConstIterator& other) const;
@@ -258,22 +253,27 @@ class Value {
     Value* curr_ = nullptr;
     Value* value_ = nullptr;
     union ContainerConstIterator {
-      std::vector<Node*>::const_iterator* array_it = nullptr;
-      utils::Map<std::string, Node*>::ConstIterator* map_it;
-    } it_;
+      std::vector<Node*>::const_iterator array_cit =
+          std::vector<Node*>::const_iterator();
+      utils::Map<std::string, Node*>::ConstIterator map_cit;
+    } cit_;
+    ContainerType type_;
+    enum StartPosition { CBEGIN, CEND };
 
    private:
-    ConstIterator(Value* value);
+    ConstIterator(Value* value, const StartPosition pos);
 
    private:
     friend class Value;
     friend class ConstConstIterator;
     friend class visitors::ConstIteratorVisitor;
+    friend class visitors::ContainerTypeVisitor;
   };
 
  private:
   friend class visitors::IteratorVisitor;
   friend class visitors::ConstIteratorVisitor;
+  friend class visitors::ContainerTypeVisitor;
 };
 
 }  // namespace json
