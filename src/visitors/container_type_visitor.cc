@@ -14,11 +14,11 @@ namespace json {
 
 namespace visitors {
 
-ContainerTypeVisitor::ContainerTypeVisitor(Value::Iterator::ContainerType& type)
+ContainerTypeVisitor::ContainerTypeVisitor(Value::ContainerType& type)
     : type_(type) {}
 
 void ContainerTypeVisitor::visit(Array& node) {
-  type_ = Value::Iterator::ContainerType::ARRAY;
+  type_ = Value::ContainerType::ARRAY;
 }
 
 void ContainerTypeVisitor::visit(Boolean&) {
@@ -37,7 +37,7 @@ void ContainerTypeVisitor::visit(Number&) {
 }
 
 void ContainerTypeVisitor::visit(Object& node) {
-  type_ = Value::Iterator::ContainerType::OBJECT;
+  type_ = Value::ContainerType::OBJECT;
 }
 
 void ContainerTypeVisitor::visit(String&) {

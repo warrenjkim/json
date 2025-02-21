@@ -165,6 +165,9 @@ class Value {
   std::optional<std::string> key_;
   utils::Map<std::string, Value> cache_;
 
+ private:
+  enum ContainerType { ARRAY, OBJECT };
+
  public:
   class Iterator {
    public:
@@ -203,7 +206,7 @@ class Value {
       utils::Map<std::string, Node*>::Iterator map_it;
       ~ContainerIterator() {}
     } it_;
-    enum ContainerType { ARRAY, OBJECT } type_;
+    ContainerType type_;
     enum StartPosition { BEGIN, END };
 
    private:

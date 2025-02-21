@@ -10,7 +10,7 @@ namespace visitors {
 
 class ContainerTypeVisitor : public Visitor {
  public:
-  ContainerTypeVisitor(Value::Iterator::ContainerType& type);
+  ContainerTypeVisitor(Value::ContainerType& type);
 
  public:
   void visit(Array& node) override;
@@ -25,7 +25,7 @@ class ContainerTypeVisitor : public Visitor {
   ~ContainerTypeVisitor() = default;
 
  private:
-  Value::Iterator::ContainerType& type_;
+  Value::ContainerType& type_;
 };
 
 }  // namespace visitors
