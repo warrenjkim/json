@@ -13,6 +13,7 @@ namespace visitors {
 
 class IteratorVisitor;
 class ConstIteratorVisitor;
+class ContainerTypeVisitor;
 
 }  // namespace visitors
 
@@ -75,8 +76,8 @@ class Value {
   Iterator begin();
   Iterator end();
 
-  ConstIterator cbegin();
-  ConstIterator cend();
+  // ConstIterator cbegin();
+  // ConstIterator cend();
 
  public:
   operator bool() const;
@@ -166,9 +167,6 @@ class Value {
 
  public:
   class Iterator {
-   private:
-    union ContainerIterator;
-
    public:
     using iterator_category = std::bidirectional_iterator_tag;
     using value_type = Value;
@@ -178,11 +176,9 @@ class Value {
 
    public:
     ~Iterator();
-
-   public:
     Iterator() = default;
     Iterator(Iterator&&) noexcept = default;
-    Iterator(const Iterator& other) = default;
+    Iterator(const Iterator& other);
     Iterator& operator=(const Iterator&) = default;
     Iterator& operator=(Iterator&&) noexcept = default;
 
@@ -203,17 +199,21 @@ class Value {
     Value* curr_ = nullptr;
     Value* value_ = nullptr;
     union ContainerIterator {
-      std::vector<Node*>::iterator* array_it = nullptr;
-      utils::Map<std::string, Node*>::Iterator* map_it;
+      std::vector<Node*>::iterator array_it = std::vector<Node*>::iterator();
+      utils::Map<std::string, Node*>::Iterator map_it;
+      ~ContainerIterator() {}
     } it_;
+    enum ContainerType { ARRAY, OBJECT } type_;
+    enum StartPosition { BEGIN, END };
 
    private:
-    Iterator(Value* value);
+    Iterator(Value* value, const StartPosition pos);
 
    private:
     friend class Value;
     friend class ConstIterator;
     friend class visitors::IteratorVisitor;
+    friend class visitors::ContainerTypeVisitor;
   };
 
  public:

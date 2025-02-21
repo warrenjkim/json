@@ -1,6 +1,7 @@
 #include "json/value.h"
 
 #include <cstddef>
+#include <iterator>
 #include <optional>
 #include <string>
 
@@ -11,8 +12,7 @@
 #include "nodes/string.h"
 #include "visitors/array_visitor.h"
 #include "visitors/boolean_visitor.h"
-#include "visitors/const_iterator_visitor.h"
-#include "visitors/iterator_visitor.h"
+#include "visitors/container_type_visitor.h"
 #include "visitors/null_visitor.h"
 #include "visitors/object_visitor.h"
 #include "visitors/string_visitor.h"
@@ -194,46 +194,34 @@ void Value::insert(const std::string& key, const Value& value) {
 }
 
 Value::Iterator Value::begin() {
-  Value::Iterator it(this);
-  visitors::IteratorVisitor visitor =
-      visitors::IteratorVisitor(it, visitors::IteratorVisitor::Operation::BEGIN)
-          .init();
-  node_->accept(visitor);
-
-  return it;
+  return Iterator(this, Iterator::StartPosition::BEGIN);
 }
 
 Value::Iterator Value::end() {
-  Value::Iterator it(this);
-  visitors::IteratorVisitor visitor =
-      visitors::IteratorVisitor(it, visitors::IteratorVisitor::Operation::END)
-          .init();
-  node_->accept(visitor);
-
-  return it;
+  return Iterator(this, Iterator::StartPosition::END);
 }
 
-Value::ConstIterator Value::cbegin() {
-  Value::ConstIterator cit(this);
-  visitors::ConstIteratorVisitor visitor =
-      visitors::ConstIteratorVisitor(
-          cit, visitors::ConstIteratorVisitor::Operation::BEGIN)
-          .init();
-  node_->accept(visitor);
-
-  return cit;
-}
-
-Value::ConstIterator Value::cend() {
-  Value::ConstIterator cit(this);
-  visitors::ConstIteratorVisitor visitor =
-      visitors::ConstIteratorVisitor(
-          cit, visitors::ConstIteratorVisitor::Operation::END)
-          .init();
-  node_->accept(visitor);
-
-  return cit;
-}
+// Value::ConstIterator Value::cbegin() {
+//   Value::ConstIterator cit(this);
+//   visitors::ConstIteratorVisitor visitor =
+//       visitors::ConstIteratorVisitor(
+//           cit, visitors::ConstIteratorVisitor::Operation::BEGIN)
+//           .init();
+//   node_->accept(visitor);
+//
+//   return cit;
+// }
+//
+// Value::ConstIterator Value::cend() {
+//   Value::ConstIterator cit(this);
+//   visitors::ConstIteratorVisitor visitor =
+//       visitors::ConstIteratorVisitor(
+//           cit, visitors::ConstIteratorVisitor::Operation::END)
+//           .init();
+//   node_->accept(visitor);
+//
+//   return cit;
+// }
 
 Value::operator bool() const {
   visitors::BooleanVisitor visitor;
@@ -350,22 +338,75 @@ bool operator==(const Value& lhs, const Object& rhs) {
 
 namespace json {
 
-Value::Iterator::~Iterator() {
-  visitors::IteratorVisitor visitor =
-      visitors::IteratorVisitor(*this,
-                                visitors::IteratorVisitor::Operation::DESTROY)
-          .init();
-  value_->node_->accept(visitor);
+Value::Iterator::~Iterator() { ::operator delete(curr_); }
+
+Value::Iterator::Iterator(const Iterator& other) {
+  type_ = other.type_;
+  value_ = other.value_;
+  if (!curr_) {
+    curr_ = (Value*)::operator new(sizeof(Value));
+    new (curr_) Value();
+  }
+
+  curr_->~Value();
+  switch (type_) {
+    case ContainerType::ARRAY:
+      it_.array_it = other.it_.array_it;
+      new (curr_) Value(*it_.array_it);
+      break;
+    case ContainerType::OBJECT:
+      it_.map_it = other.it_.map_it;
+      new (curr_) Value(it_.map_it->second);
+      break;
+  }
+
+  curr_->parent_ = value_;
 }
 
-Value::Iterator::Iterator(Value* value) : curr_(nullptr), value_(value) {}
+Value::Iterator::Iterator(Value* value, const StartPosition pos)
+    : curr_(nullptr), value_(value) {
+  visitors::ContainerTypeVisitor visitor(type_);
+  value_->node_->accept(visitor);
+
+  visitors::ArrayVisitor array_visitor;
+  visitors::ObjectVisitor object_visitor;
+  switch (pos) {
+    case StartPosition::BEGIN:
+      switch (type_) {
+        case ContainerType::ARRAY:
+          value_->node_->accept(array_visitor);
+          it_.array_it = array_visitor.result().begin();
+          break;
+        case ContainerType::OBJECT:
+          value_->node_->accept(object_visitor);
+          it_.map_it = object_visitor.result().begin();
+          break;
+      }
+      break;
+    case StartPosition::END:
+      switch (type_) {
+        case ContainerType::ARRAY:
+          value_->node_->accept(array_visitor);
+          it_.array_it = array_visitor.result().end();
+          break;
+        case ContainerType::OBJECT:
+          value_->node_->accept(object_visitor);
+          it_.map_it = object_visitor.result().end();
+          break;
+      }
+      break;
+  }
+}
 
 Value::Iterator& Value::Iterator::operator++() {
-  visitors::IteratorVisitor visitor =
-      visitors::IteratorVisitor(*this,
-                                visitors::IteratorVisitor::Operation::INCREMENT)
-          .init();
-  value_->node_->accept(visitor);
+  switch (type_) {
+    case ContainerType::ARRAY:
+      ++it_.array_it;
+      break;
+    case ContainerType::OBJECT:
+      ++it_.map_it;
+      break;
+  }
 
   return *this;
 }
@@ -378,11 +419,14 @@ Value::Iterator Value::Iterator::operator++(int) {
 }
 
 Value::Iterator& Value::Iterator::operator--() {
-  visitors::IteratorVisitor visitor =
-      visitors::IteratorVisitor(*this,
-                                visitors::IteratorVisitor::Operation::DECREMENT)
-          .init();
-  value_->node_->accept(visitor);
+  switch (type_) {
+    case ContainerType::ARRAY:
+      --it_.array_it;
+      break;
+    case ContainerType::OBJECT:
+      --it_.map_it;
+      break;
+  }
 
   return *this;
 }
@@ -394,14 +438,58 @@ Value::Iterator Value::Iterator::operator--(int) {
   return temp;
 }
 
-Value::Iterator::reference Value::Iterator::operator*() { return *curr_; }
+Value::Iterator::reference Value::Iterator::operator*() {
+  if (!curr_) {
+    curr_ = (Value*)::operator new(sizeof(Value));
+    new (curr_) Value();
+  }
+
+  curr_->~Value();
+  switch (type_) {
+    case ContainerType::ARRAY:
+      new (curr_) Value(*it_.array_it);
+      break;
+    case ContainerType::OBJECT:
+      new (curr_) Value(it_.map_it->second);
+      break;
+  }
+
+  curr_->parent_ = value_;
+
+  switch (type_) {
+    case ContainerType::ARRAY: {
+      visitors::ArrayVisitor visitor;
+      value_->node_->accept(visitor);
+      // TODO(implement this myself)
+      curr_->key_ =
+          std::to_string(std::distance(visitor.result().begin(), it_.array_it));
+      break;
+    }
+    case ContainerType::OBJECT:
+      curr_->key_ = it_.map_it->first;
+      break;
+  }
+
+  return *curr_;
+}
 
 Value::Iterator::pointer Value::Iterator::operator->() {
   return &(operator*());
 }
 
 bool Value::Iterator::operator==(const Iterator& other) const {
-  return value_ == other.value_ && curr_->node_ == other.curr_->node_;
+  if (value_ != other.value_ || type_ != other.type_) {
+    return false;
+  }
+
+  switch (type_) {
+    case ContainerType::ARRAY:
+      return it_.array_it == other.it_.array_it;
+    case ContainerType::OBJECT:
+      return it_.map_it == other.it_.map_it;
+  }
+
+  return false;
 }
 
 bool Value::Iterator::operator!=(const Iterator& other) const {
@@ -410,67 +498,67 @@ bool Value::Iterator::operator!=(const Iterator& other) const {
 
 }  // namespace json
 
-namespace json {
-
-Value::ConstIterator::~ConstIterator() {
-  visitors::ConstIteratorVisitor visitor =
-      visitors::ConstIteratorVisitor(
-          *this, visitors::ConstIteratorVisitor::Operation::DESTROY)
-          .init();
-  value_->node_->accept(visitor);
-}
-
-Value::ConstIterator::ConstIterator(Value* value)
-    : curr_(nullptr), value_(value) {}
-
-Value::ConstIterator& Value::ConstIterator::operator++() {
-  visitors::ConstIteratorVisitor visitor =
-      visitors::ConstIteratorVisitor(
-          *this, visitors::ConstIteratorVisitor::Operation::INCREMENT)
-          .init();
-  value_->node_->accept(visitor);
-
-  return *this;
-}
-
-Value::ConstIterator Value::ConstIterator::operator++(int) {
-  ConstIterator temp = *this;
-  ++(*this);
-
-  return temp;
-}
-
-Value::ConstIterator& Value::ConstIterator::operator--() {
-  visitors::ConstIteratorVisitor visitor =
-      visitors::ConstIteratorVisitor(
-          *this, visitors::ConstIteratorVisitor::Operation::DECREMENT)
-          .init();
-  value_->node_->accept(visitor);
-
-  return *this;
-}
-
-Value::ConstIterator Value::ConstIterator::operator--(int) {
-  ConstIterator temp = *this;
-  --(*this);
-
-  return temp;
-}
-
-Value::ConstIterator::const_reference Value::ConstIterator::operator*() const {
-  return *curr_;
-}
-
-Value::ConstIterator::const_pointer Value::ConstIterator::operator->() const {
-  return &(operator*());
-}
-
-bool Value::ConstIterator::operator==(const ConstIterator& other) const {
-  return value_ == other.value_ && curr_->node_ == other.curr_->node_;
-}
-
-bool Value::ConstIterator::operator!=(const ConstIterator& other) const {
-  return !(*this == other);
-}
-
-}  // namespace json
+// namespace json {
+//
+// Value::ConstIterator::~ConstIterator() {
+//   visitors::ConstIteratorVisitor visitor = visitors::ConstIteratorVisitor(
+//       *this, visitors::ConstIteratorVisitor::Operation::DESTROY);
+//   value_->node_->accept(visitor);
+// }
+//
+// Value::ConstIterator::ConstIterator(Value* value)
+//     : curr_(nullptr), value_(value) {}
+//
+// Value::ConstIterator& Value::ConstIterator::operator++() {
+//   visitors::ConstIteratorVisitor visitor =
+//       visitors::ConstIteratorVisitor(
+//           *this, visitors::ConstIteratorVisitor::Operation::INCREMENT)
+//           .init();
+//   value_->node_->accept(visitor);
+//
+//   return *this;
+// }
+//
+// Value::ConstIterator Value::ConstIterator::operator++(int) {
+//   ConstIterator temp = *this;
+//   ++(*this);
+//
+//   return temp;
+// }
+//
+// Value::ConstIterator& Value::ConstIterator::operator--() {
+//   visitors::ConstIteratorVisitor visitor =
+//       visitors::ConstIteratorVisitor(
+//           *this, visitors::ConstIteratorVisitor::Operation::DECREMENT)
+//           .init();
+//   value_->node_->accept(visitor);
+//
+//   return *this;
+// }
+//
+// Value::ConstIterator Value::ConstIterator::operator--(int) {
+//   ConstIterator temp = *this;
+//   --(*this);
+//
+//   return temp;
+// }
+//
+// Value::ConstIterator::const_reference Value::ConstIterator::operator*() const
+// {
+//   return *curr_;
+// }
+//
+// Value::ConstIterator::const_pointer Value::ConstIterator::operator->() const
+// {
+//   return &(operator*());
+// }
+//
+// bool Value::ConstIterator::operator==(const ConstIterator& other) const {
+//   return value_ == other.value_ && curr_->node_ == other.curr_->node_;
+// }
+//
+// bool Value::ConstIterator::operator!=(const ConstIterator& other) const {
+//   return !(*this == other);
+// }
+//
+// }  // namespace json
