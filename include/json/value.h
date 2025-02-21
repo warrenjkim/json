@@ -11,8 +11,6 @@ namespace json {
 
 namespace visitors {
 
-class IteratorVisitor;
-class ConstIteratorVisitor;
 class ContainerTypeVisitor;
 
 }  // namespace visitors
@@ -215,7 +213,6 @@ class Value {
    private:
     friend class Value;
     friend class ConstIterator;
-    friend class visitors::IteratorVisitor;
     friend class visitors::ContainerTypeVisitor;
   };
 
@@ -266,13 +263,10 @@ class Value {
    private:
     friend class Value;
     friend class ConstConstIterator;
-    friend class visitors::ConstIteratorVisitor;
     friend class visitors::ContainerTypeVisitor;
   };
 
  private:
-  friend class visitors::IteratorVisitor;
-  friend class visitors::ConstIteratorVisitor;
   friend class visitors::ContainerTypeVisitor;
 };
 
