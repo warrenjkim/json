@@ -341,14 +341,9 @@ namespace json {
 Value::Iterator::~Iterator() { ::operator delete(curr_); }
 
 Value::Iterator::Iterator(const Iterator& other) {
+  curr_ = nullptr;
   type_ = other.type_;
   value_ = other.value_;
-  if (!curr_) {
-    curr_ = (Value*)::operator new(sizeof(Value));
-    new (curr_) Value();
-  }
-
-  curr_->~Value();
   switch (type_) {
     case ContainerType::ARRAY:
       it_.array_it = other.it_.array_it;
@@ -359,8 +354,6 @@ Value::Iterator::Iterator(const Iterator& other) {
       new (curr_) Value(it_.map_it->second);
       break;
   }
-
-  curr_->parent_ = value_;
 }
 
 Value::Iterator::Iterator(Value* value, const StartPosition pos)
