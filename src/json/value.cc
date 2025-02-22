@@ -333,13 +333,71 @@ Value::Iterator::Iterator(const Iterator& other) {
   switch (type_) {
     case ContainerType::ARRAY:
       it_.array_it = other.it_.array_it;
-      new (curr_) Value(*it_.array_it);
       break;
     case ContainerType::OBJECT:
       it_.map_it = other.it_.map_it;
-      new (curr_) Value(it_.map_it->second);
       break;
   }
+}
+
+Value::Iterator::Iterator(Iterator&& other) noexcept {
+  curr_ = other.curr_;
+  type_ = other.type_;
+  value_ = other.value_;
+  switch (type_) {
+    case ContainerType::ARRAY:
+      it_.array_it = other.it_.array_it;
+      break;
+    case ContainerType::OBJECT:
+      it_.map_it = other.it_.map_it;
+      break;
+  }
+
+  other.curr_ = nullptr;
+  other.value_ = nullptr;
+}
+
+Value::Iterator& Value::Iterator::operator=(const Iterator& other) {
+  if (this == &other) {
+    return *this;
+  }
+
+  curr_ = nullptr;
+  type_ = other.type_;
+  value_ = other.value_;
+  switch (type_) {
+    case ContainerType::ARRAY:
+      it_.array_it = other.it_.array_it;
+      break;
+    case ContainerType::OBJECT:
+      it_.map_it = other.it_.map_it;
+      break;
+  }
+
+  return *this;
+}
+
+Value::Iterator& Value::Iterator::operator=(Iterator&& other) noexcept {
+  if (this == &other) {
+    return *this;
+  }
+
+  curr_ = other.curr_;
+  type_ = other.type_;
+  value_ = other.value_;
+  switch (type_) {
+    case ContainerType::ARRAY:
+      it_.array_it = other.it_.array_it;
+      break;
+    case ContainerType::OBJECT:
+      it_.map_it = other.it_.map_it;
+      break;
+  }
+
+  other.curr_ = nullptr;
+  other.value_ = nullptr;
+
+  return *this;
 }
 
 Value::Iterator::Iterator(Value* value, const StartPosition pos)

@@ -176,12 +176,14 @@ class Value {
     using reference = value_type&;
 
    public:
-    ~Iterator();
     Iterator() = default;
-    Iterator(Iterator&&) noexcept = default;
+
+   public:
+    ~Iterator();
     Iterator(const Iterator& other);
-    Iterator& operator=(const Iterator&) = default;
-    Iterator& operator=(Iterator&&) noexcept = default;
+    Iterator(Iterator&& other) noexcept;
+    Iterator& operator=(const Iterator& other);
+    Iterator& operator=(Iterator&& other) noexcept;
 
    public:
     Iterator& operator++();
