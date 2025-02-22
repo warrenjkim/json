@@ -77,7 +77,7 @@ void Value::remove(const T index) {
   visitors::ArrayVisitor visitor;
   node_->accept(visitor);
   delete visitor.result()[index];
-  visitor.result()[index] = nullptr;
+  visitor.result().erase(visitor.result().begin() + index);
 }
 
 template <ReasonableString T>

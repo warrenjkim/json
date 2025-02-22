@@ -907,7 +907,6 @@ TEST_F(ValueTest, ArrayRemove) {
   // assert
   json::Array expected_arr;
   expected_arr.get().push_back(new json::String("value1"));
-  expected_arr.get().push_back(nullptr);  // index 1 is nullified
   expected_arr.get().push_back(new json::String("value3"));
 
   ASSERT_EQ(arr, expected_arr);
