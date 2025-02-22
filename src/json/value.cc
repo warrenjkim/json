@@ -337,10 +337,8 @@ namespace json {
 
 Value::Iterator::~Iterator() { ::operator delete(curr_); }
 
-Value::Iterator::Iterator(const Iterator& other) {
-  curr_ = nullptr;
-  type_ = other.type_;
-  value_ = other.value_;
+Value::Iterator::Iterator(const Iterator& other)
+    : curr_(nullptr), value_(other.value_), type_(other.type_) {
   switch (type_) {
     case ContainerType::ARRAY:
       it_.array_it = other.it_.array_it;
@@ -351,10 +349,8 @@ Value::Iterator::Iterator(const Iterator& other) {
   }
 }
 
-Value::Iterator::Iterator(Iterator&& other) noexcept {
-  curr_ = other.curr_;
-  type_ = other.type_;
-  value_ = other.value_;
+Value::Iterator::Iterator(Iterator&& other) noexcept
+    : curr_(nullptr), value_(other.value_), type_(other.type_) {
   switch (type_) {
     case ContainerType::ARRAY:
       it_.array_it = other.it_.array_it;
@@ -550,10 +546,8 @@ namespace json {
 
 Value::ConstIterator::~ConstIterator() { ::operator delete(curr_); }
 
-Value::ConstIterator::ConstIterator(const ConstIterator& other) {
-  curr_ = nullptr;
-  type_ = other.type_;
-  value_ = other.value_;
+Value::ConstIterator::ConstIterator(const ConstIterator& other)
+    : curr_(nullptr), value_(other.value_), type_(other.type_) {
   switch (type_) {
     case ContainerType::ARRAY:
       cit_.array_cit = other.cit_.array_cit;
@@ -564,10 +558,8 @@ Value::ConstIterator::ConstIterator(const ConstIterator& other) {
   }
 }
 
-Value::ConstIterator::ConstIterator(ConstIterator&& other) noexcept {
-  curr_ = other.curr_;
-  type_ = other.type_;
-  value_ = other.value_;
+Value::ConstIterator::ConstIterator(ConstIterator&& other) noexcept
+    : curr_(nullptr), value_(other.value_), type_(other.type_) {
   switch (type_) {
     case ContainerType::ARRAY:
       cit_.array_cit = other.cit_.array_cit;

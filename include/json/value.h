@@ -204,12 +204,12 @@ class Value {
    private:
     Value* curr_ = nullptr;
     Value* value_ = nullptr;
+    ContainerType type_;
     union ContainerIterator {
       std::vector<Node*>::iterator array_it = std::vector<Node*>::iterator();
       utils::Map<std::string, Node*>::Iterator map_it;
       ~ContainerIterator() {}
     } it_;
-    ContainerType type_;
     enum StartPosition { BEGIN, END };
 
    private:
@@ -259,12 +259,12 @@ class Value {
    private:
     Value* curr_ = nullptr;
     Value* value_ = nullptr;
+    ContainerType type_;
     union ContainerConstIterator {
       std::vector<Node*>::const_iterator array_cit =
           std::vector<Node*>::const_iterator();
       utils::Map<std::string, Node*>::ConstIterator map_cit;
     } cit_;
-    ContainerType type_;
     enum StartPosition { CBEGIN, CEND };
 
    private:
