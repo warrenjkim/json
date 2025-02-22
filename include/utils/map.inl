@@ -63,7 +63,7 @@ void Map<K, V>::insert(const K& key, V value) {
 }
 
 template <typename K, typename V>
-void Map<K, V>::remove(const K& key) {
+void Map<K, V>::erase(const K& key) {
   tree_.erase({key, V()});
 }
 
@@ -98,7 +98,7 @@ void Map<K, V>::erase(ConstIterator first, ConstIterator last) {
   }
 
   for (const auto& key : keys) {
-    remove(key);
+    erase(key);
   }
 }
 

@@ -51,9 +51,9 @@ Value& Value::operator=(Value&& other) {
     try {
       visitors::ObjectVisitor visitor;
 
-      // remove from other's AST
+      // erase from other's AST
       other.parent_->node_->accept(visitor);
-      visitor.result().remove(*other.key_);
+      visitor.result().erase(*other.key_);
 
       // add to current AST
       parent_->node_->accept(visitor);
@@ -196,10 +196,10 @@ void Value::insert(const std::string& key, const Value& value) {
 void Value::erase(Value::ConstIterator position) {
   switch (position.type_) {
     case ContainerType::ARRAY:
-      remove(std::stoi(*(position->key_)));
+      erase(std::stoi(*(position->key_)));
       break;
     case ContainerType::OBJECT:
-      remove(*(position->key_));
+      erase(*(position->key_));
       break;
   }
 }
@@ -264,7 +264,7 @@ Value& Value::operator=(const bool value) {
   if (parent_) {
     visitors::SetVisitor visitor(&node_, new Boolean(value), *key_);
     parent_->node_->accept(visitor);
-    parent_->cache_.remove(*key_);
+    parent_->cache_.erase(*key_);
   } else {
     delete node_;
     node_ = new Boolean(value);
@@ -277,7 +277,7 @@ Value& Value::operator=(const char* value) {
   if (parent_) {
     visitors::SetVisitor visitor(&node_, new String(value), *key_);
     parent_->node_->accept(visitor);
-    parent_->cache_.remove(*key_);
+    parent_->cache_.erase(*key_);
   } else {
     delete node_;
     node_ = new String(value);
@@ -290,7 +290,7 @@ Value& Value::operator=(const nullptr_t value) {
   if (parent_) {
     visitors::SetVisitor visitor(&node_, new Null(), *key_);
     parent_->node_->accept(visitor);
-    parent_->cache_.remove(*key_);
+    parent_->cache_.erase(*key_);
   } else {
     delete node_;
     node_ = new Null();

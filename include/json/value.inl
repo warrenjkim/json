@@ -72,8 +72,8 @@ void Value::insert(const std::string& key, const T& value) {
 }
 
 template <ReasonableInteger T>
-void Value::remove(const T index) {
-  cache_.remove(std::to_string(index));
+void Value::erase(const T index) {
+  cache_.erase(std::to_string(index));
   visitors::ArrayVisitor visitor;
   node_->accept(visitor);
   delete visitor.result()[index];
@@ -81,12 +81,12 @@ void Value::remove(const T index) {
 }
 
 template <ReasonableString T>
-void Value::remove(const T key) {
-  cache_.remove(key);
+void Value::erase(const T key) {
+  cache_.erase(key);
   visitors::ObjectVisitor visitor;
   node_->accept(visitor);
   delete visitor.result()[key];
-  visitor.result().remove(key);
+  visitor.result().erase(key);
 }
 
 template <ReasonableNumber T>
@@ -151,7 +151,7 @@ Value& Value::operator=(const T value) {
   if (parent_) {
     visitors::SetVisitor visitor(&node_, new Number(value), *key_);
     parent_->node_->accept(visitor);
-    parent_->cache_.remove(*key_);
+    parent_->cache_.erase(*key_);
   } else {
     delete node_;
     node_ = new Number(value);
@@ -165,7 +165,7 @@ Value& Value::operator=(const T& value) {
   if (parent_) {
     visitors::SetVisitor visitor(&node_, new String(value), *key_);
     parent_->node_->accept(visitor);
-    parent_->cache_.remove(*key_);
+    parent_->cache_.erase(*key_);
   } else {
     delete node_;
     node_ = new String(value);

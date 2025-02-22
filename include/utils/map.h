@@ -39,7 +39,7 @@ class Map {
 
  public:
   void insert(const K& key, V value);
-  void remove(const K& key);
+  void erase(const K& key);
   void erase(ConstIterator position);
   void erase(ConstIterator first, ConstIterator last);
   void clear();

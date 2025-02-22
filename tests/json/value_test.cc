@@ -880,7 +880,7 @@ TEST_F(ValueTest, ObjectRemove) {
   obj["key3"] = "value3";
 
   // act
-  obj.remove("key2");
+  obj.erase("key2");
 
   // assert
   json::Object expected_obj;
@@ -902,7 +902,7 @@ TEST_F(ValueTest, ArrayRemove) {
   arr.push_back("value3");
 
   // act
-  arr.remove(1);  // Remove the element at index 1
+  arr.erase(1);  // Remove the element at index 1
 
   // assert
   json::Array expected_arr;

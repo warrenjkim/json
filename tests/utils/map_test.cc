@@ -111,13 +111,13 @@ TEST_F(MapTest, Remove) {
   map_.insert("key", 1);
 
   // act
-  map_.remove("key");
+  map_.erase("key");
 
   // assert
   ASSERT_FALSE(map_.contains("key"));
 
   // arrange + act + assert
-  map_.remove("nonexistent");
+  map_.erase("nonexistent");
 }
 
 TEST_F(MapTest, Clear) {

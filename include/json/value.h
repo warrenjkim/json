@@ -124,13 +124,12 @@ class Value {
   template <ReasonableString T>
   void insert(const std::string& key, const T& value);
 
-  // TODO(add erase() once iterators are implemented)
  public:
   template <ReasonableInteger T>
-  void remove(const T index);
+  void erase(const T index);
 
   template <ReasonableString T>
-  void remove(const T key);
+  void erase(const T key);
 
  public:
   template <ReasonableNumber T>
