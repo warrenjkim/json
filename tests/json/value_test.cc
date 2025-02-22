@@ -1421,3 +1421,41 @@ TEST_F(ValueTest, ObjectErase) {
   delete array_;
   delete nested_obj_;
 }
+
+TEST_F(ValueTest, ArrayEraseRange) {
+  delete root_;
+  delete nested_obj_;
+
+  // arrange
+  json::Array* expected = new json::Array();
+  expected->push_back(new json::Boolean(false));
+  expected->push_back(new json::Null());
+
+  // act
+  json::Value arr(array_);
+  json::Value::ConstIterator end = ++(++arr.cbegin());
+  arr.erase(arr.cbegin(), end);
+
+  // assert
+  ASSERT_EQ(arr, json::Value(expected));
+}
+
+TEST_F(ValueTest, ObjectEraseRange) {
+  // arrange
+  json::Object* expected = new json::Object();
+  expected->insert("null", new json::Null());
+  expected->insert("number", new json::Number(42.5));
+  expected->insert("string", new json::String("hello"));
+  expected->insert("object", nested_obj_->clone());
+
+  // act
+  json::Value obj(root_);
+  json::Value::ConstIterator end = ++(++obj.cbegin());
+  obj.erase(obj.cbegin(), end);
+
+  // assert
+  ASSERT_EQ(obj, json::Value(expected));
+
+  delete array_;
+  delete nested_obj_;
+}
