@@ -142,7 +142,6 @@ class Map {
     ConstIterator& operator--();
     ConstIterator operator--(int);
 
-    // TODO(fix this. Should not be const)
     reference operator*() const;
     pointer operator->() const;
 
