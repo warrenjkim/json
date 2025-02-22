@@ -228,12 +228,14 @@ class Value {
     using const_reference = value_type&;
 
    public:
-    ~ConstIterator();
     ConstIterator() = default;
-    ConstIterator(ConstIterator&&) noexcept = default;
+
+   public:
+    ~ConstIterator();
     ConstIterator(const ConstIterator& other);
-    ConstIterator& operator=(const ConstIterator&) = default;
-    ConstIterator& operator=(ConstIterator&&) noexcept = default;
+    ConstIterator(ConstIterator&& other) noexcept;
+    ConstIterator& operator=(const ConstIterator& other);
+    ConstIterator& operator=(ConstIterator&& other) noexcept;
 
    public:
     ConstIterator& operator++();

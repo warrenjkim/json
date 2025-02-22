@@ -546,13 +546,73 @@ Value::ConstIterator::ConstIterator(const ConstIterator& other) {
   switch (type_) {
     case ContainerType::ARRAY:
       cit_.array_cit = other.cit_.array_cit;
-      new (curr_) Value(*cit_.array_cit);
       break;
     case ContainerType::OBJECT:
       cit_.map_cit = other.cit_.map_cit;
-      new (curr_) Value(cit_.map_cit->second);
       break;
   }
+}
+
+Value::ConstIterator::ConstIterator(ConstIterator&& other) noexcept {
+  curr_ = other.curr_;
+  type_ = other.type_;
+  value_ = other.value_;
+  switch (type_) {
+    case ContainerType::ARRAY:
+      cit_.array_cit = other.cit_.array_cit;
+      break;
+    case ContainerType::OBJECT:
+      cit_.map_cit = other.cit_.map_cit;
+      break;
+  }
+
+  other.curr_ = nullptr;
+  other.value_ = nullptr;
+}
+
+Value::ConstIterator& Value::ConstIterator::operator=(
+    const ConstIterator& other) {
+  if (this == &other) {
+    return *this;
+  }
+
+  curr_ = nullptr;
+  type_ = other.type_;
+  value_ = other.value_;
+  switch (type_) {
+    case ContainerType::ARRAY:
+      cit_.array_cit = other.cit_.array_cit;
+      break;
+    case ContainerType::OBJECT:
+      cit_.map_cit = other.cit_.map_cit;
+      break;
+  }
+
+  return *this;
+}
+
+Value::ConstIterator& Value::ConstIterator::operator=(
+    ConstIterator&& other) noexcept {
+  if (this == &other) {
+    return *this;
+  }
+
+  curr_ = other.curr_;
+  type_ = other.type_;
+  value_ = other.value_;
+  switch (type_) {
+    case ContainerType::ARRAY:
+      cit_.array_cit = other.cit_.array_cit;
+      break;
+    case ContainerType::OBJECT:
+      cit_.map_cit = other.cit_.map_cit;
+      break;
+  }
+
+  other.curr_ = nullptr;
+  other.value_ = nullptr;
+
+  return *this;
 }
 
 Value::ConstIterator::ConstIterator(Value* value, const StartPosition pos)
