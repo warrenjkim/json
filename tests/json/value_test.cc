@@ -1401,3 +1401,23 @@ TEST_F(ValueTest, ArrayErase) {
   // assert
   ASSERT_EQ(arr, json::Value(expected));
 }
+
+TEST_F(ValueTest, ObjectErase) {
+  // arrange
+  json::Object* expected = new json::Object();
+  expected->insert("null", new json::Null());
+  expected->insert("bool", new json::Boolean(true));
+  expected->insert("number", new json::Number(42.5));
+  expected->insert("string", new json::String("hello"));
+  expected->insert("object", nested_obj_->clone());
+
+  // act
+  json::Value obj(root_);
+  obj.erase(obj.cbegin());
+
+  // assert
+  ASSERT_EQ(obj, json::Value(expected));
+
+  delete array_;
+  delete nested_obj_;
+}
