@@ -204,6 +204,26 @@ void Value::erase(Value::ConstIterator position) {
   }
 }
 
+void Value::erase(Value::ConstIterator first, Value::ConstIterator last) {
+  switch (first.type_) {
+    case ContainerType::ARRAY: {
+      int i = std::stoi(*(first->key_));
+      int start = i;
+      while (i < std::stoi(*(last->key_))) {
+        erase(start);
+        i++;
+      }
+    } break;
+    case ContainerType::OBJECT: {
+      ConstIterator it = first;
+      while (it != last) {
+        ConstIterator curr = it++;
+        erase(*(curr->key_));
+      }
+    } break;
+  }
+}
+
 Value::Iterator Value::begin() {
   return Iterator(this, Iterator::StartPosition::BEGIN);
 }

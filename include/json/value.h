@@ -72,6 +72,7 @@ class Value {
 
  public:
   void erase(ConstIterator position);
+  void erase(ConstIterator first, ConstIterator last);
 
  public:
   Iterator begin();
