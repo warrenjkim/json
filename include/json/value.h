@@ -71,6 +71,9 @@ class Value {
   void insert(const std::string&, const Value& value);
 
  public:
+  void erase(ConstIterator position);
+
+ public:
   Iterator begin();
   Iterator end();
 
@@ -236,6 +239,9 @@ class Value {
     ConstIterator(ConstIterator&& other) noexcept;
     ConstIterator& operator=(const ConstIterator& other);
     ConstIterator& operator=(ConstIterator&& other) noexcept;
+
+   public:
+    ConstIterator(const Iterator& it);
 
    public:
     ConstIterator& operator++();

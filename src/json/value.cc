@@ -193,6 +193,17 @@ void Value::insert(const std::string& key, const Value& value) {
   }
 }
 
+void Value::erase(Value::ConstIterator position) {
+  switch (position.type_) {
+    case ContainerType::ARRAY:
+      remove(std::stoi(*(position->key_)));
+      break;
+    case ContainerType::OBJECT:
+      remove(*(position->key_));
+      break;
+  }
+}
+
 Value::Iterator Value::begin() {
   return Iterator(this, Iterator::StartPosition::BEGIN);
 }
@@ -613,6 +624,19 @@ Value::ConstIterator& Value::ConstIterator::operator=(
   other.value_ = nullptr;
 
   return *this;
+}
+
+Value::ConstIterator::ConstIterator(const Value::Iterator& it)
+    : curr_(nullptr), value_(it.value_) {
+  type_ = it.type_;
+  switch (type_) {
+    case ContainerType::ARRAY:
+      cit_.array_cit = it.it_.array_it;
+      break;
+    case ContainerType::OBJECT:
+      cit_.map_cit = it.it_.map_it;
+      break;
+  }
 }
 
 Value::ConstIterator::ConstIterator(Value* value, const StartPosition pos)

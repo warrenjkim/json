@@ -1383,3 +1383,21 @@ TEST_F(ValueTest, DISABLED_ObjectConstIteratorDecrementBegin) {
   // act & assert
   ASSERT_THROW(--it, std::out_of_range);
 }
+
+TEST_F(ValueTest, ArrayErase) {
+  delete root_;
+  delete nested_obj_;
+
+  // arrange
+  json::Array* expected = new json::Array();
+  expected->push_back(new json::String("two"));
+  expected->push_back(new json::Boolean(false));
+  expected->push_back(new json::Null());
+
+  // act
+  json::Value arr(array_);
+  arr.erase(arr.cbegin());
+
+  // assert
+  ASSERT_EQ(arr, json::Value(expected));
+}
