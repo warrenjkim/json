@@ -20,12 +20,12 @@ bool Map<K, V>::operator!=(const Map<K, V>& other) const {
 }
 
 template <typename K, typename V>
-constexpr size_t Map<K, V>::size() const {
+constexpr size_t Map<K, V>::size() const noexcept {
   return tree_.size();
 }
 
 template <typename K, typename V>
-constexpr bool Map<K, V>::empty() const {
+constexpr bool Map<K, V>::empty() const noexcept {
   return tree_.empty();
 }
 
@@ -95,32 +95,32 @@ void Map<K, V>::clear() {
 }
 
 template <typename K, typename V>
-Map<K, V>::Iterator Map<K, V>::begin() {
+Map<K, V>::Iterator Map<K, V>::begin() noexcept {
   return Iterator(tree_.min(), &tree_);
 }
 
 template <typename K, typename V>
-Map<K, V>::ConstIterator Map<K, V>::begin() const {
+Map<K, V>::ConstIterator Map<K, V>::begin() const noexcept {
   return ConstIterator(tree_.min(), &tree_);
 }
 
 template <typename K, typename V>
-Map<K, V>::ConstIterator Map<K, V>::cbegin() const {
+Map<K, V>::ConstIterator Map<K, V>::cbegin() const noexcept {
   return ConstIterator(tree_.min(), &tree_);
 }
 
 template <typename K, typename V>
-Map<K, V>::Iterator Map<K, V>::end() {
+Map<K, V>::Iterator Map<K, V>::end() noexcept {
   return Iterator(nullptr, &tree_);
 }
 
 template <typename K, typename V>
-Map<K, V>::ConstIterator Map<K, V>::end() const {
+Map<K, V>::ConstIterator Map<K, V>::end() const noexcept {
   return ConstIterator(nullptr, &tree_);
 }
 
 template <typename K, typename V>
-Map<K, V>::ConstIterator Map<K, V>::cend() const {
+Map<K, V>::ConstIterator Map<K, V>::cend() const noexcept {
   return ConstIterator(nullptr, &tree_);
 }
 

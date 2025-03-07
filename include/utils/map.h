@@ -30,8 +30,8 @@ class Map {
   bool operator!=(const Map& other) const;
 
  public:
-  constexpr size_t size() const;
-  constexpr bool empty() const;
+  constexpr size_t size() const noexcept;
+  constexpr bool empty() const noexcept;
   bool contains(const K& key) const;
 
   V& operator[](const K& key);
@@ -45,13 +45,13 @@ class Map {
   void clear();
 
  public:
-  Iterator begin();
-  ConstIterator begin() const;
-  ConstIterator cbegin() const;
+  Iterator begin() noexcept;
+  ConstIterator begin() const noexcept;
+  ConstIterator cbegin() const noexcept;
 
-  Iterator end();
-  ConstIterator end() const;
-  ConstIterator cend() const;
+  Iterator end() noexcept;
+  ConstIterator end() const noexcept;
+  ConstIterator cend() const noexcept;
 
   Iterator find(const K& key);
   ConstIterator find(const K& key) const;
