@@ -1,7 +1,6 @@
 #pragma once
 
 #include <optional>
-#include <stdexcept>
 #include <vector>
 
 #include "map.h"
