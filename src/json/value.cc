@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 
-#include "json/exception.h"
 #include "nodes/boolean.h"
 #include "nodes/node.h"
 #include "nodes/null.h"
@@ -226,19 +225,19 @@ void Value::erase(Value::ConstIterator first, Value::ConstIterator last) {
   }
 }
 
-Value::Iterator Value::begin() {
+Value::Iterator Value::begin() noexcept {
   return Iterator(this, Iterator::StartPosition::BEGIN);
 }
 
-Value::Iterator Value::end() {
+Value::Iterator Value::end() noexcept {
   return Iterator(this, Iterator::StartPosition::END);
 }
 
-Value::ConstIterator Value::cbegin() {
+Value::ConstIterator Value::cbegin() noexcept {
   return ConstIterator(this, ConstIterator::StartPosition::CBEGIN);
 }
 
-Value::ConstIterator Value::cend() {
+Value::ConstIterator Value::cend() noexcept {
   return ConstIterator(this, ConstIterator::StartPosition::CEND);
 }
 
@@ -464,7 +463,7 @@ Value::Iterator::Iterator(Value* value, const StartPosition pos)
   }
 }
 
-Value::Iterator& Value::Iterator::operator++() {
+Value::Iterator& Value::Iterator::operator++() noexcept {
   switch (type_) {
     case ContainerType::ARRAY:
       ++it_.array_it;
@@ -477,14 +476,14 @@ Value::Iterator& Value::Iterator::operator++() {
   return *this;
 }
 
-Value::Iterator Value::Iterator::operator++(int) {
+Value::Iterator Value::Iterator::operator++(int) noexcept {
   Iterator temp = *this;
   ++(*this);
 
   return temp;
 }
 
-Value::Iterator& Value::Iterator::operator--() {
+Value::Iterator& Value::Iterator::operator--() noexcept {
   switch (type_) {
     case ContainerType::ARRAY:
       --it_.array_it;
@@ -497,14 +496,14 @@ Value::Iterator& Value::Iterator::operator--() {
   return *this;
 }
 
-Value::Iterator Value::Iterator::operator--(int) {
+Value::Iterator Value::Iterator::operator--(int) noexcept {
   Iterator temp = *this;
   --(*this);
 
   return temp;
 }
 
-Value::Iterator::reference Value::Iterator::operator*() {
+Value::Iterator::reference Value::Iterator::operator*() noexcept {
   if (!curr_) {
     curr_ = (Value*)::operator new(sizeof(Value));
     new (curr_) Value();
@@ -539,11 +538,11 @@ Value::Iterator::reference Value::Iterator::operator*() {
   return *curr_;
 }
 
-Value::Iterator::pointer Value::Iterator::operator->() {
+Value::Iterator::pointer Value::Iterator::operator->() noexcept {
   return &(operator*());
 }
 
-bool Value::Iterator::operator==(const Iterator& other) const {
+bool Value::Iterator::operator==(const Iterator& other) const noexcept {
   if (value_ != other.value_ || type_ != other.type_) {
     return false;
   }
@@ -558,7 +557,7 @@ bool Value::Iterator::operator==(const Iterator& other) const {
   return false;
 }
 
-bool Value::Iterator::operator!=(const Iterator& other) const {
+bool Value::Iterator::operator!=(const Iterator& other) const noexcept {
   return !(*this == other);
 }
 
@@ -688,7 +687,7 @@ Value::ConstIterator::ConstIterator(Value* value, const StartPosition pos)
   }
 }
 
-Value::ConstIterator& Value::ConstIterator::operator++() {
+Value::ConstIterator& Value::ConstIterator::operator++() noexcept {
   switch (type_) {
     case ContainerType::ARRAY:
       ++cit_.array_cit;
@@ -701,14 +700,14 @@ Value::ConstIterator& Value::ConstIterator::operator++() {
   return *this;
 }
 
-Value::ConstIterator Value::ConstIterator::operator++(int) {
+Value::ConstIterator Value::ConstIterator::operator++(int) noexcept {
   ConstIterator temp = *this;
   ++(*this);
 
   return temp;
 }
 
-Value::ConstIterator& Value::ConstIterator::operator--() {
+Value::ConstIterator& Value::ConstIterator::operator--() noexcept {
   switch (type_) {
     case ContainerType::ARRAY:
       --cit_.array_cit;
@@ -721,14 +720,15 @@ Value::ConstIterator& Value::ConstIterator::operator--() {
   return *this;
 }
 
-Value::ConstIterator Value::ConstIterator::operator--(int) {
+Value::ConstIterator Value::ConstIterator::operator--(int) noexcept {
   ConstIterator temp = *this;
   --(*this);
 
   return temp;
 }
 
-Value::ConstIterator::const_reference Value::ConstIterator::operator*() {
+Value::ConstIterator::const_reference
+Value::ConstIterator::operator*() noexcept {
   if (!curr_) {
     curr_ = (Value*)::operator new(sizeof(Value));
     new (curr_) Value();
@@ -763,11 +763,13 @@ Value::ConstIterator::const_reference Value::ConstIterator::operator*() {
   return *curr_;
 }
 
-Value::ConstIterator::const_pointer Value::ConstIterator::operator->() {
+Value::ConstIterator::const_pointer
+Value::ConstIterator::operator->() noexcept {
   return &(operator*());
 }
 
-bool Value::ConstIterator::operator==(const ConstIterator& other) const {
+bool Value::ConstIterator::operator==(
+    const ConstIterator& other) const noexcept {
   if (value_ != other.value_ || type_ != other.type_) {
     return false;
   }
@@ -782,7 +784,8 @@ bool Value::ConstIterator::operator==(const ConstIterator& other) const {
   return false;
 }
 
-bool Value::ConstIterator::operator!=(const ConstIterator& other) const {
+bool Value::ConstIterator::operator!=(
+    const ConstIterator& other) const noexcept {
   return !(*this == other);
 }
 
