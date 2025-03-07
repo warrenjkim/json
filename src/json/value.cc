@@ -46,30 +46,32 @@ Value& Value::operator=(Value&& other) {
   node_ = other.node_;
   other.node_ = nullptr;
 
-  // TODO(move to yet another visitor class, probably)
   if (other.key_) {
-    try {
-      visitors::ObjectVisitor visitor;
+    ContainerType type;
+    visitors::ContainerTypeVisitor visitor(type);
+    other.parent_->node_->accept(visitor);
+    switch (type) {
+      case ARRAY: {
+        visitors::ArrayVisitor visitor;
 
-      // erase from other's AST
-      other.parent_->node_->accept(visitor);
-      visitor.result().erase(*other.key_);
+        other.parent_->node_->accept(visitor);
+        visitor.result().erase(visitor.result().begin() +
+                               std::stoi(*other.key_));
 
-      // add to current AST
-      parent_->node_->accept(visitor);
-      delete visitor.result()[*key_];
-      visitor.result().insert(*key_, node_);
-    } catch (BadCastException) {
-      visitors::ArrayVisitor visitor;
+        parent_->node_->accept(visitor);
+        delete visitor.result()[std::stoi(*key_)];
+        visitor.result()[std::stoi(*key_)] = node_;
+      } break;
+      case OBJECT: {
+        visitors::ObjectVisitor visitor;
 
-      // null out other's AST
-      other.parent_->node_->accept(visitor);
-      visitor.result().erase(visitor.result().begin() + std::stoi(*other.key_));
+        other.parent_->node_->accept(visitor);
+        visitor.result().erase(*other.key_);
 
-      // move to current AST
-      parent_->node_->accept(visitor);
-      delete visitor.result()[std::stoi(*key_)];
-      visitor.result()[std::stoi(*key_)] = node_;
+        parent_->node_->accept(visitor);
+        delete visitor.result()[*key_];
+        visitor.result().insert(*key_, node_);
+      } break;
     }
   }
 
