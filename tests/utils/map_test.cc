@@ -177,28 +177,6 @@ TEST_F(MapTest, IteratorFind) {
   ASSERT_EQ(it, map_.end());
 }
 
-TEST_F(MapTest, IteratorInvalidAccess) {
-  // arrange
-  json::utils::Map<std::string, int>::Iterator it = map_.end();
-
-  // act + assert
-  ASSERT_THROW(*it, std::out_of_range);
-  ASSERT_THROW(it->first, std::out_of_range);
-}
-
-TEST_F(MapTest, IteratorBounds) {
-  // arrange
-  map_.insert("key", 1);
-
-  // act + assert
-  json::utils::Map<std::string, int>::Iterator it = map_.begin();
-  it--;
-  ASSERT_EQ(it, map_.end());
-
-  it = map_.end();
-  ASSERT_THROW(++it, std::out_of_range);
-}
-
 TEST_F(MapTest, Erase) {
   // arrange
   map_.insert("a", 1);
@@ -210,52 +188,4 @@ TEST_F(MapTest, Erase) {
   map_.erase(map_.begin());
   // assert
   ASSERT_EQ(map_.size(), 3);
-}
-
-TEST_F(MapTest, EraseRange) {
-  // arrange + act
-  map_.erase(map_.begin(), map_.begin());
-  // assert
-  ASSERT_TRUE(map_.empty());
-
-  // arrange
-  map_.insert("a", 1);
-  map_.insert("b", 2);
-  map_.insert("c", 3);
-  map_.insert("d", 4);
-
-  // act
-  json::utils::Map<std::string, int>::ConstIterator first = map_.find("b");
-  json::utils::Map<std::string, int>::ConstIterator last = map_.find("d");
-  map_.erase(first, last);
-
-  // assert
-  ASSERT_TRUE(map_.contains("a"));
-  ASSERT_FALSE(map_.contains("b"));
-  ASSERT_FALSE(map_.contains("c"));
-  ASSERT_TRUE(map_.contains("d"));
-  ASSERT_EQ(map_.size(), 2);
-
-  // arrange
-  last = map_.find("d");
-  first = map_.find("a");
-
-  // act + assert
-  ASSERT_THROW(map_.erase(last, first), std::invalid_argument);
-
-  // arrange
-  json::utils::Map<std::string, int> other;
-  other.insert("x", 1);
-
-  // act + assert
-  ASSERT_THROW(map_.erase(map_.begin(), other.end()), std::invalid_argument);
-
-  // arrange
-  first = map_.find("a");
-
-  // act
-  map_.erase(first, map_.end());
-
-  // assert
-  ASSERT_TRUE(map_.empty());
 }

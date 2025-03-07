@@ -91,20 +91,20 @@ class Map {
     Iterator(MapNode* node, MapTree* tree);
 
    public:
-    Iterator& operator++();
-    Iterator operator++(int);
+    Iterator& operator++() noexcept;
+    Iterator operator++(int) noexcept;
 
-    Iterator& operator--();
-    Iterator operator--(int);
+    Iterator& operator--() noexcept;
+    Iterator operator--(int) noexcept;
 
-    reference operator*() const;
-    pointer operator->() const;
+    reference operator*() const noexcept;
+    pointer operator->() const noexcept;
 
-    bool operator==(const Iterator& other) const;
-    bool operator!=(const Iterator& other) const;
+    bool operator==(const Iterator& other) const noexcept;
+    bool operator!=(const Iterator& other) const noexcept;
 
-    bool operator==(const ConstIterator& other) const;
-    bool operator!=(const ConstIterator& other) const;
+    bool operator==(const ConstIterator& other) const noexcept;
+    bool operator!=(const ConstIterator& other) const noexcept;
 
    private:
     MapNode* curr_ = nullptr;
@@ -120,8 +120,8 @@ class Map {
     using iterator_category = std::bidirectional_iterator_tag;
     using value_type = Pair<const K, V>;
     using difference_type = std::ptrdiff_t;
-    using pointer = const value_type*;
-    using reference = const value_type&;
+    using const_pointer = const value_type*;
+    using const_reference = const value_type&;
 
    public:
     ConstIterator() = default;
@@ -136,20 +136,20 @@ class Map {
     ConstIterator(const MapNode* node, const MapTree* tree);
 
    public:
-    ConstIterator& operator++();
-    ConstIterator operator++(int);
+    ConstIterator& operator++() noexcept;
+    ConstIterator operator++(int) noexcept;
 
-    ConstIterator& operator--();
-    ConstIterator operator--(int);
+    ConstIterator& operator--() noexcept;
+    ConstIterator operator--(int) noexcept;
 
-    reference operator*() const;
-    pointer operator->() const;
+    const_reference operator*() const noexcept;
+    const_pointer operator->() const noexcept;
 
-    bool operator==(const ConstIterator& other) const;
-    bool operator!=(const ConstIterator& other) const;
+    bool operator==(const ConstIterator& other) const noexcept;
+    bool operator!=(const ConstIterator& other) const noexcept;
 
-    bool operator==(const Iterator& other) const;
-    bool operator!=(const Iterator& other) const;
+    bool operator==(const Iterator& other) const noexcept;
+    bool operator!=(const Iterator& other) const noexcept;
 
    private:
     const MapNode* curr_ = nullptr;

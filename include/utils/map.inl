@@ -69,10 +69,6 @@ void Map<K, V>::erase(const K& key) {
 
 template <typename K, typename V>
 void Map<K, V>::erase(ConstIterator position) {
-  if (!position.curr_) {
-    throw std::out_of_range("Cannot erase invalid iterator.");
-  }
-
   tree_.erase({position->first, position->second});
 }
 
@@ -82,17 +78,9 @@ void Map<K, V>::erase(ConstIterator first, ConstIterator last) {
     return;
   }
 
-  if (!first.tree_ || !last.tree_ || first.tree_ != last.tree_) {
-    throw std::invalid_argument("Iterators must be from same map.");
-  }
-
   std::vector<K> keys;
   ConstIterator it = first;
   while (it != last) {
-    if (it == end()) {
-      throw std::invalid_argument("Invalid iterator range.");
-    }
-
     keys.push_back(it->first);
     ++it;
   }
@@ -163,18 +151,14 @@ Map<K, V>::Iterator::Iterator(Map<K, V>::MapNode* node,
     : curr_(node), tree_(tree) {}
 
 template <typename K, typename V>
-Map<K, V>::Iterator& Map<K, V>::Iterator::operator++() {
-  if (!curr_) {
-    throw std::out_of_range("Iterator cannot be dereferenced");
-  }
-
+Map<K, V>::Iterator& Map<K, V>::Iterator::operator++() noexcept {
   curr_ = tree_->successor(curr_);
 
   return *this;
 }
 
 template <typename K, typename V>
-Map<K, V>::Iterator Map<K, V>::Iterator::operator++(int) {
+Map<K, V>::Iterator Map<K, V>::Iterator::operator++(int) noexcept {
   Iterator temp = *this;
   ++(*this);
 
@@ -182,11 +166,7 @@ Map<K, V>::Iterator Map<K, V>::Iterator::operator++(int) {
 }
 
 template <typename K, typename V>
-Map<K, V>::Iterator& Map<K, V>::Iterator::operator--() {
-  if (!tree_) {
-    throw std::out_of_range("Iterator cannot be dereferenced");
-  }
-
+Map<K, V>::Iterator& Map<K, V>::Iterator::operator--() noexcept {
   if (!curr_) {
     curr_ = tree_->max();
   } else if (curr_ == tree_->min()) {
@@ -199,7 +179,7 @@ Map<K, V>::Iterator& Map<K, V>::Iterator::operator--() {
 }
 
 template <typename K, typename V>
-Map<K, V>::Iterator Map<K, V>::Iterator::operator--(int) {
+Map<K, V>::Iterator Map<K, V>::Iterator::operator--(int) noexcept {
   Iterator temp = *this;
   --(*this);
 
@@ -207,36 +187,34 @@ Map<K, V>::Iterator Map<K, V>::Iterator::operator--(int) {
 }
 
 template <typename K, typename V>
-Map<K, V>::Iterator::reference Map<K, V>::Iterator::operator*() const {
-  if (!curr_) {
-    throw std::out_of_range("Iterator cannot be dereferenced");
-  }
-
+Map<K, V>::Iterator::reference Map<K, V>::Iterator::operator*() const noexcept {
   return curr_->data;
 }
 
 template <typename K, typename V>
-Map<K, V>::Iterator::pointer Map<K, V>::Iterator::operator->() const {
+Map<K, V>::Iterator::pointer Map<K, V>::Iterator::operator->() const noexcept {
   return &(operator*());
 }
 
 template <typename K, typename V>
-bool Map<K, V>::Iterator::operator==(const Iterator& other) const {
+bool Map<K, V>::Iterator::operator==(const Iterator& other) const noexcept {
   return curr_ == other.curr_;
 }
 
 template <typename K, typename V>
-bool Map<K, V>::Iterator::operator!=(const Iterator& other) const {
+bool Map<K, V>::Iterator::operator!=(const Iterator& other) const noexcept {
   return !(*this == other);
 }
 
 template <typename K, typename V>
-bool Map<K, V>::Iterator::operator==(const ConstIterator& other) const {
+bool Map<K, V>::Iterator::operator==(
+    const ConstIterator& other) const noexcept {
   return curr_ == other.curr_;
 }
 
 template <typename K, typename V>
-bool Map<K, V>::Iterator::operator!=(const ConstIterator& other) const {
+bool Map<K, V>::Iterator::operator!=(
+    const ConstIterator& other) const noexcept {
   return !(*this == other);
 }
 
@@ -250,18 +228,14 @@ Map<K, V>::ConstIterator::ConstIterator(const Iterator& it)
     : curr_(it.curr_), tree_(it.tree_) {}
 
 template <typename K, typename V>
-Map<K, V>::ConstIterator& Map<K, V>::ConstIterator::operator++() {
-  if (!curr_) {
-    throw std::out_of_range("ConstIterator cannot be dereferenced");
-  }
-
+Map<K, V>::ConstIterator& Map<K, V>::ConstIterator::operator++() noexcept {
   curr_ = tree_->successor(curr_);
 
   return *this;
 }
 
 template <typename K, typename V>
-Map<K, V>::ConstIterator Map<K, V>::ConstIterator::operator++(int) {
+Map<K, V>::ConstIterator Map<K, V>::ConstIterator::operator++(int) noexcept {
   ConstIterator temp = *this;
   ++(*this);
 
@@ -269,11 +243,7 @@ Map<K, V>::ConstIterator Map<K, V>::ConstIterator::operator++(int) {
 }
 
 template <typename K, typename V>
-Map<K, V>::ConstIterator& Map<K, V>::ConstIterator::operator--() {
-  if (!tree_) {
-    throw std::out_of_range("Iterator cannot be dereferenced");
-  }
-
+Map<K, V>::ConstIterator& Map<K, V>::ConstIterator::operator--() noexcept {
   if (!curr_) {
     curr_ = tree_->max();
   } else if (curr_ == tree_->min()) {
@@ -286,7 +256,7 @@ Map<K, V>::ConstIterator& Map<K, V>::ConstIterator::operator--() {
 }
 
 template <typename K, typename V>
-Map<K, V>::ConstIterator Map<K, V>::ConstIterator::operator--(int) {
+Map<K, V>::ConstIterator Map<K, V>::ConstIterator::operator--(int) noexcept {
   ConstIterator temp = *this;
   --(*this);
 
@@ -294,37 +264,38 @@ Map<K, V>::ConstIterator Map<K, V>::ConstIterator::operator--(int) {
 }
 
 template <typename K, typename V>
-Map<K, V>::ConstIterator::reference Map<K, V>::ConstIterator::operator*()
-    const {
-  if (!curr_) {
-    throw std::out_of_range("ConstIterator cannot be dereferenced");
-  }
-
+Map<K, V>::ConstIterator::const_reference Map<K, V>::ConstIterator::operator*()
+    const noexcept {
   return curr_->data;
 }
 
 template <typename K, typename V>
-Map<K, V>::ConstIterator::pointer Map<K, V>::ConstIterator::operator->() const {
+Map<K, V>::ConstIterator::const_pointer Map<K, V>::ConstIterator::operator->()
+    const noexcept {
   return &(operator*());
 }
 
 template <typename K, typename V>
-bool Map<K, V>::ConstIterator::operator==(const ConstIterator& other) const {
+bool Map<K, V>::ConstIterator::operator==(
+    const ConstIterator& other) const noexcept {
   return curr_ == other.curr_;
 }
 
 template <typename K, typename V>
-bool Map<K, V>::ConstIterator::operator!=(const ConstIterator& other) const {
+bool Map<K, V>::ConstIterator::operator!=(
+    const ConstIterator& other) const noexcept {
   return !(*this == other);
 }
 
 template <typename K, typename V>
-bool Map<K, V>::ConstIterator::operator==(const Iterator& other) const {
+bool Map<K, V>::ConstIterator::operator==(
+    const Iterator& other) const noexcept {
   return curr_ == other.curr_;
 }
 
 template <typename K, typename V>
-bool Map<K, V>::ConstIterator::operator!=(const Iterator& other) const {
+bool Map<K, V>::ConstIterator::operator!=(
+    const Iterator& other) const noexcept {
   return !(*this == other);
 }
 
