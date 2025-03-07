@@ -186,6 +186,7 @@ TEST_F(MapTest, Erase) {
 
   // act
   map_.erase(map_.begin());
+
   // assert
   ASSERT_EQ(map_.size(), 3);
 }
