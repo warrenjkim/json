@@ -525,7 +525,6 @@ Value::Iterator::reference Value::Iterator::operator*() noexcept {
     case ContainerType::ARRAY: {
       visitors::ArrayVisitor visitor;
       value_->node_->accept(visitor);
-      // TODO(implement this myself)
       curr_->key_ =
           std::to_string(std::distance(visitor.result().begin(), it_.array_it));
       break;
@@ -750,7 +749,6 @@ Value::ConstIterator::operator*() noexcept {
     case ContainerType::ARRAY: {
       visitors::ArrayVisitor visitor;
       value_->node_->accept(visitor);
-      // TODO(implement this myself)
       curr_->key_ = std::to_string(
           std::distance(visitor.result().cbegin(), cit_.array_cit));
       break;
