@@ -50,8 +50,11 @@ if(BUILD_TESTING)
 
   # enable GoogleTest
   include(GoogleTest)
-  add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/googletest googletest)
-  set(GTEST_OUTPUT "all")
+  if(NOT TARGET gtest AND NOT TARGET gtest_main)
+    # only include GoogleTest if targets don't already exist
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/googletest googletest)
+    set(GTEST_OUTPUT "all")
+  endif()
 
   # check for -fno-elide-constructors support
   include(CheckCXXCompilerFlag)
