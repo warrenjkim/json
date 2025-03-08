@@ -3,7 +3,7 @@
 #include <string_view>
 
 #include "json/value.h"
-#include "nodes/array.h"
+#include "nodes/node.h"
 #include "parse/token.h"
 #include "utils/queue.h"
 
