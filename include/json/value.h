@@ -183,9 +183,7 @@ class Value {
     using reference = value_type&;
 
    public:
-    Iterator() = default;
-
-   public:
+    Iterator();
     ~Iterator();
     Iterator(const Iterator& other);
     Iterator(Iterator&& other) noexcept;
@@ -213,6 +211,8 @@ class Value {
       std::vector<nodes::Node*>::iterator array_it =
           std::vector<nodes::Node*>::iterator();
       utils::Map<std::string, nodes::Node*>::Iterator map_it;
+
+      ContainerIterator() {}
       ~ContainerIterator() {}
     } it_;
     enum StartPosition { BEGIN, END };
@@ -236,9 +236,7 @@ class Value {
     using const_reference = value_type&;
 
    public:
-    ConstIterator() = default;
-
-   public:
+    ConstIterator();
     ~ConstIterator();
     ConstIterator(const ConstIterator& other);
     ConstIterator(ConstIterator&& other) noexcept;
@@ -269,6 +267,8 @@ class Value {
       std::vector<nodes::Node*>::const_iterator array_cit =
           std::vector<nodes::Node*>::const_iterator();
       utils::Map<std::string, nodes::Node*>::ConstIterator map_cit;
+      ContainerConstIterator() {}
+      ~ContainerConstIterator() {}
     } cit_;
     enum StartPosition { CBEGIN, CEND };
 

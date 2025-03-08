@@ -391,6 +391,8 @@ bool operator==(const Value& lhs, const nodes::Object& rhs) {
 
 namespace json {
 
+Value::Iterator::Iterator() {}
+
 Value::Iterator::~Iterator() { ::operator delete(curr_); }
 
 Value::Iterator::Iterator(const Iterator& other)
@@ -597,6 +599,8 @@ bool Value::Iterator::operator!=(const Iterator& other) const noexcept {
 }  // namespace json
 
 namespace json {
+
+Value::ConstIterator::ConstIterator() {}
 
 Value::ConstIterator::~ConstIterator() { ::operator delete(curr_); }
 
