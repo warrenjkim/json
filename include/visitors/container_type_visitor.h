@@ -13,12 +13,12 @@ class ContainerTypeVisitor : public Visitor {
   ContainerTypeVisitor(Value::ContainerType& type);
 
  public:
-  void visit(Array& node) override;
-  void visit(Boolean& node) override;
-  void visit(Null& node) override;
-  void visit(Number& node) override;
-  void visit(Object& node) override;
-  void visit(String& node) override;
+  void visit(nodes::Array& node) override;
+  void visit(nodes::Boolean& node) override;
+  void visit(nodes::Null& node) override;
+  void visit(nodes::Number& node) override;
+  void visit(nodes::Object& node) override;
+  void visit(nodes::String& node) override;
 
  public:
   ContainerTypeVisitor() = delete;

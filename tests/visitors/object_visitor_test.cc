@@ -14,42 +14,42 @@
 class ObjectVisitorTest : public ::testing::Test {};
 
 TEST_F(ObjectVisitorTest, ArrayBadCast) {
-  json::Array array;
+  json::nodes::Array array;
   json::visitors::ObjectVisitor visitor;
   ASSERT_THROW(array.accept(visitor), json::BadCastException);
 }
 
 TEST_F(ObjectVisitorTest, BooleanBadCast) {
-  json::Boolean boolean(true);
+  json::nodes::Boolean boolean(true);
   json::visitors::ObjectVisitor visitor;
   ASSERT_THROW(boolean.accept(visitor), json::BadCastException);
 }
 
 TEST_F(ObjectVisitorTest, NullBadCast) {
-  json::Null null;
+  json::nodes::Null null;
   json::visitors::ObjectVisitor visitor;
   ASSERT_THROW(null.accept(visitor), json::BadCastException);
 }
 
 TEST_F(ObjectVisitorTest, NumberBadCast) {
-  json::Number number(42);
+  json::nodes::Number number(42);
   json::visitors::ObjectVisitor visitor;
   ASSERT_THROW(number.accept(visitor), json::BadCastException);
 }
 
 TEST_F(ObjectVisitorTest, Object) {
-  json::Object object;
-  object.insert("null", new json::Null());
-  object.insert("number", new json::Number(42));
-  object.insert("boolean", new json::Boolean(true));
-  object.insert("string", new json::String("string"));
+  json::nodes::Object object;
+  object.insert("null", new json::nodes::Null());
+  object.insert("number", new json::nodes::Number(42));
+  object.insert("boolean", new json::nodes::Boolean(true));
+  object.insert("string", new json::nodes::String("string"));
   json::visitors::ObjectVisitor visitor;
   object.accept(visitor);
   ASSERT_EQ(visitor.result(), object.get());
 }
 
 TEST_F(ObjectVisitorTest, StringBadCast) {
-  json::String string("string");
+  json::nodes::String string("string");
   json::visitors::ObjectVisitor visitor;
   ASSERT_THROW(string.accept(visitor), json::BadCastException);
 }

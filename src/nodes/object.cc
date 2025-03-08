@@ -7,6 +7,8 @@
 
 namespace json {
 
+namespace nodes {
+
 void Object::accept(visitors::Visitor& visitor) { visitor.visit(*this); }
 
 void Object::accept(visitors::ConstVisitor& visitor) const {
@@ -47,5 +49,7 @@ utils::Map<std::string, Node*>& Object::get() { return properties_; }
 const utils::Map<std::string, Node*>& Object::get() const {
   return properties_;
 }
+
+}  // namespace nodes
 
 }  // namespace json

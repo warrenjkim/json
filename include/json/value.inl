@@ -20,55 +20,57 @@
 namespace json {
 
 template <ReasonableNumber T>
-Value::Value(const T value) : node_(new Number(value)), parent_(nullptr) {}
+Value::Value(const T value)
+    : node_(new nodes::Number(value)), parent_(nullptr) {}
 
 template <ReasonableString T>
-Value::Value(const T& value) : node_(new String(value)), parent_(nullptr) {}
+Value::Value(const T& value)
+    : node_(new nodes::String(value)), parent_(nullptr) {}
 
 template <ReasonableNumber T>
 void Value::push_back(const T value) {
   if (!node_) {
-    node_ = new Array();
+    node_ = new nodes::Array();
   }
 
   visitors::ArrayVisitor visitor;
   node_->accept(visitor);
 
-  visitor.result().push_back(new Number(value));
+  visitor.result().push_back(new nodes::Number(value));
 }
 
 template <ReasonableString T>
 void Value::push_back(const T& value) {
   if (!node_) {
-    node_ = new Array();
+    node_ = new nodes::Array();
   }
   visitors::ArrayVisitor visitor;
   node_->accept(visitor);
 
-  visitor.result().push_back(new String(value));
+  visitor.result().push_back(new nodes::String(value));
 }
 
 template <ReasonableNumber T>
 void Value::insert(const std::string& key, const T value) {
   if (!node_) {
-    node_ = new Object();
+    node_ = new nodes::Object();
   }
 
   visitors::ObjectVisitor visitor;
   node_->accept(visitor);
 
-  visitor.result().insert(key, new Number(value));
+  visitor.result().insert(key, new nodes::Number(value));
 }
 
 template <ReasonableString T>
 void Value::insert(const std::string& key, const T& value) {
   if (!node_) {
-    node_ = new Object();
+    node_ = new nodes::Object();
   }
   visitors::ObjectVisitor visitor;
   node_->accept(visitor);
 
-  visitor.result().insert(key, new String(value));
+  visitor.result().insert(key, new nodes::String(value));
 }
 
 template <ReasonableInteger T>
@@ -128,8 +130,8 @@ Value& Value::operator[](const T index) {
 
 template <ReasonableString T>
 Value& Value::operator[](const T& key) {
-  if (!node_ || (parent_ && *node_ == Null())) {
-    node_ = new Object();
+  if (!node_ || (parent_ && *node_ == nodes::Null())) {
+    node_ = new nodes::Object();
   }
 
   if (cache_.contains(key)) {
@@ -149,12 +151,12 @@ Value& Value::operator[](const T& key) {
 template <ReasonableNumber T>
 Value& Value::operator=(const T value) {
   if (parent_) {
-    visitors::SetVisitor visitor(&node_, new Number(value), *key_);
+    visitors::SetVisitor visitor(&node_, new nodes::Number(value), *key_);
     parent_->node_->accept(visitor);
     parent_->cache_.erase(*key_);
   } else {
     delete node_;
-    node_ = new Number(value);
+    node_ = new nodes::Number(value);
   }
 
   return *this;
@@ -163,12 +165,12 @@ Value& Value::operator=(const T value) {
 template <ReasonableString T>
 Value& Value::operator=(const T& value) {
   if (parent_) {
-    visitors::SetVisitor visitor(&node_, new String(value), *key_);
+    visitors::SetVisitor visitor(&node_, new nodes::String(value), *key_);
     parent_->node_->accept(visitor);
     parent_->cache_.erase(*key_);
   } else {
     delete node_;
-    node_ = new String(value);
+    node_ = new nodes::String(value);
   }
 
   return *this;
@@ -176,12 +178,12 @@ Value& Value::operator=(const T& value) {
 
 template <ReasonableNumber T>
 bool operator==(const Value& lhs, const T rhs) {
-  return lhs.node_ && *lhs.node_ == Number(rhs);
+  return lhs.node_ && *lhs.node_ == nodes::Number(rhs);
 }
 
 template <ReasonableString T>
 bool operator==(const Value& lhs, const T& rhs) {
-  return lhs.node_ && *lhs.node_ == String(rhs);
+  return lhs.node_ && *lhs.node_ == nodes::String(rhs);
 }
 
 }  // namespace json

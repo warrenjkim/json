@@ -15,9 +15,9 @@ class SetVisitorTest : public ::testing::Test {};
 
 TEST_F(SetVisitorTest, SetObjectValue) {
   // arrange
-  json::Object* root = new json::Object();
-  json::Node* string = new json::String("value");
-  json::Number num(123);
+  json::nodes::Object* root = new json::nodes::Object();
+  json::nodes::Node* string = new json::nodes::String("value");
+  json::nodes::Number num(123);
   root->insert("key", string);
 
   // act
@@ -25,16 +25,16 @@ TEST_F(SetVisitorTest, SetObjectValue) {
   root->accept(visitor);
 
   // assert
-  json::Object* expected_root = new json::Object();
+  json::nodes::Object* expected_root = new json::nodes::Object();
   expected_root->insert("key", num.clone());
   ASSERT_EQ(json::Value(root), json::Value(expected_root));
 }
 
 TEST_F(SetVisitorTest, SetArrayValue) {
   // arrange
-  json::Array* root = new json::Array();
-  json::Node* string = new json::String("value");
-  json::Number num(123);
+  json::nodes::Array* root = new json::nodes::Array();
+  json::nodes::Node* string = new json::nodes::String("value");
+  json::nodes::Number num(123);
   root->push_back(string);
 
   // act
@@ -42,16 +42,16 @@ TEST_F(SetVisitorTest, SetArrayValue) {
   root->accept(visitor);
 
   // assert
-  json::Array* expected_root = new json::Array();
+  json::nodes::Array* expected_root = new json::nodes::Array();
   expected_root->push_back(num.clone());
   ASSERT_EQ(json::Value(root), json::Value(expected_root));
 }
 
 TEST_F(SetVisitorTest, SetBooleanValueThrowsException) {
   // arrange
-  json::Boolean* root = new json::Boolean(true);
-  json::Node* string = new json::String("value");
-  json::Number* num = new json::Number(123);
+  json::nodes::Boolean* root = new json::nodes::Boolean(true);
+  json::nodes::Node* string = new json::nodes::String("value");
+  json::nodes::Number* num = new json::nodes::Number(123);
 
   // act + assert
   json::visitors::SetVisitor visitor(&string, num, "key");
@@ -64,9 +64,9 @@ TEST_F(SetVisitorTest, SetBooleanValueThrowsException) {
 
 TEST_F(SetVisitorTest, SetNullValueThrowsException) {
   // arrange
-  json::Null* root = new json::Null();
-  json::Node* string = new json::String("value");
-  json::Number* num = new json::Number(123);
+  json::nodes::Null* root = new json::nodes::Null();
+  json::nodes::Node* string = new json::nodes::String("value");
+  json::nodes::Number* num = new json::nodes::Number(123);
 
   // act + assert
   json::visitors::SetVisitor visitor(&string, num, "key");
@@ -79,9 +79,9 @@ TEST_F(SetVisitorTest, SetNullValueThrowsException) {
 
 TEST_F(SetVisitorTest, SetNumberValueThrowsException) {
   // arrange
-  json::Number* root = new json::Number(42);
-  json::Node* string = new json::String("value");
-  json::Number* num = new json::Number(123);
+  json::nodes::Number* root = new json::nodes::Number(42);
+  json::nodes::Node* string = new json::nodes::String("value");
+  json::nodes::Number* num = new json::nodes::Number(123);
 
   // act + assert
   json::visitors::SetVisitor visitor(&string, num, "key");
@@ -94,9 +94,9 @@ TEST_F(SetVisitorTest, SetNumberValueThrowsException) {
 
 TEST_F(SetVisitorTest, SetStringValueThrowsException) {
   // arrange
-  json::String* root = new json::String("test");
-  json::Node* string = new json::String("value");
-  json::Number* num = new json::Number(123);
+  json::nodes::String* root = new json::nodes::String("test");
+  json::nodes::Node* string = new json::nodes::String("value");
+  json::nodes::Number* num = new json::nodes::Number(123);
 
   // act + assert
   json::visitors::SetVisitor visitor(&string, num, "key");

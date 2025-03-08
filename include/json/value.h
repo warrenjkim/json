@@ -53,7 +53,7 @@ class Value {
   Value& operator=(const Value& other);
 
  public:
-  Value(Node* node);
+  Value(nodes::Node* node);
   Value(const nullptr_t);
   Value(const bool value);
   Value(const char* value);
@@ -105,8 +105,8 @@ class Value {
   friend bool operator==(const Value& lhs, const char* rhs);
   friend bool operator==(const Value& lhs, const nullptr_t);
   friend bool operator==(const Value& lhs, const Value& rhs);
-  friend bool operator==(const Value& lhs, const Array& rhs);
-  friend bool operator==(const Value& lhs, const Object& rhs);
+  friend bool operator==(const Value& lhs, const nodes::Array& rhs);
+  friend bool operator==(const Value& lhs, const nodes::Object& rhs);
 
  public:
   template <ReasonableNumber T>
@@ -165,7 +165,7 @@ class Value {
   friend bool operator==(const Value& lhs, const T& rhs);
 
  private:
-  Node* node_;
+  nodes::Node* node_;
   Value* parent_;
   std::optional<std::string> key_;
   utils::Map<std::string, Value> cache_;
@@ -210,8 +210,9 @@ class Value {
     Value* value_ = nullptr;
     ContainerType type_;
     union ContainerIterator {
-      std::vector<Node*>::iterator array_it = std::vector<Node*>::iterator();
-      utils::Map<std::string, Node*>::Iterator map_it;
+      std::vector<nodes::Node*>::iterator array_it =
+          std::vector<nodes::Node*>::iterator();
+      utils::Map<std::string, nodes::Node*>::Iterator map_it;
       ~ContainerIterator() {}
     } it_;
     enum StartPosition { BEGIN, END };
@@ -265,9 +266,9 @@ class Value {
     Value* value_ = nullptr;
     ContainerType type_;
     union ContainerConstIterator {
-      std::vector<Node*>::const_iterator array_cit =
-          std::vector<Node*>::const_iterator();
-      utils::Map<std::string, Node*>::ConstIterator map_cit;
+      std::vector<nodes::Node*>::const_iterator array_cit =
+          std::vector<nodes::Node*>::const_iterator();
+      utils::Map<std::string, nodes::Node*>::ConstIterator map_cit;
     } cit_;
     enum StartPosition { CBEGIN, CEND };
 

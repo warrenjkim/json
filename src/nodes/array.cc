@@ -7,6 +7,8 @@
 
 namespace json {
 
+namespace nodes {
+
 void Array::accept(visitors::Visitor& visitor) { visitor.visit(*this); }
 
 void Array::accept(visitors::ConstVisitor& visitor) const {
@@ -39,5 +41,7 @@ const bool Array::empty() const { return array_.empty(); }
 std::vector<Node*>& Array::get() { return array_; }
 
 const std::vector<Node*>& Array::get() const { return array_; }
+
+}  // namespace nodes
 
 }  // namespace json

@@ -23,7 +23,7 @@ GetVisitor::GetVisitor(const std::string_view key) : key_(key) {}
 
 GetVisitor::GetVisitor(const size_t index) : index_(index) {}
 
-void GetVisitor::visit(Array& node) {
+void GetVisitor::visit(nodes::Array& node) {
   if (key_) {
     throw BadAccessException("Cannot access a property of an array.");
   }
@@ -42,7 +42,7 @@ void GetVisitor::visit(Array& node) {
   }
 }
 
-void GetVisitor::visit(Boolean& node) {
+void GetVisitor::visit(nodes::Boolean& node) {
   if (key_) {
     throw BadAccessException("Cannot access a property of a boolean value.");
   }
@@ -54,7 +54,7 @@ void GetVisitor::visit(Boolean& node) {
   result_ = &node;
 }
 
-void GetVisitor::visit(Null& node) {
+void GetVisitor::visit(nodes::Null& node) {
   if (key_) {
     throw BadAccessException("Cannot access a property of a null value.");
   }
@@ -66,7 +66,7 @@ void GetVisitor::visit(Null& node) {
   result_ = &node;
 }
 
-void GetVisitor::visit(Number& node) {
+void GetVisitor::visit(nodes::Number& node) {
   if (key_) {
     throw BadAccessException("Cannot access a property of a number value.");
   }
@@ -78,7 +78,7 @@ void GetVisitor::visit(Number& node) {
   result_ = &node;
 }
 
-void GetVisitor::visit(Object& node) {
+void GetVisitor::visit(nodes::Object& node) {
   if (index_) {
     throw BadAccessException("Cannot access an index of a number value.");
   }
@@ -88,9 +88,9 @@ void GetVisitor::visit(Object& node) {
     return;
   }
 
-  std::optional<Node*> result = node.get().at(*key_);
+  std::optional<nodes::Node*> result = node.get().at(*key_);
   if (!result) {
-    result_ = new Null();
+    result_ = new nodes::Null();
     node.insert(*key_, result_);
     return;
   }
@@ -100,7 +100,7 @@ void GetVisitor::visit(Object& node) {
   result_->accept(*this);
 }
 
-void GetVisitor::visit(String& node) {
+void GetVisitor::visit(nodes::String& node) {
   if (key_) {
     throw BadAccessException("Cannot access a property of a string value.");
   }
@@ -112,7 +112,7 @@ void GetVisitor::visit(String& node) {
   result_ = &node;
 }
 
-Node* GetVisitor::result() { return result_; }
+nodes::Node* GetVisitor::result() { return result_; }
 
 }  // namespace visitors
 

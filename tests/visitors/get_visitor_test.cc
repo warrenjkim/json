@@ -16,16 +16,16 @@
 class GetVisitorTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    object_.insert("key", new json::String("value"));
+    object_.insert("key", new json::nodes::String("value"));
 
-    array_.push_back(new json::Number(1));
-    array_.push_back(new json::Boolean(true));
-    array_.push_back(new json::String("string"));
-    array_.push_back(new json::Null());
+    array_.push_back(new json::nodes::Number(1));
+    array_.push_back(new json::nodes::Boolean(true));
+    array_.push_back(new json::nodes::String("string"));
+    array_.push_back(new json::nodes::Null());
   }
 
-  json::Object object_;
-  json::Array array_;
+  json::nodes::Object object_;
+  json::nodes::Array array_;
 };
 
 TEST_F(GetVisitorTest, Object) {
@@ -37,13 +37,13 @@ TEST_F(GetVisitorTest, Object) {
 TEST_F(GetVisitorTest, ObjectKey) {
   json::visitors::GetVisitor visitor("key");
   object_.accept(visitor);
-  ASSERT_EQ(*visitor.result(), json::String("value"));
+  ASSERT_EQ(*visitor.result(), json::nodes::String("value"));
 }
 
 TEST_F(GetVisitorTest, CreateNewObject) {
   json::visitors::GetVisitor visitor("new_key");
   object_.accept(visitor);
-  ASSERT_EQ(*visitor.result(), json::Null());
+  ASSERT_EQ(*visitor.result(), json::nodes::Null());
 }
 
 TEST_F(GetVisitorTest, ObjectBadAccesIndex) {
@@ -70,17 +70,17 @@ TEST_F(GetVisitorTest, ArrayInvalidIndex) {
 TEST_F(GetVisitorTest, Number) {
   json::visitors::GetVisitor visitor(0);
   array_.accept(visitor);
-  ASSERT_EQ(*(visitor.result()), json::Number(1));
+  ASSERT_EQ(*(visitor.result()), json::nodes::Number(1));
 }
 
 TEST_F(GetVisitorTest, NumberBadAccessKey) {
-  json::Number number(42);
+  json::nodes::Number number(42);
   json::visitors::GetVisitor visitor("anything");
   ASSERT_THROW(number.accept(visitor), json::BadAccessException);
 }
 
 TEST_F(GetVisitorTest, NumberBadAccessIndex) {
-  json::Number number(42);
+  json::nodes::Number number(42);
   json::visitors::GetVisitor visitor(0);
   ASSERT_THROW(number.accept(visitor), json::BadAccessException);
 }
@@ -88,17 +88,17 @@ TEST_F(GetVisitorTest, NumberBadAccessIndex) {
 TEST_F(GetVisitorTest, Boolean) {
   json::visitors::GetVisitor visitor(1);
   array_.accept(visitor);
-  ASSERT_EQ(*(visitor.result()), json::Boolean(true));
+  ASSERT_EQ(*(visitor.result()), json::nodes::Boolean(true));
 }
 
 TEST_F(GetVisitorTest, BooleanBadAccessKey) {
-  json::Boolean boolean(true);
+  json::nodes::Boolean boolean(true);
   json::visitors::GetVisitor visitor("anything");
   ASSERT_THROW(boolean.accept(visitor), json::BadAccessException);
 }
 
 TEST_F(GetVisitorTest, BooleanBadAccessIndex) {
-  json::Boolean boolean(true);
+  json::nodes::Boolean boolean(true);
   json::visitors::GetVisitor visitor(0);
   ASSERT_THROW(boolean.accept(visitor), json::BadAccessException);
 }
@@ -106,17 +106,17 @@ TEST_F(GetVisitorTest, BooleanBadAccessIndex) {
 TEST_F(GetVisitorTest, String) {
   json::visitors::GetVisitor visitor(2);
   array_.accept(visitor);
-  ASSERT_EQ(*(visitor.result()), json::String("string"));
+  ASSERT_EQ(*(visitor.result()), json::nodes::String("string"));
 }
 
 TEST_F(GetVisitorTest, StringBadAccessKey) {
-  json::String str("test");
+  json::nodes::String str("test");
   json::visitors::GetVisitor visitor("anything");
   ASSERT_THROW(str.accept(visitor), json::BadAccessException);
 }
 
 TEST_F(GetVisitorTest, StringBadAccessIndex) {
-  json::String str("test");
+  json::nodes::String str("test");
   json::visitors::GetVisitor visitor(0);
   ASSERT_THROW(str.accept(visitor), json::BadAccessException);
 }
@@ -124,17 +124,17 @@ TEST_F(GetVisitorTest, StringBadAccessIndex) {
 TEST_F(GetVisitorTest, Null) {
   json::visitors::GetVisitor visitor(3);
   array_.accept(visitor);
-  ASSERT_EQ(*(visitor.result()), json::Null());
+  ASSERT_EQ(*(visitor.result()), json::nodes::Null());
 }
 
 TEST_F(GetVisitorTest, NullBadAccessKey) {
-  json::Null null;
+  json::nodes::Null null;
   json::visitors::GetVisitor visitor("anything");
   ASSERT_THROW(null.accept(visitor), json::BadAccessException);
 }
 
 TEST_F(GetVisitorTest, NullBadAccessIndex) {
-  json::Null null;
+  json::nodes::Null null;
   json::visitors::GetVisitor visitor(0);
   ASSERT_THROW(null.accept(visitor), json::BadAccessException);
 }

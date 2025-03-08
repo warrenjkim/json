@@ -14,25 +14,25 @@ namespace visitors {
 
 NumberVisitor::NumberVisitor() {}
 
-void NumberVisitor::visit(Array& node) {
+void NumberVisitor::visit(nodes::Array& node) {
   throw BadCastException("Expected type Number, but was Array.");
 }
 
-void NumberVisitor::visit(Boolean& node) {
+void NumberVisitor::visit(nodes::Boolean& node) {
   throw BadCastException("Expected type Number, but was Boolean.");
 }
 
-void NumberVisitor::visit(Null& node) {
+void NumberVisitor::visit(nodes::Null& node) {
   throw BadCastException("Expected type Number, but was Null.");
 }
 
-void NumberVisitor::visit(Number& node) { result_ = node.get(); }
+void NumberVisitor::visit(nodes::Number& node) { result_ = node.get(); }
 
-void NumberVisitor::visit(Object& node) {
+void NumberVisitor::visit(nodes::Object& node) {
   throw BadCastException("Expected type Number, but was Object.");
 }
 
-void NumberVisitor::visit(String& node) {
+void NumberVisitor::visit(nodes::String& node) {
   throw BadCastException("Expected type Number, but was String.");
 }
 

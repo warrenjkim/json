@@ -6,6 +6,8 @@
 
 namespace json {
 
+namespace nodes {
+
 void Null::accept(visitors::Visitor& visitor) { visitor.visit(*this); }
 
 void Null::accept(visitors::ConstVisitor& visitor) const {
@@ -15,5 +17,7 @@ void Null::accept(visitors::ConstVisitor& visitor) const {
 Node* Null::clone() { return new Null(); }
 
 Null::operator nullptr_t() const { return nullptr; }
+
+}  // namespace nodes
 
 }  // namespace json

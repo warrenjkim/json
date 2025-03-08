@@ -9,6 +9,8 @@ class ConstVisitor;
 
 }  // namespace visitors
 
+namespace nodes {
+
 class Node {
  public:
   virtual void accept(visitors::Visitor& visitor) = 0;
@@ -31,5 +33,7 @@ class Null;
 class Number;
 class Object;
 class String;
+
+}  // namespace nodes
 
 }  // namespace json

@@ -6,6 +6,8 @@
 
 namespace json {
 
+namespace nodes {
+
 class Array : public Node {
  public:
   void accept(visitors::Visitor& visitor) override;
@@ -36,5 +38,7 @@ class Array : public Node {
  private:
   std::vector<Node*> array_;
 };
+
+}  // namespace nodes
 
 }  // namespace json

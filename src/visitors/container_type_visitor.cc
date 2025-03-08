@@ -17,30 +17,30 @@ namespace visitors {
 ContainerTypeVisitor::ContainerTypeVisitor(Value::ContainerType& type)
     : type_(type) {}
 
-void ContainerTypeVisitor::visit(Array& node) {
+void ContainerTypeVisitor::visit(nodes::Array& node) {
   type_ = Value::ContainerType::ARRAY;
 }
 
-void ContainerTypeVisitor::visit(Boolean&) {
+void ContainerTypeVisitor::visit(nodes::Boolean&) {
   throw NonIterableTypeException(
       "Expected type Array or Object, but was Boolean.");
 }
 
-void ContainerTypeVisitor::visit(Null&) {
+void ContainerTypeVisitor::visit(nodes::Null&) {
   throw NonIterableTypeException(
       "Expected type Array or Object, but was Null.");
 }
 
-void ContainerTypeVisitor::visit(Number&) {
+void ContainerTypeVisitor::visit(nodes::Number&) {
   throw NonIterableTypeException(
       "Expected type Array or Object, but was Number.");
 }
 
-void ContainerTypeVisitor::visit(Object& node) {
+void ContainerTypeVisitor::visit(nodes::Object& node) {
   type_ = Value::ContainerType::OBJECT;
 }
 
-void ContainerTypeVisitor::visit(String&) {
+void ContainerTypeVisitor::visit(nodes::String&) {
   throw NonIterableTypeException(
       "Expected type Array or Object, but was String.");
 }

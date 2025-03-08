@@ -14,37 +14,37 @@
 class StringVisitorTest : public ::testing::Test {};
 
 TEST_F(StringVisitorTest, ArrayBadCast) {
-  json::Array array;
+  json::nodes::Array array;
   json::visitors::StringVisitor visitor;
   ASSERT_THROW(array.accept(visitor), json::BadCastException);
 }
 
 TEST_F(StringVisitorTest, BooleanBadCast) {
-  json::Boolean boolean(true);
+  json::nodes::Boolean boolean(true);
   json::visitors::StringVisitor visitor;
   ASSERT_THROW(boolean.accept(visitor), json::BadCastException);
 }
 
 TEST_F(StringVisitorTest, NullBadCast) {
-  json::Null null;
+  json::nodes::Null null;
   json::visitors::StringVisitor visitor;
   ASSERT_THROW(null.accept(visitor), json::BadCastException);
 }
 
 TEST_F(StringVisitorTest, NumberBadCast) {
-  json::Number number(42.0);
+  json::nodes::Number number(42.0);
   json::visitors::StringVisitor visitor;
   ASSERT_THROW(number.accept(visitor), json::BadCastException);
 }
 
 TEST_F(StringVisitorTest, ObjectBadCast) {
-  json::Object object;
+  json::nodes::Object object;
   json::visitors::StringVisitor visitor;
   ASSERT_THROW(object.accept(visitor), json::BadCastException);
 }
 
 TEST_F(StringVisitorTest, String) {
-  json::String string("string");
+  json::nodes::String string("string");
   json::visitors::StringVisitor visitor;
   string.accept(visitor);
   ASSERT_EQ(visitor.result(), "string");

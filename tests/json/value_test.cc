@@ -17,29 +17,29 @@
 class ValueTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    root_ = new json::Object();
-    root_->insert("null", new json::Null());
-    root_->insert("bool", new json::Boolean(true));
-    root_->insert("number", new json::Number(42.5));
-    root_->insert("string", new json::String("hello"));
+    root_ = new json::nodes::Object();
+    root_->insert("null", new json::nodes::Null());
+    root_->insert("bool", new json::nodes::Boolean(true));
+    root_->insert("number", new json::nodes::Number(42.5));
+    root_->insert("string", new json::nodes::String("hello"));
 
-    array_ = new json::Array();
-    array_->push_back(new json::Number(1));
-    array_->push_back(new json::String("two"));
-    array_->push_back(new json::Boolean(false));
-    array_->push_back(new json::Null());
+    array_ = new json::nodes::Array();
+    array_->push_back(new json::nodes::Number(1));
+    array_->push_back(new json::nodes::String("two"));
+    array_->push_back(new json::nodes::Boolean(false));
+    array_->push_back(new json::nodes::Null());
     root_->insert("array", array_->clone());
 
-    nested_obj_ = new json::Object();
-    nested_obj_->insert("key", new json::String("value"));
+    nested_obj_ = new json::nodes::Object();
+    nested_obj_->insert("key", new json::nodes::String("value"));
     root_->insert("object", nested_obj_->clone());
   }
 
   void TearDown() override {}
 
-  json::Object* root_;
-  json::Array* array_;
-  json::Object* nested_obj_;
+  json::nodes::Object* root_;
+  json::nodes::Array* array_;
+  json::nodes::Object* nested_obj_;
 };
 
 TEST_F(ValueTest, ConvertNumberToInt) {
@@ -47,7 +47,7 @@ TEST_F(ValueTest, ConvertNumberToInt) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Number(42.5));
+  json::Value value(new json::nodes::Number(42.5));
   int result = value;
   ASSERT_EQ(result, 42);
 }
@@ -57,7 +57,7 @@ TEST_F(ValueTest, ConvertNumberToDouble) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Number(42.5));
+  json::Value value(new json::nodes::Number(42.5));
   double result = value;
   ASSERT_DOUBLE_EQ(result, 42.5);
 }
@@ -67,7 +67,7 @@ TEST_F(ValueTest, ConvertNumberToFloat) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Number(42.5));
+  json::Value value(new json::nodes::Number(42.5));
   float result = value;
   ASSERT_FLOAT_EQ(result, 42.5f);
 }
@@ -77,7 +77,7 @@ TEST_F(ValueTest, ConvertStringToStdString) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::String("test"));
+  json::Value value(new json::nodes::String("test"));
   std::string result = value;
   ASSERT_EQ(result, "test");
 }
@@ -87,7 +87,7 @@ TEST_F(ValueTest, ConvertStringToCString) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::String("test"));
+  json::Value value(new json::nodes::String("test"));
   const char* result = value;
   ASSERT_STREQ(result, "test");
 }
@@ -97,7 +97,7 @@ TEST_F(ValueTest, ConvertBooleanToBool) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Boolean(true));
+  json::Value value(new json::nodes::Boolean(true));
   bool result = value;
   ASSERT_TRUE(result);
 }
@@ -107,7 +107,7 @@ TEST_F(ValueTest, ConvertBooleanToNullPtrT) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Null());
+  json::Value value(new json::nodes::Null());
   nullptr_t result = value;
   ASSERT_TRUE(result == nullptr);
 }
@@ -143,7 +143,7 @@ TEST_F(ValueTest, CompareNumberToInt) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Number(42));
+  json::Value value(new json::nodes::Number(42));
   ASSERT_TRUE(value == 42);
   ASSERT_TRUE(42 == value);
 }
@@ -153,7 +153,7 @@ TEST_F(ValueTest, CompareNumberToDouble) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Number(42));
+  json::Value value(new json::nodes::Number(42));
   ASSERT_TRUE(value == 42.0);
   ASSERT_TRUE(42.0 == value);
 }
@@ -163,7 +163,7 @@ TEST_F(ValueTest, CompareStringToCString) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::String("test"));
+  json::Value value(new json::nodes::String("test"));
   ASSERT_TRUE(value == "test");
   ASSERT_TRUE("test" == value);
 }
@@ -173,7 +173,7 @@ TEST_F(ValueTest, CompareStringToStdString) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::String("test"));
+  json::Value value(new json::nodes::String("test"));
   ASSERT_TRUE(value == std::string("test"));
   ASSERT_TRUE(std::string("test") == value);
 }
@@ -183,7 +183,7 @@ TEST_F(ValueTest, CompareBooleanToBool) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Boolean(true));
+  json::Value value(new json::nodes::Boolean(true));
   ASSERT_TRUE(value == true);
   ASSERT_TRUE(true == value);
 }
@@ -193,8 +193,8 @@ TEST_F(ValueTest, CompareValueToValueNumber) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value1(new json::Number(42));
-  json::Value value2(new json::Number(42));
+  json::Value value1(new json::nodes::Number(42));
+  json::Value value2(new json::nodes::Number(42));
   ASSERT_TRUE(value1 == value2);
 }
 
@@ -203,8 +203,8 @@ TEST_F(ValueTest, CompareValueToValueBool) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value1(new json::Boolean(true));
-  json::Value value2(new json::Boolean(true));
+  json::Value value1(new json::nodes::Boolean(true));
+  json::Value value2(new json::nodes::Boolean(true));
   ASSERT_TRUE(value1 == value2);
 }
 
@@ -213,8 +213,8 @@ TEST_F(ValueTest, CompareValueToValueArray) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value1(new json::Array());
-  json::Value value2(new json::Array());
+  json::Value value1(new json::nodes::Array());
+  json::Value value2(new json::nodes::Array());
   ASSERT_TRUE(value1 == value2);
 }
 
@@ -223,8 +223,8 @@ TEST_F(ValueTest, CompareValueToValueObject) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value1(new json::Object());
-  json::Value value2(new json::Object());
+  json::Value value1(new json::nodes::Object());
+  json::Value value2(new json::nodes::Object());
   ASSERT_TRUE(value1 == value2);
 }
 
@@ -233,8 +233,8 @@ TEST_F(ValueTest, CompareValueToValueString) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value1(new json::String("string"));
-  json::Value value2(new json::String("string"));
+  json::Value value1(new json::nodes::String("string"));
+  json::Value value2(new json::nodes::String("string"));
   ASSERT_TRUE(value1 == value2);
 }
 
@@ -243,8 +243,8 @@ TEST_F(ValueTest, CompareValueToValueNotSameType) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value1(new json::Number(42));
-  json::Value value2(new json::String("string"));
+  json::Value value1(new json::nodes::Number(42));
+  json::Value value2(new json::nodes::String("string"));
   ASSERT_FALSE(value1 == value2);
 }
 
@@ -253,7 +253,7 @@ TEST_F(ValueTest, CompareNullToNullptr) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Null());
+  json::Value value(new json::nodes::Null());
   ASSERT_TRUE(value == nullptr);
   ASSERT_TRUE(nullptr == value);
 }
@@ -263,7 +263,7 @@ TEST_F(ValueTest, BadCastNumberToBool) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Number(42));
+  json::Value value(new json::nodes::Number(42));
   ASSERT_THROW(bool b = value, json::BadCastException);
 }
 
@@ -272,7 +272,7 @@ TEST_F(ValueTest, BadCastBooleanToNumber) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Boolean(true));
+  json::Value value(new json::nodes::Boolean(true));
   ASSERT_THROW(int n = value, json::BadCastException);
 }
 
@@ -281,7 +281,7 @@ TEST_F(ValueTest, BadCastBooleanToString) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Boolean(true));
+  json::Value value(new json::nodes::Boolean(true));
   ASSERT_THROW(std::string s = value, json::BadCastException);
   ASSERT_THROW(const char* cs = value, json::BadCastException);
 }
@@ -291,7 +291,7 @@ TEST_F(ValueTest, BadCastBooleanToNullptr) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Boolean(true));
+  json::Value value(new json::nodes::Boolean(true));
   ASSERT_THROW(nullptr_t n = value, json::BadCastException);
 }
 
@@ -300,7 +300,7 @@ TEST_F(ValueTest, BadCastNumberToString) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Number(42));
+  json::Value value(new json::nodes::Number(42));
   ASSERT_THROW(std::string s = value, json::BadCastException);
 }
 
@@ -309,7 +309,7 @@ TEST_F(ValueTest, BadAccessNumberAsObject) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Number(42));
+  json::Value value(new json::nodes::Number(42));
   ASSERT_THROW((void)value["key"], json::BadAccessException);
 }
 
@@ -318,7 +318,7 @@ TEST_F(ValueTest, BadAccessNumberAsArray) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Number(42));
+  json::Value value(new json::nodes::Number(42));
   ASSERT_THROW(value[0], json::BadAccessException);
 }
 
@@ -327,7 +327,7 @@ TEST_F(ValueTest, BadCastStringToInt) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::String("test"));
+  json::Value value(new json::nodes::String("test"));
   ASSERT_THROW(int i = value, json::BadCastException);
 }
 
@@ -336,7 +336,7 @@ TEST_F(ValueTest, BadCastStringToBool) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::String("test"));
+  json::Value value(new json::nodes::String("test"));
   ASSERT_THROW(bool b = value, json::BadCastException);
 }
 
@@ -361,8 +361,8 @@ TEST_F(ValueTest, CompareNullToNull) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Null());
-  json::Value other(new json::Null());
+  json::Value value(new json::nodes::Null());
+  json::Value other(new json::nodes::Null());
   ASSERT_TRUE(value == other);
 }
 
@@ -371,7 +371,7 @@ TEST_F(ValueTest, BadCastNullToInt) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Null());
+  json::Value value(new json::nodes::Null());
   ASSERT_THROW(int i = value, json::BadCastException);
 }
 
@@ -380,7 +380,7 @@ TEST_F(ValueTest, BadCastNullToBool) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Null());
+  json::Value value(new json::nodes::Null());
   ASSERT_THROW(bool b = value, json::BadCastException);
 }
 
@@ -389,7 +389,7 @@ TEST_F(ValueTest, BadCastNullToString) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::Null());
+  json::Value value(new json::nodes::Null());
   ASSERT_THROW(std::string s = value, json::BadCastException);
 }
 
@@ -460,9 +460,9 @@ TEST_F(ValueTest, UpdatePrimitiveTypes) {
   delete array_;
   delete nested_obj_;
 
-  json::Value number_val(new json::Number(42));
-  json::Value string_val(new json::String("test"));
-  json::Value bool_val(new json::Boolean(false));
+  json::Value number_val(new json::nodes::Number(42));
+  json::Value string_val(new json::nodes::String("test"));
+  json::Value bool_val(new json::nodes::Boolean(false));
 
   number_val = 100;
   string_val = "updated";
@@ -489,9 +489,9 @@ TEST_F(ValueTest, AddToEmptyArrayNumberFirst) {
   delete array_;
   delete nested_obj_;
 
-  json::Array array;
-  array.push_back(new json::Number(10));
-  array.push_back(new json::Boolean(true));
+  json::nodes::Array array;
+  array.push_back(new json::nodes::Number(10));
+  array.push_back(new json::nodes::Boolean(true));
 
   json::Value value;
   value.push_back(10);
@@ -506,9 +506,9 @@ TEST_F(ValueTest, AddToEmptyArrayBooleanFirst) {
   delete array_;
   delete nested_obj_;
 
-  json::Array array;
-  array.push_back(new json::Boolean(true));
-  array.push_back(new json::Number(10));
+  json::nodes::Array array;
+  array.push_back(new json::nodes::Boolean(true));
+  array.push_back(new json::nodes::Number(10));
 
   json::Value value;
   value.push_back(true);
@@ -523,9 +523,9 @@ TEST_F(ValueTest, AddToEmptyArrayNullFirst) {
   delete array_;
   delete nested_obj_;
 
-  json::Array array;
-  array.push_back(new json::Null());
-  array.push_back(new json::Boolean(true));
+  json::nodes::Array array;
+  array.push_back(new json::nodes::Null());
+  array.push_back(new json::nodes::Boolean(true));
 
   json::Value value;
   value.push_back(nullptr);
@@ -540,9 +540,9 @@ TEST_F(ValueTest, AddToEmptyArrayCStringFirst) {
   delete array_;
   delete nested_obj_;
 
-  json::Array array;
-  array.push_back(new json::String("string"));
-  array.push_back(new json::Null());
+  json::nodes::Array array;
+  array.push_back(new json::nodes::String("string"));
+  array.push_back(new json::nodes::Null());
 
   json::Value value;
   value.push_back("string");
@@ -557,9 +557,9 @@ TEST_F(ValueTest, AddToEmptyArrayStringFirst) {
   delete array_;
   delete nested_obj_;
 
-  json::Array array;
-  array.push_back(new json::String("string"));
-  array.push_back(new json::Null());
+  json::nodes::Array array;
+  array.push_back(new json::nodes::String("string"));
+  array.push_back(new json::nodes::Null());
 
   json::Value value;
   value.push_back(std::string("string"));
@@ -574,11 +574,11 @@ TEST_F(ValueTest, AddToEmptyArrayValueFirst) {
   delete array_;
   delete nested_obj_;
 
-  json::Value num(new json::Number(8));
+  json::Value num(new json::nodes::Number(8));
 
-  json::Array array;
-  array.push_back(new json::Number(8));
-  array.push_back(new json::String("string"));
+  json::nodes::Array array;
+  array.push_back(new json::nodes::Number(8));
+  array.push_back(new json::nodes::String("string"));
 
   json::Value value;
   value.push_back(num);
@@ -595,9 +595,9 @@ TEST_F(ValueTest, AddToEmptyArrayEmptyValueFirst) {
 
   json::Value null_value;
 
-  json::Array array;
-  array.push_back(new json::Null());
-  array.push_back(new json::String("string"));
+  json::nodes::Array array;
+  array.push_back(new json::nodes::Null());
+  array.push_back(new json::nodes::String("string"));
 
   json::Value value;
   value.push_back(null_value);
@@ -612,9 +612,9 @@ TEST_F(ValueTest, AddToEmptyObjectNumberFirst) {
   delete array_;
   delete nested_obj_;
 
-  json::Object object;
-  object.insert("num", new json::Number(10));
-  object.insert("bool", new json::Boolean(true));
+  json::nodes::Object object;
+  object.insert("num", new json::nodes::Number(10));
+  object.insert("bool", new json::nodes::Boolean(true));
 
   json::Value value;
   value.insert("num", 10);
@@ -629,9 +629,9 @@ TEST_F(ValueTest, AddToEmptyObjectBooleanFirst) {
   delete array_;
   delete nested_obj_;
 
-  json::Object object;
-  object.insert("bool", new json::Boolean(true));
-  object.insert("num", new json::Number(10));
+  json::nodes::Object object;
+  object.insert("bool", new json::nodes::Boolean(true));
+  object.insert("num", new json::nodes::Number(10));
 
   json::Value value;
   value.insert("bool", true);
@@ -646,9 +646,9 @@ TEST_F(ValueTest, AddToEmptyObjectNullFirst) {
   delete array_;
   delete nested_obj_;
 
-  json::Object object;
-  object.insert("null", new json::Null());
-  object.insert("bool", new json::Boolean(true));
+  json::nodes::Object object;
+  object.insert("null", new json::nodes::Null());
+  object.insert("bool", new json::nodes::Boolean(true));
 
   json::Value value;
   value.insert("null", nullptr);
@@ -663,9 +663,9 @@ TEST_F(ValueTest, AddToEmptyObjectCStringFirst) {
   delete array_;
   delete nested_obj_;
 
-  json::Object object;
-  object.insert("str", new json::String("string"));
-  object.insert("null", new json::Null());
+  json::nodes::Object object;
+  object.insert("str", new json::nodes::String("string"));
+  object.insert("null", new json::nodes::Null());
 
   json::Value value;
   value.insert("str", "string");
@@ -680,9 +680,9 @@ TEST_F(ValueTest, AddToEmptyObjectStringFirst) {
   delete array_;
   delete nested_obj_;
 
-  json::Object object;
-  object.insert("str", new json::String("string"));
-  object.insert("null", new json::Null());
+  json::nodes::Object object;
+  object.insert("str", new json::nodes::String("string"));
+  object.insert("null", new json::nodes::Null());
 
   json::Value value;
   value.insert("str", std::string("string"));
@@ -697,11 +697,11 @@ TEST_F(ValueTest, AddToEmptyObjectValueFirst) {
   delete array_;
   delete nested_obj_;
 
-  json::Value num(new json::Number(8));
+  json::Value num(new json::nodes::Number(8));
 
-  json::Object object;
-  object.insert("val", new json::Number(8));
-  object.insert("str", new json::String("string"));
+  json::nodes::Object object;
+  object.insert("val", new json::nodes::Number(8));
+  object.insert("str", new json::nodes::String("string"));
 
   json::Value value;
   value.insert("val", num);
@@ -718,9 +718,9 @@ TEST_F(ValueTest, AddToEmptyObjectEmptyValueFirst) {
 
   json::Value null_value;
 
-  json::Object object;
-  object.insert("empty_val", new json::Null());
-  object.insert("str", new json::String("string"));
+  json::nodes::Object object;
+  object.insert("empty_val", new json::nodes::Null());
+  object.insert("str", new json::nodes::String("string"));
 
   json::Value value;
   value.insert("empty_val", null_value);
@@ -791,7 +791,7 @@ TEST_F(ValueTest, AssignNull) {
   delete array_;
   delete nested_obj_;
 
-  json::Value val(new json::Number(42));
+  json::Value val(new json::nodes::Number(42));
   val = nullptr;
   ASSERT_EQ(val, nullptr);
 }
@@ -801,7 +801,7 @@ TEST_F(ValueTest, CopyConstructor) {
   delete array_;
   delete nested_obj_;
 
-  json::Value val(new json::Number(42));
+  json::Value val(new json::nodes::Number(42));
   json::Value val_2(val);
   ASSERT_EQ(val, val_2);
 }
@@ -823,12 +823,12 @@ TEST_F(ValueTest, ObjectMoveSemantics) {
   obj2["keyX"] = std::move(obj1["key1"]);
 
   // assert
-  json::Object expected_obj1;
-  expected_obj1.get().insert("key2", new json::String("value2"));
+  json::nodes::Object expected_obj1;
+  expected_obj1.get().insert("key2", new json::nodes::String("value2"));
 
-  json::Object expected_obj2;
-  expected_obj2.get().insert("keyA", new json::String("valueA"));
-  expected_obj2.get().insert("keyX", new json::String("value1"));
+  json::nodes::Object expected_obj2;
+  expected_obj2.get().insert("keyA", new json::nodes::String("valueA"));
+  expected_obj2.get().insert("keyX", new json::nodes::String("value1"));
 
   ASSERT_EQ(obj1, expected_obj1);
   ASSERT_EQ(obj2, expected_obj2);
@@ -853,13 +853,13 @@ TEST_F(ValueTest, ArrayMoveSemantics) {
   arr2[1] = std::move(arr1[0]);
 
   // assert
-  json::Array expected_arr1;
-  expected_arr1.get().push_back(new json::String("value2"));
-  expected_arr1.get().push_back(new json::String("value3"));
+  json::nodes::Array expected_arr1;
+  expected_arr1.get().push_back(new json::nodes::String("value2"));
+  expected_arr1.get().push_back(new json::nodes::String("value3"));
 
-  json::Array expected_arr2;
-  expected_arr2.get().push_back(new json::String("valueA"));
-  expected_arr2.get().push_back(new json::String("value1"));
+  json::nodes::Array expected_arr2;
+  expected_arr2.get().push_back(new json::nodes::String("valueA"));
+  expected_arr2.get().push_back(new json::nodes::String("value1"));
 
   ASSERT_EQ(arr1, expected_arr1);
   ASSERT_EQ(arr2, expected_arr2);
@@ -880,9 +880,9 @@ TEST_F(ValueTest, ObjectRemove) {
   obj.erase("key2");
 
   // assert
-  json::Object expected_obj;
-  expected_obj.get().insert("key1", new json::String("value1"));
-  expected_obj.get().insert("key3", new json::String("value3"));
+  json::nodes::Object expected_obj;
+  expected_obj.get().insert("key1", new json::nodes::String("value1"));
+  expected_obj.get().insert("key3", new json::nodes::String("value3"));
 
   ASSERT_EQ(obj, expected_obj);
 }
@@ -902,9 +902,9 @@ TEST_F(ValueTest, ArrayRemove) {
   arr.erase(1);  // Remove the element at index 1
 
   // assert
-  json::Array expected_arr;
-  expected_arr.get().push_back(new json::String("value1"));
-  expected_arr.get().push_back(new json::String("value3"));
+  json::nodes::Array expected_arr;
+  expected_arr.get().push_back(new json::nodes::String("value1"));
+  expected_arr.get().push_back(new json::nodes::String("value3"));
 
   ASSERT_EQ(arr, expected_arr);
 }
@@ -1281,10 +1281,10 @@ TEST_F(ValueTest, ArrayErase) {
   delete nested_obj_;
 
   // arrange
-  json::Array* expected = new json::Array();
-  expected->push_back(new json::String("two"));
-  expected->push_back(new json::Boolean(false));
-  expected->push_back(new json::Null());
+  json::nodes::Array* expected = new json::nodes::Array();
+  expected->push_back(new json::nodes::String("two"));
+  expected->push_back(new json::nodes::Boolean(false));
+  expected->push_back(new json::nodes::Null());
 
   // act
   json::Value arr(array_);
@@ -1296,11 +1296,11 @@ TEST_F(ValueTest, ArrayErase) {
 
 TEST_F(ValueTest, ObjectErase) {
   // arrange
-  json::Object* expected = new json::Object();
-  expected->insert("null", new json::Null());
-  expected->insert("bool", new json::Boolean(true));
-  expected->insert("number", new json::Number(42.5));
-  expected->insert("string", new json::String("hello"));
+  json::nodes::Object* expected = new json::nodes::Object();
+  expected->insert("null", new json::nodes::Null());
+  expected->insert("bool", new json::nodes::Boolean(true));
+  expected->insert("number", new json::nodes::Number(42.5));
+  expected->insert("string", new json::nodes::String("hello"));
   expected->insert("object", nested_obj_->clone());
 
   // act
@@ -1319,9 +1319,9 @@ TEST_F(ValueTest, ArrayEraseRange) {
   delete nested_obj_;
 
   // arrange
-  json::Array* expected = new json::Array();
-  expected->push_back(new json::Boolean(false));
-  expected->push_back(new json::Null());
+  json::nodes::Array* expected = new json::nodes::Array();
+  expected->push_back(new json::nodes::Boolean(false));
+  expected->push_back(new json::nodes::Null());
 
   // act
   json::Value arr(array_);
@@ -1334,10 +1334,10 @@ TEST_F(ValueTest, ArrayEraseRange) {
 
 TEST_F(ValueTest, ObjectEraseRange) {
   // arrange
-  json::Object* expected = new json::Object();
-  expected->insert("null", new json::Null());
-  expected->insert("number", new json::Number(42.5));
-  expected->insert("string", new json::String("hello"));
+  json::nodes::Object* expected = new json::nodes::Object();
+  expected->insert("null", new json::nodes::Null());
+  expected->insert("number", new json::nodes::Number(42.5));
+  expected->insert("string", new json::nodes::String("hello"));
   expected->insert("object", nested_obj_->clone());
 
   // act

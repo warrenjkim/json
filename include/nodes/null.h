@@ -6,6 +6,8 @@
 
 namespace json {
 
+namespace nodes {
+
 class Null : public Node {
  public:
   void accept(visitors::Visitor& visitor) override;
@@ -17,5 +19,7 @@ class Null : public Node {
  public:
   operator nullptr_t() const;
 };
+
+}  // namespace nodes
 
 }  // namespace json

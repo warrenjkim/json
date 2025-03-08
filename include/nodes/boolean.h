@@ -4,6 +4,8 @@
 
 namespace json {
 
+namespace nodes {
+
 class Boolean : public Node {
  public:
   void accept(visitors::Visitor& visitor) override;
@@ -22,5 +24,7 @@ class Boolean : public Node {
  private:
   bool value_;
 };
+
+}  // namespace nodes
 
 }  // namespace json

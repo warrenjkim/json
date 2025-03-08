@@ -12,19 +12,19 @@ namespace visitors {
 
 class SetVisitor : public Visitor {
  public:
-  SetVisitor(Node** target, Node* value, const std::string& key);
+  SetVisitor(nodes::Node** target, nodes::Node* value, const std::string& key);
 
  public:
-  void visit(Array& parent) override;
-  void visit(Boolean& parent) override;
-  void visit(Null& parent) override;
-  void visit(Number& parent) override;
-  void visit(Object& parent) override;
-  void visit(String& parent) override;
+  void visit(nodes::Array& parent) override;
+  void visit(nodes::Boolean& parent) override;
+  void visit(nodes::Null& parent) override;
+  void visit(nodes::Number& parent) override;
+  void visit(nodes::Object& parent) override;
+  void visit(nodes::String& parent) override;
 
  private:
-  Node** target_;
-  Node* value_;
+  nodes::Node** target_;
+  nodes::Node* value_;
   std::string key_;
 };
 

@@ -2,6 +2,7 @@
 
 #include <gtest/gtest.h>
 
+
 #include "json/exception.h"
 #include "nodes/array.h"
 #include "nodes/boolean.h"
@@ -14,38 +15,38 @@
 class BooleanVisitorTest : public ::testing::Test {};
 
 TEST_F(BooleanVisitorTest, ArrayBadCast) {
-  json::Array array;
+  json::nodes::Array array;
   json::visitors::BooleanVisitor visitor;
   ASSERT_THROW(array.accept(visitor), json::BadCastException);
 }
 
 TEST_F(BooleanVisitorTest, Boolean) {
-  json::Boolean boolean(true);
+  json::nodes::Boolean boolean(true);
   json::visitors::BooleanVisitor visitor;
   boolean.accept(visitor);
   ASSERT_EQ(visitor.result(), true);
 }
 
 TEST_F(BooleanVisitorTest, NullBadCast) {
-  json::Null null;
+  json::nodes::Null null;
   json::visitors::BooleanVisitor visitor;
   ASSERT_THROW(null.accept(visitor), json::BadCastException);
 }
 
 TEST_F(BooleanVisitorTest, NumberBadCast) {
-  json::Number number(42);
+  json::nodes::Number number(42);
   json::visitors::BooleanVisitor visitor;
   ASSERT_THROW(number.accept(visitor), json::BadCastException);
 }
 
 TEST_F(BooleanVisitorTest, ObjectBadCast) {
-  json::Object object;
+  json::nodes::Object object;
   json::visitors::BooleanVisitor visitor;
   ASSERT_THROW(object.accept(visitor), json::BadCastException);
 }
 
 TEST_F(BooleanVisitorTest, StringBadCast) {
-  json::String string("string");
+  json::nodes::String string("string");
   json::visitors::BooleanVisitor visitor;
   ASSERT_THROW(string.accept(visitor), json::BadCastException);
 }

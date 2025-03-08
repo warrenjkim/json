@@ -12,13 +12,13 @@
 
 class CmpVisitorTest : public ::testing::Test {
  protected:
-  void assert_equal(json::Node* lhs, json::Node* rhs) {
+  void assert_equal(json::nodes::Node* lhs, json::nodes::Node* rhs) {
     json::visitors::CmpVisitor visitor(rhs);
     lhs->accept(visitor);
     ASSERT_TRUE(visitor.result()) << "ASTs are not equal";
   }
 
-  void assert_not_equal(json::Node* lhs, json::Node* rhs) {
+  void assert_not_equal(json::nodes::Node* lhs, json::nodes::Node* rhs) {
     json::visitors::CmpVisitor visitor(rhs);
     lhs->accept(visitor);
     ASSERT_FALSE(visitor.result()) << "ASTs are unexpectedly equal";
@@ -27,8 +27,8 @@ class CmpVisitorTest : public ::testing::Test {
 
 TEST_F(CmpVisitorTest, EmptyObject) {
   // arrange
-  json::Object lhs;
-  json::Object rhs;
+  json::nodes::Object lhs;
+  json::nodes::Object rhs;
 
   // act + assert
   assert_equal(&lhs, &rhs);
@@ -36,11 +36,11 @@ TEST_F(CmpVisitorTest, EmptyObject) {
 
 TEST_F(CmpVisitorTest, SimpleObject) {
   // arrange
-  json::Object lhs;
-  lhs.insert("key", new json::String("value"));
+  json::nodes::Object lhs;
+  lhs.insert("key", new json::nodes::String("value"));
 
-  json::Object rhs;
-  rhs.insert("key", new json::String("value"));
+  json::nodes::Object rhs;
+  rhs.insert("key", new json::nodes::String("value"));
 
   // act + assert
   assert_equal(&lhs, &rhs);
@@ -48,55 +48,55 @@ TEST_F(CmpVisitorTest, SimpleObject) {
 
 TEST_F(CmpVisitorTest, DifferentObjectSizes) {
   // arrange
-  json::Object lhs;
-  lhs.insert("key_1", new json::String("value_1"));
+  json::nodes::Object lhs;
+  lhs.insert("key_1", new json::nodes::String("value_1"));
 
-  json::Object rhs;
+  json::nodes::Object rhs;
 
   // act + assert
   assert_not_equal(&lhs, &rhs);
 }
 
 TEST_F(CmpVisitorTest, ObjectKeyOrder) {
-  json::Object lhs;
-  lhs.insert("a", new json::Number(1));
-  lhs.insert("b", new json::Number(2));
+  json::nodes::Object lhs;
+  lhs.insert("a", new json::nodes::Number(1));
+  lhs.insert("b", new json::nodes::Number(2));
 
-  json::Object rhs;
-  rhs.insert("b", new json::Number(2));
-  rhs.insert("a", new json::Number(1));
+  json::nodes::Object rhs;
+  rhs.insert("b", new json::nodes::Number(2));
+  rhs.insert("a", new json::nodes::Number(1));
 
   assert_equal(&lhs, &rhs);
 }
 
 TEST_F(CmpVisitorTest, ComplexStructure) {
-  json::Object lhs;
-  lhs.insert("nested", new json::Object());
-  lhs.insert("list", new json::Array());
+  json::nodes::Object lhs;
+  lhs.insert("nested", new json::nodes::Object());
+  lhs.insert("list", new json::nodes::Array());
 
-  json::Object rhs;
-  rhs.insert("nested", new json::Object());
-  rhs.insert("list", new json::Array());
+  json::nodes::Object rhs;
+  rhs.insert("nested", new json::nodes::Object());
+  rhs.insert("list", new json::nodes::Array());
 
   assert_equal(&lhs, &rhs);
 }
 
 TEST_F(CmpVisitorTest, DifferentComplexStructures) {
-  json::Object lhs;
-  lhs.insert("name", new json::String("john"));
-  lhs.insert("age", new json::Number(30));
+  json::nodes::Object lhs;
+  lhs.insert("name", new json::nodes::String("john"));
+  lhs.insert("age", new json::nodes::Number(30));
 
-  json::Object rhs;
-  rhs.insert("name", new json::String("john"));
-  rhs.insert("age", new json::Number(31));
+  json::nodes::Object rhs;
+  rhs.insert("name", new json::nodes::String("john"));
+  rhs.insert("age", new json::nodes::Number(31));
 
   assert_not_equal(&lhs, &rhs);
 }
 
 TEST_F(CmpVisitorTest, EmptyArray) {
   // arrange
-  json::Array lhs;
-  json::Array rhs;
+  json::nodes::Array lhs;
+  json::nodes::Array rhs;
 
   // act + assert
   assert_equal(&lhs, &rhs);
@@ -104,13 +104,13 @@ TEST_F(CmpVisitorTest, EmptyArray) {
 
 TEST_F(CmpVisitorTest, SimpleArray) {
   // arrange
-  json::Array lhs;
-  lhs.push_back(new json::Number(1));
-  lhs.push_back(new json::Number(2));
+  json::nodes::Array lhs;
+  lhs.push_back(new json::nodes::Number(1));
+  lhs.push_back(new json::nodes::Number(2));
 
-  json::Array rhs;
-  rhs.push_back(new json::Number(1));
-  rhs.push_back(new json::Number(2));
+  json::nodes::Array rhs;
+  rhs.push_back(new json::nodes::Number(1));
+  rhs.push_back(new json::nodes::Number(2));
 
   // act + assert
   assert_equal(&lhs, &rhs);
@@ -118,11 +118,11 @@ TEST_F(CmpVisitorTest, SimpleArray) {
 
 TEST_F(CmpVisitorTest, DifferentNumbers) {
   // arrange
-  json::Array lhs;
-  lhs.push_back(new json::Number(1));
+  json::nodes::Array lhs;
+  lhs.push_back(new json::nodes::Number(1));
 
-  json::Array rhs;
-  rhs.push_back(new json::Number(2));
+  json::nodes::Array rhs;
+  rhs.push_back(new json::nodes::Number(2));
 
   // act + assert
   assert_not_equal(&lhs, &rhs);
@@ -130,8 +130,8 @@ TEST_F(CmpVisitorTest, DifferentNumbers) {
 
 TEST_F(CmpVisitorTest, NullComparisons) {
   // arrange
-  json::Null lhs;
-  json::Number rhs(1);
+  json::nodes::Null lhs;
+  json::nodes::Number rhs(1);
 
   // act + assert
   assert_equal(&lhs, &lhs);
@@ -140,13 +140,13 @@ TEST_F(CmpVisitorTest, NullComparisons) {
 
 TEST_F(CmpVisitorTest, ArrayOrderMatters) {
   // arrange
-  json::Array lhs;
-  lhs.push_back(new json::Number(1));
-  lhs.push_back(new json::Boolean(true));
+  json::nodes::Array lhs;
+  lhs.push_back(new json::nodes::Number(1));
+  lhs.push_back(new json::nodes::Boolean(true));
 
-  json::Array rhs;
-  rhs.push_back(new json::Boolean(true));
-  rhs.push_back(new json::Number(1));
+  json::nodes::Array rhs;
+  rhs.push_back(new json::nodes::Boolean(true));
+  rhs.push_back(new json::nodes::Number(1));
 
   // act + assert
   assert_not_equal(&lhs, &rhs);
@@ -154,15 +154,15 @@ TEST_F(CmpVisitorTest, ArrayOrderMatters) {
 
 TEST_F(CmpVisitorTest, NumberPrecision) {
   // arrange
-  json::Number lhs(1.0);
-  json::Number rhs(1);
+  json::nodes::Number lhs(1.0);
+  json::nodes::Number rhs(1);
 
   // act + assert
   assert_equal(&lhs, &rhs);
 
   // arrange
-  lhs = json::Number(0.1);
-  rhs = json::Number(0.1000001);
+  lhs = json::nodes::Number(0.1);
+  rhs = json::nodes::Number(0.1000001);
 
   // act + assert
   assert_not_equal(&lhs, &rhs);
@@ -170,13 +170,13 @@ TEST_F(CmpVisitorTest, NumberPrecision) {
 
 TEST_F(CmpVisitorTest, Strings) {
   // arrange
-  json::Array lhs;
-  lhs.push_back(new json::String("hello"));
-  lhs.push_back(new json::String("world"));
+  json::nodes::Array lhs;
+  lhs.push_back(new json::nodes::String("hello"));
+  lhs.push_back(new json::nodes::String("world"));
 
-  json::Array rhs;
-  rhs.push_back(new json::String("hello"));
-  rhs.push_back(new json::String("world"));
+  json::nodes::Array rhs;
+  rhs.push_back(new json::nodes::String("hello"));
+  rhs.push_back(new json::nodes::String("world"));
 
   // act + assert
   assert_equal(&lhs, &rhs);
@@ -184,13 +184,13 @@ TEST_F(CmpVisitorTest, Strings) {
 
 TEST_F(CmpVisitorTest, MixedTypes) {
   // arrange
-  json::Array lhs;
-  lhs.push_back(new json::Number(123));
-  lhs.push_back(new json::String("123"));
+  json::nodes::Array lhs;
+  lhs.push_back(new json::nodes::Number(123));
+  lhs.push_back(new json::nodes::String("123"));
 
-  json::Array rhs;
-  rhs.push_back(new json::String("123"));
-  rhs.push_back(new json::Number(123));
+  json::nodes::Array rhs;
+  rhs.push_back(new json::nodes::String("123"));
+  rhs.push_back(new json::nodes::Number(123));
 
   // act + assert
   assert_not_equal(&lhs, &rhs);

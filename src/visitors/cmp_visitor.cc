@@ -23,12 +23,12 @@ namespace json {
 
 namespace visitors {
 
-CmpVisitor::CmpVisitor(Node* lhs) : lhs_(lhs), result_(true) {}
+CmpVisitor::CmpVisitor(nodes::Node* lhs) : lhs_(lhs), result_(true) {}
 
-CmpVisitor::CmpVisitor(const Node* lhs)
-    : lhs_(const_cast<Node*>(lhs)), result_(true) {}
+CmpVisitor::CmpVisitor(const nodes::Node* lhs)
+    : lhs_(const_cast<nodes::Node*>(lhs)), result_(true) {}
 
-void CmpVisitor::visit(const Array& rhs) {
+void CmpVisitor::visit(const nodes::Array& rhs) {
   ArrayVisitor visitor;
   try {
     lhs_->accept(visitor);
@@ -37,15 +37,15 @@ void CmpVisitor::visit(const Array& rhs) {
     return;
   }
 
-  std::vector<Node*>& lhs = visitor.result();
+  std::vector<nodes::Node*>& lhs = visitor.result();
   if (lhs.size() != rhs.get().size()) {
     result_ = false;
     return;
   }
 
   for (size_t i = 0; i < lhs.size(); i++) {
-    Node* l = lhs.at(i);
-    Node* r = rhs.get().at(i);
+    nodes::Node* l = lhs.at(i);
+    nodes::Node* r = rhs.get().at(i);
 
     if (!l != !r) {
       result_ = false;
@@ -64,7 +64,7 @@ void CmpVisitor::visit(const Array& rhs) {
   }
 }
 
-void CmpVisitor::visit(const Boolean& rhs) {
+void CmpVisitor::visit(const nodes::Boolean& rhs) {
   BooleanVisitor visitor;
   try {
     lhs_->accept(visitor);
@@ -76,7 +76,7 @@ void CmpVisitor::visit(const Boolean& rhs) {
   result_ = visitor.result() == rhs.get();
 }
 
-void CmpVisitor::visit(const Null& rhs) {
+void CmpVisitor::visit(const nodes::Null& rhs) {
   NullVisitor visitor;
   try {
     lhs_->accept(visitor);
@@ -88,7 +88,7 @@ void CmpVisitor::visit(const Null& rhs) {
   result_ = visitor.result() == rhs;
 }
 
-void CmpVisitor::visit(const Number& rhs) {
+void CmpVisitor::visit(const nodes::Number& rhs) {
   NumberVisitor visitor;
   try {
     lhs_->accept(visitor);
@@ -100,7 +100,7 @@ void CmpVisitor::visit(const Number& rhs) {
   result_ = std::abs(visitor.result() - rhs.get()) < 1e-10;
 }
 
-void CmpVisitor::visit(const Object& rhs) {
+void CmpVisitor::visit(const nodes::Object& rhs) {
   ObjectVisitor visitor;
   try {
     lhs_->accept(visitor);
@@ -109,14 +109,14 @@ void CmpVisitor::visit(const Object& rhs) {
     return;
   }
 
-  utils::Map<std::string, Node*>& lhs = visitor.result();
+  utils::Map<std::string, nodes::Node*>& lhs = visitor.result();
   if (lhs.size() != rhs.get().size()) {
     result_ = false;
     return;
   }
 
   for (const auto& [key, l] : lhs) {
-    std::optional<Node*> r = rhs.get().at(key);
+    std::optional<nodes::Node*> r = rhs.get().at(key);
     if (!r) {
       result_ = false;
       return;
@@ -138,7 +138,7 @@ void CmpVisitor::visit(const Object& rhs) {
   }
 }
 
-void CmpVisitor::visit(const String& rhs) {
+void CmpVisitor::visit(const nodes::String& rhs) {
   StringVisitor visitor;
   try {
     lhs_->accept(visitor);

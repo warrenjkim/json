@@ -18,28 +18,28 @@ struct Token;
 
 class Parser {
  public:
-  static Node* parse(const std::string_view json);
-  static Node* parse(utils::Queue<Token>& tokens);
+  static nodes::Node* parse(const std::string_view json);
+  static nodes::Node* parse(utils::Queue<Token>& tokens);
 
  private:
-  static Object* parse_object(utils::Queue<Token>& tokens,
-                              const size_t indent_level = 0);
-  static Array* parse_array(utils::Queue<Token>& tokens,
-                            const size_t indent_level = 0);
+  static nodes::Object* parse_object(utils::Queue<Token>& tokens,
+                                     const size_t indent_level = 0);
+  static nodes::Array* parse_array(utils::Queue<Token>& tokens,
+                                   const size_t indent_level = 0);
 
  private:
-  static Node* parse_value(utils::Queue<Token>& tokens,
-                           const size_t indent_level = 0);
-  static String* parse_string(utils::Queue<Token>& tokens,
-                              const size_t indent_level = 0);
-  static Number* parse_number(utils::Queue<Token>& tokens,
-                              const size_t indent_level = 0);
-  static std::optional<utils::Pair<std::string, Node*>> parse_key_value(
+  static nodes::Node* parse_value(utils::Queue<Token>& tokens,
+                                  const size_t indent_level = 0);
+  static nodes::String* parse_string(utils::Queue<Token>& tokens,
+                                     const size_t indent_level = 0);
+  static nodes::Number* parse_number(utils::Queue<Token>& tokens,
+                                     const size_t indent_level = 0);
+  static std::optional<utils::Pair<std::string, nodes::Node*>> parse_key_value(
       utils::Queue<Token>& tokens, const size_t indent_level = 0);
-  static Boolean* parse_boolean(utils::Queue<Token>& tokens,
-                                const size_t indent_level = 0);
-  static Null* parse_null(utils::Queue<Token>& tokens,
-                          const size_t indent_level = 0);
+  static nodes::Boolean* parse_boolean(utils::Queue<Token>& tokens,
+                                       const size_t indent_level = 0);
+  static nodes::Null* parse_null(utils::Queue<Token>& tokens,
+                                 const size_t indent_level = 0);
 
  private:
   static const bool expect_next(utils::Queue<Token>& tokens,

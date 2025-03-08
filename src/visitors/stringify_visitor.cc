@@ -16,7 +16,7 @@ namespace visitors {
 
 StringifyVisitor::StringifyVisitor() : result_("") {}
 
-void StringifyVisitor::visit(Array& node) {
+void StringifyVisitor::visit(nodes::Array& node) {
   if (node.empty()) {
     result_ += "[]";
 
@@ -25,7 +25,7 @@ void StringifyVisitor::visit(Array& node) {
 
   result_ += "[ ";
 
-  std::vector<Node*> arr = node.get();
+  std::vector<nodes::Node*> arr = node.get();
   bool first = true;
   for (const auto& value : arr) {
     if (!first) {
@@ -39,13 +39,13 @@ void StringifyVisitor::visit(Array& node) {
   result_ += " ]";
 }
 
-void StringifyVisitor::visit(Boolean& node) {
+void StringifyVisitor::visit(nodes::Boolean& node) {
   result_ += node.get() ? "true" : "false";
 }
 
-void StringifyVisitor::visit(Null& node) { result_ += "null"; }
+void StringifyVisitor::visit(nodes::Null& node) { result_ += "null"; }
 
-void StringifyVisitor::visit(Number& node) {
+void StringifyVisitor::visit(nodes::Number& node) {
   double number = node.get();
   result_ += std::floor(number) == number
                  ? std::to_string((int64_t)number)
@@ -53,7 +53,7 @@ void StringifyVisitor::visit(Number& node) {
                        0, std::to_string(number).find_last_not_of('0') + 1);
 }
 
-void StringifyVisitor::visit(Object& node) {
+void StringifyVisitor::visit(nodes::Object& node) {
   if (node.empty()) {
     result_ += "{}";
     return;
@@ -77,7 +77,7 @@ void StringifyVisitor::visit(Object& node) {
   result_ += " }";
 }
 
-void StringifyVisitor::visit(String& node) {
+void StringifyVisitor::visit(nodes::String& node) {
   result_ += "\"" + node.get() + "\"";
 }
 

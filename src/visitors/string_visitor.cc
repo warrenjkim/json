@@ -16,27 +16,27 @@ namespace visitors {
 
 StringVisitor::StringVisitor() {}
 
-void StringVisitor::visit(Array& node) {
+void StringVisitor::visit(nodes::Array& node) {
   throw BadCastException("Expected type String, but was Array.");
 }
 
-void StringVisitor::visit(Boolean& node) {
+void StringVisitor::visit(nodes::Boolean& node) {
   throw BadCastException("Expected type String, but was Boolean.");
 }
 
-void StringVisitor::visit(Null& node) {
+void StringVisitor::visit(nodes::Null& node) {
   throw BadCastException("Expected type String, but was Null.");
 }
 
-void StringVisitor::visit(Number& node) {
+void StringVisitor::visit(nodes::Number& node) {
   throw BadCastException("Expected type String, but was Number.");
 }
 
-void StringVisitor::visit(Object& node) {
+void StringVisitor::visit(nodes::Object& node) {
   throw BadCastException("Expected type String, but was Object.");
 }
 
-void StringVisitor::visit(String& node) { result_ = &node.get(); }
+void StringVisitor::visit(nodes::String& node) { result_ = &node.get(); }
 
 std::string& StringVisitor::result() { return *result_; }
 

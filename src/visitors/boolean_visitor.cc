@@ -14,25 +14,25 @@ namespace visitors {
 
 BooleanVisitor::BooleanVisitor() {}
 
-void BooleanVisitor::visit(Array& node) {
+void BooleanVisitor::visit(nodes::Array& node) {
   throw BadCastException("Expected type Boolean, but was Array.");
 }
 
-void BooleanVisitor::visit(Boolean& node) { result_ = node.get(); }
+void BooleanVisitor::visit(nodes::Boolean& node) { result_ = node.get(); }
 
-void BooleanVisitor::visit(Null& node) {
+void BooleanVisitor::visit(nodes::Null& node) {
   throw BadCastException("Expected type Boolean, but was Null.");
 }
 
-void BooleanVisitor::visit(Number& node) {
+void BooleanVisitor::visit(nodes::Number& node) {
   throw BadCastException("Expected type Boolean, but was Number.");
 }
 
-void BooleanVisitor::visit(Object& node) {
+void BooleanVisitor::visit(nodes::Object& node) {
   throw BadCastException("Expected type Boolean, but was Object.");
 }
 
-void BooleanVisitor::visit(String& node) {
+void BooleanVisitor::visit(nodes::String& node) {
   throw BadCastException("Expected type Boolean, but was String.");
 }
 

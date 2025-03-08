@@ -8,6 +8,8 @@
 
 namespace json {
 
+namespace nodes {
+
 class Object : public Node {
  public:
   void accept(visitors::Visitor& visitor) override;
@@ -38,5 +40,7 @@ class Object : public Node {
  private:
   utils::Map<std::string, Node*> properties_;
 };
+
+}  // namespace nodes
 
 }  // namespace json

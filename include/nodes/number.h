@@ -4,6 +4,8 @@
 
 namespace json {
 
+namespace nodes {
+
 class Number : public Node {
  public:
   void accept(visitors::Visitor& visitor) override;
@@ -22,5 +24,7 @@ class Number : public Node {
  private:
   double value_;
 };
+
+}  // namespace nodes
 
 }  // namespace json

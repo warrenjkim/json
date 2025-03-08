@@ -16,29 +16,29 @@ namespace visitors {
 
 ArrayVisitor::ArrayVisitor() {}
 
-void ArrayVisitor::visit(Array& node) { result_ = &node.get(); }
+void ArrayVisitor::visit(nodes::Array& node) { result_ = &node.get(); }
 
-void ArrayVisitor::visit(Boolean& node) {
+void ArrayVisitor::visit(nodes::Boolean& node) {
   throw BadCastException("Expected type Array, but was Boolean.");
 }
 
-void ArrayVisitor::visit(Null& node) {
+void ArrayVisitor::visit(nodes::Null& node) {
   throw BadCastException("Expected type Array, but was Null.");
 }
 
-void ArrayVisitor::visit(Number& node) {
+void ArrayVisitor::visit(nodes::Number& node) {
   throw BadCastException("Expected type Array, but was Number.");
 }
 
-void ArrayVisitor::visit(Object& node) {
+void ArrayVisitor::visit(nodes::Object& node) {
   throw BadCastException("Expected type Array, but was Object.");
 }
 
-void ArrayVisitor::visit(String& node) {
+void ArrayVisitor::visit(nodes::String& node) {
   throw BadCastException("Expected type Array, but was String.");
 }
 
-std::vector<Node*>& ArrayVisitor::result() { return *result_; }
+std::vector<nodes::Node*>& ArrayVisitor::result() { return *result_; }
 
 }  // namespace visitors
 

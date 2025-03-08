@@ -15,29 +15,29 @@ namespace visitors {
 
 ObjectVisitor::ObjectVisitor() {}
 
-void ObjectVisitor::visit(Array& node) {
+void ObjectVisitor::visit(nodes::Array& node) {
   throw BadCastException("Expected type Object, but was Array.");
 }
 
-void ObjectVisitor::visit(Boolean& node) {
+void ObjectVisitor::visit(nodes::Boolean& node) {
   throw BadCastException("Expected type Object, but was Boolean.");
 }
 
-void ObjectVisitor::visit(Null& node) {
+void ObjectVisitor::visit(nodes::Null& node) {
   throw BadCastException("Expected type Object, but was Null.");
 }
 
-void ObjectVisitor::visit(Number& node) {
+void ObjectVisitor::visit(nodes::Number& node) {
   throw BadCastException("Expected type Object, but was Number.");
 }
 
-void ObjectVisitor::visit(Object& node) { result_ = &node.get(); }
+void ObjectVisitor::visit(nodes::Object& node) { result_ = &node.get(); }
 
-void ObjectVisitor::visit(String& node) {
+void ObjectVisitor::visit(nodes::String& node) {
   throw BadCastException("Expected type Object, but was String.");
 }
 
-utils::Map<std::string, Node*>& ObjectVisitor::result() { return *result_; }
+utils::Map<std::string, nodes::Node*>& ObjectVisitor::result() { return *result_; }
 
 }  // namespace visitors
 

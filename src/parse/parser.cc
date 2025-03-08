@@ -16,7 +16,7 @@
 
 namespace json {
 
-Node* Parser::parse(const std::string_view json) {
+nodes::Node* Parser::parse(const std::string_view json) {
   std::optional<json::utils::Queue<Token>> tokens = Tokenizer::tokenize(json);
   if (!tokens || tokens->empty()) {
     return nullptr;
@@ -25,7 +25,7 @@ Node* Parser::parse(const std::string_view json) {
   return parse(*tokens);
 }
 
-Node* Parser::parse(json::utils::Queue<Token>& tokens) {
+nodes::Node* Parser::parse(json::utils::Queue<Token>& tokens) {
   if (tokens.empty()) {
     return nullptr;
   }
@@ -40,13 +40,13 @@ Node* Parser::parse(json::utils::Queue<Token>& tokens) {
   }
 }
 
-Object* Parser::parse_object(json::utils::Queue<Token>& tokens,
-                             const size_t indent_level) {
+nodes::Object* Parser::parse_object(json::utils::Queue<Token>& tokens,
+                                    const size_t indent_level) {
   if (!expect_next(tokens, Token('{', TokenType::OBJECT_START))) {
     return nullptr;
   }
 
-  Object* object = new Object();
+  nodes::Object* object = new nodes::Object();
   if (tokens.front() == Token('}', TokenType::OBJECT_END)) {
     tokens.dequeue();
     return object;
@@ -96,13 +96,13 @@ Object* Parser::parse_object(json::utils::Queue<Token>& tokens,
   return nullptr;
 }
 
-Array* Parser::parse_array(json::utils::Queue<Token>& tokens,
-                           const size_t indent_level) {
+nodes::Array* Parser::parse_array(json::utils::Queue<Token>& tokens,
+                                  const size_t indent_level) {
   if (!expect_next(tokens, Token('[', TokenType::ARRAY_START))) {
     return nullptr;
   }
 
-  Array* array = new Array();
+  nodes::Array* array = new nodes::Array();
   if (tokens.front() == Token(']', TokenType::ARRAY_END)) {
     tokens.dequeue();
     return array;
@@ -114,7 +114,7 @@ Array* Parser::parse_array(json::utils::Queue<Token>& tokens,
       return nullptr;
     }
 
-    Node* value = parse_value(tokens);
+    nodes::Node* value = parse_value(tokens);
     if (!value) {
       delete array;
       return nullptr;
@@ -152,8 +152,8 @@ Array* Parser::parse_array(json::utils::Queue<Token>& tokens,
   return nullptr;
 }
 
-Node* Parser::parse_value(json::utils::Queue<Token>& tokens,
-                          const size_t indent_level) {
+nodes::Node* Parser::parse_value(json::utils::Queue<Token>& tokens,
+                                 const size_t indent_level) {
   if (tokens.empty()) {
     return nullptr;
   }
@@ -176,8 +176,8 @@ Node* Parser::parse_value(json::utils::Queue<Token>& tokens,
   }
 }
 
-String* Parser::parse_string(json::utils::Queue<Token>& tokens,
-                             const size_t indent_level) {
+nodes::String* Parser::parse_string(json::utils::Queue<Token>& tokens,
+                                    const size_t indent_level) {
   if (!expect_next(tokens, Token('"', TokenType::QUOTE))) {
     return nullptr;
   }
@@ -187,7 +187,7 @@ String* Parser::parse_string(json::utils::Queue<Token>& tokens,
     return nullptr;
   }
 
-  String* string = new String(token->value);
+  nodes::String* string = new nodes::String(token->value);
 
   if (!expect_next(tokens, Token('"', TokenType::QUOTE))) {
     delete string;
@@ -197,8 +197,8 @@ String* Parser::parse_string(json::utils::Queue<Token>& tokens,
   return string;
 }
 
-Number* Parser::parse_number(json::utils::Queue<Token>& tokens,
-                             const size_t indent_level) {
+nodes::Number* Parser::parse_number(json::utils::Queue<Token>& tokens,
+                                    const size_t indent_level) {
   std::string number_string = tokens.dequeue()->value;
   size_t exponent_index = number_string.find_first_of("eE");
   double base = 0.0;
@@ -211,15 +211,15 @@ Number* Parser::parse_number(json::utils::Queue<Token>& tokens,
       base = std::stod(number_string);
     }
 
-    return new Number(base * std::pow(10, exponent));
+    return new nodes::Number(base * std::pow(10, exponent));
   } catch (const std::exception& e) {
     return nullptr;
   }
 }
 
-std::optional<utils::Pair<std::string, Node*>> Parser::parse_key_value(
+std::optional<utils::Pair<std::string, nodes::Node*>> Parser::parse_key_value(
     json::utils::Queue<Token>& tokens, const size_t indent_level) {
-  String* string = parse_string(tokens, indent_level);
+  nodes::String* string = parse_string(tokens, indent_level);
   if (!string) {
     delete string;
     return std::nullopt;
@@ -232,7 +232,7 @@ std::optional<utils::Pair<std::string, Node*>> Parser::parse_key_value(
     return std::nullopt;
   }
 
-  Node* value = parse_value(tokens, indent_level + 1);
+  nodes::Node* value = parse_value(tokens, indent_level + 1);
   if (!value) {
     delete value;
     return std::nullopt;
@@ -241,23 +241,23 @@ std::optional<utils::Pair<std::string, Node*>> Parser::parse_key_value(
   return utils::Pair(key, value);
 }
 
-Boolean* Parser::parse_boolean(json::utils::Queue<Token>& tokens,
-                               const size_t indent_level) {
+nodes::Boolean* Parser::parse_boolean(json::utils::Queue<Token>& tokens,
+                                      const size_t indent_level) {
   std::optional<Token> token = tokens.dequeue();
   if (token->value != "true" && token->value != "false") {
     return nullptr;
   }
 
-  return new Boolean(token->value == "true" ? true : false);
+  return new nodes::Boolean(token->value == "true" ? true : false);
 }
 
-Null* Parser::parse_null(json::utils::Queue<Token>& tokens,
-                         const size_t indent_level) {
+nodes::Null* Parser::parse_null(json::utils::Queue<Token>& tokens,
+                                const size_t indent_level) {
   if (!expect_next(tokens, Token("null", TokenType::JSON_NULL))) {
     return nullptr;
   }
 
-  return new Null();
+  return new nodes::Null();
 }
 
 const bool Parser::expect_next(json::utils::Queue<Token>& tokens,

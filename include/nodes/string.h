@@ -6,6 +6,8 @@
 
 namespace json {
 
+namespace nodes {
+
 class String : public Node {
  public:
   void accept(visitors::Visitor& visitor) override;
@@ -27,5 +29,7 @@ class String : public Node {
  public:
   String() = delete;
 };
+
+}  // namespace nodes
 
 }  // namespace json

@@ -91,13 +91,15 @@ Value& Value::operator=(const Value& other) {
   return *this;
 }
 
-Value::Value(Node* node) : node_(node), parent_(nullptr) {}
+Value::Value(nodes::Node* node) : node_(node), parent_(nullptr) {}
 
-Value::Value(const nullptr_t) : node_(new Null()), parent_(nullptr) {}
+Value::Value(const nullptr_t) : node_(new nodes::Null()), parent_(nullptr) {}
 
-Value::Value(const bool value) : node_(new Boolean(value)), parent_(nullptr) {}
+Value::Value(const bool value)
+    : node_(new nodes::Boolean(value)), parent_(nullptr) {}
 
-Value::Value(const char* value) : node_(new String(value)), parent_(nullptr) {}
+Value::Value(const char* value)
+    : node_(new nodes::String(value)), parent_(nullptr) {}
 
 bool Value::empty() const noexcept { return size() == 0; }
 
@@ -133,47 +135,47 @@ size_t Value::size() const noexcept {
 
 void Value::push_back(const nullptr_t) {
   if (!node_) {
-    node_ = new Array();
+    node_ = new nodes::Array();
   }
 
   visitors::ArrayVisitor visitor;
   node_->accept(visitor);
 
-  visitor.result().push_back(new Null());
+  visitor.result().push_back(new nodes::Null());
 }
 
 void Value::push_back(const bool value) {
   if (!node_) {
-    node_ = new Array();
+    node_ = new nodes::Array();
   }
 
   visitors::ArrayVisitor visitor;
   node_->accept(visitor);
 
-  visitor.result().push_back(new Boolean(value));
+  visitor.result().push_back(new nodes::Boolean(value));
 }
 
 void Value::push_back(const char* value) {
   if (!node_) {
-    node_ = new Array();
+    node_ = new nodes::Array();
   }
 
   visitors::ArrayVisitor visitor;
   node_->accept(visitor);
 
-  visitor.result().push_back(new String(value));
+  visitor.result().push_back(new nodes::String(value));
 }
 
 void Value::push_back(const Value& value) {
   if (!node_) {
-    node_ = new Array();
+    node_ = new nodes::Array();
   }
 
   visitors::ArrayVisitor visitor;
   node_->accept(visitor);
 
   if (!value.node_) {
-    visitor.result().push_back(new Null());
+    visitor.result().push_back(new nodes::Null());
   } else {
     visitor.result().push_back(value.node_->clone());
   }
@@ -181,47 +183,47 @@ void Value::push_back(const Value& value) {
 
 void Value::insert(const std::string& key, const nullptr_t) {
   if (!node_) {
-    node_ = new Object();
+    node_ = new nodes::Object();
   }
 
   visitors::ObjectVisitor visitor;
   node_->accept(visitor);
 
-  visitor.result().insert(key, new Null());
+  visitor.result().insert(key, new nodes::Null());
 }
 
 void Value::insert(const std::string& key, bool value) {
   if (!node_) {
-    node_ = new Object();
+    node_ = new nodes::Object();
   }
 
   visitors::ObjectVisitor visitor;
   node_->accept(visitor);
 
-  visitor.result().insert(key, new Boolean(value));
+  visitor.result().insert(key, new nodes::Boolean(value));
 }
 
 void Value::insert(const std::string& key, const char* value) {
   if (!node_) {
-    node_ = new Object();
+    node_ = new nodes::Object();
   }
 
   visitors::ObjectVisitor visitor;
   node_->accept(visitor);
 
-  visitor.result().insert(key, new String(value));
+  visitor.result().insert(key, new nodes::String(value));
 }
 
 void Value::insert(const std::string& key, const Value& value) {
   if (!node_) {
-    node_ = new Object();
+    node_ = new nodes::Object();
   }
 
   visitors::ObjectVisitor visitor;
   node_->accept(visitor);
 
   if (!value.node_) {
-    visitor.result().insert(key, new Null());
+    visitor.result().insert(key, new nodes::Null());
   } else {
     visitor.result().insert(key, value.node_->clone());
   }
@@ -296,8 +298,8 @@ Value::operator const char*() const {
 }
 
 Value& Value::operator[](const char* key) {
-  if (!node_ || (parent_ && *node_ == Null())) {
-    node_ = new Object();
+  if (!node_ || (parent_ && *node_ == nodes::Null())) {
+    node_ = new nodes::Object();
   }
 
   if (cache_.contains(key)) {
@@ -316,12 +318,12 @@ Value& Value::operator[](const char* key) {
 
 Value& Value::operator=(const bool value) {
   if (parent_) {
-    visitors::SetVisitor visitor(&node_, new Boolean(value), *key_);
+    visitors::SetVisitor visitor(&node_, new nodes::Boolean(value), *key_);
     parent_->node_->accept(visitor);
     parent_->cache_.erase(*key_);
   } else {
     delete node_;
-    node_ = new Boolean(value);
+    node_ = new nodes::Boolean(value);
   }
 
   return *this;
@@ -329,12 +331,12 @@ Value& Value::operator=(const bool value) {
 
 Value& Value::operator=(const char* value) {
   if (parent_) {
-    visitors::SetVisitor visitor(&node_, new String(value), *key_);
+    visitors::SetVisitor visitor(&node_, new nodes::String(value), *key_);
     parent_->node_->accept(visitor);
     parent_->cache_.erase(*key_);
   } else {
     delete node_;
-    node_ = new String(value);
+    node_ = new nodes::String(value);
   }
 
   return *this;
@@ -342,12 +344,12 @@ Value& Value::operator=(const char* value) {
 
 Value& Value::operator=(const nullptr_t value) {
   if (parent_) {
-    visitors::SetVisitor visitor(&node_, new Null(), *key_);
+    visitors::SetVisitor visitor(&node_, new nodes::Null(), *key_);
     parent_->node_->accept(visitor);
     parent_->cache_.erase(*key_);
   } else {
     delete node_;
-    node_ = new Null();
+    node_ = new nodes::Null();
   }
 
   return *this;
@@ -361,15 +363,15 @@ const std::string Value::to_string() const {
 }
 
 bool operator==(const Value& lhs, const bool rhs) {
-  return lhs.node_ && *lhs.node_ == Boolean(rhs);
+  return lhs.node_ && *lhs.node_ == nodes::Boolean(rhs);
 }
 
 bool operator==(const Value& lhs, const char* rhs) {
-  return lhs.node_ && *lhs.node_ == String(rhs);
+  return lhs.node_ && *lhs.node_ == nodes::String(rhs);
 }
 
 bool operator==(const Value& lhs, const nullptr_t) {
-  return lhs.node_ && *lhs.node_ == Null();
+  return lhs.node_ && *lhs.node_ == nodes::Null();
 }
 
 bool operator==(const Value& lhs, const Value& rhs) {
@@ -377,11 +379,11 @@ bool operator==(const Value& lhs, const Value& rhs) {
          ((lhs.node_ && rhs.node_) && (*lhs.node_ == *rhs.node_));
 }
 
-bool operator==(const Value& lhs, const Array& rhs) {
+bool operator==(const Value& lhs, const nodes::Array& rhs) {
   return lhs.node_ && *lhs.node_ == rhs;
 }
 
-bool operator==(const Value& lhs, const Object& rhs) {
+bool operator==(const Value& lhs, const nodes::Object& rhs) {
   return lhs.node_ && *lhs.node_ == rhs;
 }
 
