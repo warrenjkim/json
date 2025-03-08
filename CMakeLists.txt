@@ -109,5 +109,6 @@ endif()
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -fsanitize=address -fno-omit-frame-pointer")
 
-# implementation
+set(JSON_ALL_TARGETS)
 add_subdirectory(src)
+target_link_libraries(${PROJECT_NAME}_impl PUBLIC json)
