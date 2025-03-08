@@ -1351,3 +1351,35 @@ TEST_F(ValueTest, ObjectEraseRange) {
   delete array_;
   delete nested_obj_;
 }
+
+TEST_F(ValueTest, ArraySize) {
+  delete root_;
+  delete array_;
+  delete nested_obj_;
+
+  // arrange
+  json::Value arr;
+  ASSERT_TRUE(arr.empty());
+
+  arr.push_back(1);
+  arr.push_back("two");
+
+  // act + assert
+  ASSERT_EQ(arr.size(), 2);
+}
+
+TEST_F(ValueTest, ObjectSize) {
+  delete root_;
+  delete array_;
+  delete nested_obj_;
+
+  // arrange
+  json::Value obj;
+  ASSERT_TRUE(obj.empty());
+
+  obj["one"] = 1;
+  obj["two"] = "two";
+
+  // act + assert
+  ASSERT_EQ(obj.size(), 2);
+}

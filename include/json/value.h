@@ -59,6 +59,10 @@ class Value {
   Value(const char* value);
 
  public:
+  bool empty() const noexcept;
+  size_t size() const noexcept;
+
+ public:
   void push_back(const nullptr_t);
   void push_back(const bool value);
   void push_back(const char* value);

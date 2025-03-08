@@ -5,6 +5,7 @@
 #include <optional>
 #include <string>
 
+#include "json/exception.h"
 #include "nodes/boolean.h"
 #include "nodes/node.h"
 #include "nodes/null.h"
@@ -97,6 +98,38 @@ Value::Value(const nullptr_t) : node_(new Null()), parent_(nullptr) {}
 Value::Value(const bool value) : node_(new Boolean(value)), parent_(nullptr) {}
 
 Value::Value(const char* value) : node_(new String(value)), parent_(nullptr) {}
+
+bool Value::empty() const noexcept { return size() == 0; }
+
+size_t Value::size() const noexcept {
+  if (!node_) {
+    return 0;
+  }
+
+  ContainerType type;
+  visitors::ContainerTypeVisitor visitor(type);
+  try {
+    node_->accept(visitor);
+  } catch (NonIterableTypeException) {
+    return 0;
+  }
+
+  size_t size = 0;
+  switch (type) {
+    case ARRAY: {
+      visitors::ArrayVisitor visitor;
+      node_->accept(visitor);
+      size = visitor.result().size();
+    } break;
+    case OBJECT: {
+      visitors::ObjectVisitor visitor;
+      node_->accept(visitor);
+      size = visitor.result().size();
+    } break;
+  }
+
+  return size;
+}
 
 void Value::push_back(const nullptr_t) {
   if (!node_) {
