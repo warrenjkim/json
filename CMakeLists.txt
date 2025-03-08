@@ -14,6 +14,7 @@ if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
   message(FATAL_ERROR "dumbass. lol")
 endif()
 
+# build type
 if (CMAKE_BUILD_TYPE STREQUAL "")
   message(STATUS "Build type set to default")
   set(CMAKE_BUILD_TYPE Debug)
@@ -25,16 +26,25 @@ if(BUILD_RELEASE)
  add_compile_definitions(NDEBUG)
 endif()
 
-# library interface
+# library interface (only json.h)
 add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
 
+# implementation library (hidden)
+add_library(${PROJECT_NAME}_impl STATIC)
+target_include_directories(${PROJECT_NAME}_impl PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+# Link implementation to interface
+target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}_impl)
+
 # installation rules
-install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Config)
-install(DIRECTORY include/ DESTINATION include)
+install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_impl EXPORT ${PROJECT_NAME}Config)
+install(FILES include/json.h DESTINATION include)
 install(EXPORT ${PROJECT_NAME}Config DESTINATION lib/cmake/${PROJECT_NAME})
 
 # testing
@@ -42,8 +52,8 @@ option(BUILD_TESTING "Build tests" OFF)
 if(BUILD_TESTING)
   # output binaries to a subdirectory "bin"
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
   set(CMAKE_BUILD_TYPE Coverage)
+
   # enable CMake testing
   include(CTest)
   enable_testing()
