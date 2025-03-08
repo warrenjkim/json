@@ -18,7 +18,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y cmake make g++ libboost-all-dev gcovr
       - name: Configure CMake with coverage
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Coverage
+        run: cmake -B ${{github.workspace}}/build -DBUILD_TESTING=ON
       - name: Build
         run: cmake --build ${{github.workspace}}/build
       - name: Run coverage
