@@ -39,6 +39,8 @@ target_include_directories(${PROJECT_NAME} INTERFACE
 # Link implementation to interface
 target_link_libraries(${PROJECT_NAME} INTERFACE json)
 
+set_target_properties(json PROPERTIES INTERFACE_LINK_LIBRARIES "")
+
 # installation rules
 install(TARGETS ${PROJECT_NAME} json EXPORT ${PROJECT_NAME}Config)
 install(FILES include/json.h DESTINATION include)
