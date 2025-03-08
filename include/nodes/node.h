@@ -1,5 +1,8 @@
 #pragma once
 
+// TODO(for each impl, it might be useful to add an implicit conversion [i.e.
+// operator T()].)
+
 namespace json {
 
 namespace visitors {

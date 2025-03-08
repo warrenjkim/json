@@ -3,6 +3,8 @@
 #include <exception>
 #include <string>
 
+// TODO(probably best to explain what these are, even though these are pretty
+// straightforward)
 namespace json {
 
 class JsonException : public std::exception {
