@@ -1004,37 +1004,6 @@ TEST_F(ValueTest, ArrayIteratorEndEquality) {
   ASSERT_EQ(it, arr.end());
 }
 
-// TODO(think about how i want to implement iterators)
-TEST_F(ValueTest, DISABLED_ArrayIteratorOutOfRange) {
-  delete root_;
-  delete array_;
-  delete nested_obj_;
-
-  // arrange
-  json::Value arr;
-  arr.push_back("value1");
-  json::Value::Iterator it = arr.begin();
-  ++it;  // now at end
-
-  // act & assert
-  ASSERT_THROW(++it, std::out_of_range);
-}
-
-// TODO(think about how i want to implement iterators)
-TEST_F(ValueTest, DISABLED_ArrayIteratorDecrementBegin) {
-  delete root_;
-  delete array_;
-  delete nested_obj_;
-
-  // arrange
-  json::Value arr;
-  arr.push_back("value1");
-  json::Value::Iterator it = arr.begin();
-
-  // act & assert
-  ASSERT_THROW(--it, std::out_of_range);
-}
-
 TEST_F(ValueTest, ObjectIteratorBasic) {
   delete root_;
   delete array_;
@@ -1125,22 +1094,6 @@ TEST_F(ValueTest, ObjectIteratorEndEquality) {
 
   // assert
   ASSERT_EQ(it, obj.end());
-}
-
-// TODO(think about how i want to implement iterators)
-TEST_F(ValueTest, DISABLED_ObjectIteratorOutOfRange) {
-  delete root_;
-  delete array_;
-  delete nested_obj_;
-
-  // arrange
-  json::Value obj;
-  obj.insert("key1", "value1");
-  json::Value::Iterator it = obj.begin();
-  ++it;  // now at end
-
-  // act & assert
-  ASSERT_THROW(++it, std::out_of_range);
 }
 
 TEST_F(ValueTest, ObjectIteratorModification) {
@@ -1244,35 +1197,6 @@ TEST_F(ValueTest, ArrayConstIteratorEndEquality) {
   ASSERT_EQ(it, arr.cend());
 }
 
-// TODO(think about how i want to implement iterators)
-TEST_F(ValueTest, DISABLED_ArrayConstIteratorOutOfRange) {
-  delete root_;
-  delete array_;
-  delete nested_obj_;
-
-  // arrange
-  json::Value arr;
-  arr.push_back("value1");
-  json::Value::ConstIterator it = arr.cbegin();
-  ++it;  // now at end
-  // act & assert
-  ASSERT_THROW(++it, std::out_of_range);
-}
-
-// TODO(think about how i want to implement iterators)
-TEST_F(ValueTest, DISABLED_ArrayConstIteratorDecrementBegin) {
-  delete root_;
-  delete array_;
-  delete nested_obj_;
-
-  // arrange
-  json::Value arr;
-  arr.push_back("value1");
-  json::Value::ConstIterator it = arr.cbegin();
-  // act & assert
-  ASSERT_THROW(--it, std::out_of_range);
-}
-
 TEST_F(ValueTest, ObjectConstIteratorBasic) {
   delete root_;
   delete array_;
@@ -1353,35 +1277,6 @@ TEST_F(ValueTest, ObjectConstIteratorEndEquality) {
   ++it;
   // assert
   ASSERT_EQ(it, obj.cend());
-}
-
-// TODO(think about how i want to implement iterators)
-TEST_F(ValueTest, DISABLED_ObjectConstIteratorOutOfRange) {
-  delete root_;
-  delete array_;
-  delete nested_obj_;
-
-  // arrange
-  json::Value obj;
-  obj.insert("key1", "value1");
-  json::Value::ConstIterator it = obj.cbegin();
-  ++it;  // now at end
-  // act & assert
-  ASSERT_THROW(++it, std::out_of_range);
-}
-
-// TODO(think about how i want to implement iterators)
-TEST_F(ValueTest, DISABLED_ObjectConstIteratorDecrementBegin) {
-  delete root_;
-  delete array_;
-  delete nested_obj_;
-
-  // arrange
-  json::Value obj;
-  obj.insert("key1", "value1");
-  json::Value::ConstIterator it = obj.cbegin();
-  // act & assert
-  ASSERT_THROW(--it, std::out_of_range);
 }
 
 TEST_F(ValueTest, ArrayErase) {
