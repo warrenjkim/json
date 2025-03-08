@@ -26,6 +26,9 @@ if(BUILD_RELEASE)
  add_compile_definitions(NDEBUG)
 endif()
 
+# implementation
+add_subdirectory(src)
+
 # library interface (only json.h)
 add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} INTERFACE
@@ -33,17 +36,11 @@ target_include_directories(${PROJECT_NAME} INTERFACE
   $<INSTALL_INTERFACE:include>
 )
 
-# implementation library (hidden)
-add_library(${PROJECT_NAME}_impl STATIC)
-target_include_directories(${PROJECT_NAME}_impl PRIVATE
-  ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
-
 # Link implementation to interface
-target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}_impl)
+target_link_libraries(${PROJECT_NAME} INTERFACE json)
 
 # installation rules
-install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_impl EXPORT ${PROJECT_NAME}Config)
+install(TARGETS ${PROJECT_NAME} json EXPORT ${PROJECT_NAME}Config)
 install(FILES include/json.h DESTINATION include)
 install(EXPORT ${PROJECT_NAME}Config DESTINATION lib/cmake/${PROJECT_NAME})
 
@@ -108,7 +105,3 @@ endif()
 # set optimization flags based on build type
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -fsanitize=address -fno-omit-frame-pointer")
-
-set(JSON_ALL_TARGETS)
-add_subdirectory(src)
-target_link_libraries(${PROJECT_NAME}_impl PUBLIC json)
