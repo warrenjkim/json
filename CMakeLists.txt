@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(JsonParser VERSION 1.1.0 DESCRIPTION "JSON Parser")
+project(JsonParser VERSION 1.0.1 DESCRIPTION "JSON Parser")
 
 # cmake flags
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
