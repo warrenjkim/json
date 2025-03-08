@@ -2,8 +2,6 @@
 
 #include <gtest/gtest.h>
 
-#include <boost/log/trivial.hpp>
-
 #include "nodes/array.h"
 #include "nodes/boolean.h"
 #include "nodes/node.h"

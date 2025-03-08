@@ -1,14 +1,8 @@
 #include "utils/queue.h"
 
 #include "gtest/gtest.h"
-#include "utils/logger.h"
 
-class QueueTest : public ::testing::Test {
- protected:
-  void SetUp() override {
-    json::utils::init_logging(boost::log::trivial::debug);
-  }
-};
+class QueueTest : public ::testing::Test {};
 
 TEST_F(QueueTest, DefaultConstructor) {
   json::utils::Queue<int> queue;

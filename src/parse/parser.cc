@@ -11,7 +11,6 @@
 #include "nodes/object.h"
 #include "parse/token.h"
 #include "parse/tokenizer.h"
-#include "utils/macros.h"
 #include "utils/pair.h"
 #include "utils/queue.h"
 
@@ -214,8 +213,6 @@ Number* Parser::parse_number(json::utils::Queue<Token>& tokens,
 
     return new Number(base * std::pow(10, exponent));
   } catch (const std::exception& e) {
-    ERROR("parse_number", std::string("Failed to parse number: ") + e.what(),
-          indent_level);
     return nullptr;
   }
 }

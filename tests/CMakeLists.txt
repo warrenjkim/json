@@ -3,8 +3,6 @@ function(create_test test_name)
   target_include_directories(${test_name} PRIVATE ${CMAKE_SOURCE_DIR}/include)
   target_link_libraries(${test_name} PRIVATE
     gtest_main
-    Boost::log
-    Boost::log_setup
     ${ARGN}
   )
 

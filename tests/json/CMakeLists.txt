@@ -4,5 +4,4 @@ create_test(value_test
   tokenizer
   parser
   visitors
-  logger
 )

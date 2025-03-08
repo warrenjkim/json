@@ -2,7 +2,6 @@
 
 #include <gtest/gtest.h>
 
-#include <boost/log/trivial.hpp>
 #include <cstdint>
 #include <string_view>
 
@@ -14,14 +13,10 @@
 #include "nodes/object.h"
 #include "nodes/string.h"
 #include "parse/token.h"
-#include "utils/logger.h"
 #include "utils/queue.h"
 
 class JsonParserTest : public ::testing::Test {
  protected:
-  void SetUp() override {
-    json::utils::init_logging(boost::log::trivial::debug);
-  }
   void assert_parse(const std::string_view input, json::Node* expected_ast) {
     json::Node* result = json::Parser::parse(input);
     ASSERT_TRUE(result) << "Parser returned nullptr for valid input";

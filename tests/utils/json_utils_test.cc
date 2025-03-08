@@ -2,20 +2,11 @@
 
 #include <gtest/gtest.h>
 
-#include <boost/log/trivial.hpp>
 #include <cstddef>
 
 #include "json/exception.h"
-#include "utils/logger.h"
 
-class JsonUtilsTest : public ::testing::Test {
- protected:
-  void SetUp() override {
-    json::utils::init_logging(boost::log::trivial::debug);
-  }
-
-  void TearDown() override {}
-};
+class JsonUtilsTest : public ::testing::Test {};
 
 TEST_F(JsonUtilsTest, ParseSimplePrimitives) {
   // Test each primitive type

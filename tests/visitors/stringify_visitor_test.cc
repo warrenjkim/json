@@ -2,8 +2,6 @@
 
 #include <gtest/gtest.h>
 
-#include <boost/log/trivial.hpp>
-
 #include "nodes/array.h"
 #include "nodes/boolean.h"
 #include "nodes/node.h"
@@ -11,14 +9,8 @@
 #include "nodes/number.h"
 #include "nodes/object.h"
 #include "nodes/string.h"
-#include "utils/logger.h"
 
-class StringifyVisitorTest : public ::testing::Test {
- protected:
-  void SetUp() override {
-    json::utils::init_logging(boost::log::trivial::debug);
-  }
-};
+class StringifyVisitorTest : public ::testing::Test {};
 
 TEST_F(StringifyVisitorTest, Boolean) {
   json::visitors::StringifyVisitor visitor;

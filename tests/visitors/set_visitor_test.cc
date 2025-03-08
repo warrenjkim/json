@@ -2,8 +2,6 @@
 
 #include <gtest/gtest.h>
 
-#include <boost/log/trivial.hpp>
-
 #include "json/value.h"
 #include "nodes/array.h"
 #include "nodes/boolean.h"
@@ -13,12 +11,7 @@
 #include "nodes/object.h"
 #include "nodes/string.h"
 
-class SetVisitorTest : public ::testing::Test {
- protected:
-  void SetUp() override {}
-
-  void TearDown() override {}
-};
+class SetVisitorTest : public ::testing::Test {};
 
 TEST_F(SetVisitorTest, SetObjectValue) {
   // arrange

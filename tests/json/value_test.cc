@@ -2,7 +2,6 @@
 
 #include <gtest/gtest.h>
 
-#include <boost/log/trivial.hpp>
 #include <cstddef>
 #include <string>
 
@@ -14,12 +13,10 @@
 #include "nodes/number.h"
 #include "nodes/object.h"
 #include "nodes/string.h"
-#include "utils/logger.h"
 
 class ValueTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    json::utils::init_logging(boost::log::trivial::debug);
     root_ = new json::Object();
     root_->insert("null", new json::Null());
     root_->insert("bool", new json::Boolean(true));

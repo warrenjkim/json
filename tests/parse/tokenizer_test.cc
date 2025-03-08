@@ -2,21 +2,15 @@
 
 #include <stdio.h>
 
-#include <boost/log/trivial.hpp>
 #include <optional>
 #include <string>
 #include <vector>
 
 #include "gtest/gtest.h"
 #include "parse/token.h"
-#include "utils/logger.h"
 
 class JsonTokenizerTest : public ::testing::Test {
  protected:
-  void SetUp() override {
-    json::utils::init_logging(boost::log::trivial::debug);
-  }
-
   void assert_tokenization(const std::string_view input,
                            const std::vector<json::Token>& expected_tokens) {
     auto result = json::Tokenizer::tokenize(input);

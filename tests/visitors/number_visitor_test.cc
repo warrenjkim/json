@@ -2,8 +2,6 @@
 
 #include <gtest/gtest.h>
 
-#include <boost/log/trivial.hpp>
-
 #include "json/exception.h"
 #include "nodes/array.h"
 #include "nodes/boolean.h"
@@ -12,14 +10,8 @@
 #include "nodes/number.h"
 #include "nodes/object.h"
 #include "nodes/string.h"
-#include "utils/logger.h"
 
-class NumberVisitorTest : public ::testing::Test {
- protected:
-  void SetUp() override {
-    json::utils::init_logging(boost::log::trivial::debug);
-  }
-};
+class NumberVisitorTest : public ::testing::Test {};
 
 TEST_F(NumberVisitorTest, ArrayBadCast) {
   json::Array array;

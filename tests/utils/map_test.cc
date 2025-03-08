@@ -2,7 +2,6 @@
 
 #include <gtest/gtest.h>
 
-#include <boost/log/trivial.hpp>
 #include <string>
 
 class MapTest : public ::testing::Test {

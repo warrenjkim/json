@@ -1,17 +1,9 @@
 add_library(tokenizer STATIC tokenizer.cc)
 add_library(parser STATIC parser.cc)
 
-target_link_libraries(tokenizer PRIVATE
-  logger
-  Boost::log
-  Boost::log_setup
-)
 target_link_libraries(parser PRIVATE
-  logger
   tokenizer
   nodes
-  Boost::log
-  Boost::log_setup
 )
 
 add_coverage_options(tokenizer)

@@ -9,8 +9,6 @@ add_library(nodes STATIC
 )
 
 target_link_libraries(nodes PRIVATE
-  Boost::log
-  Boost::log_setup
   visitors
 )
 

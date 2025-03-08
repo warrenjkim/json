@@ -32,16 +32,6 @@ include(GoogleTest)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/googletest googletest)
 set(GTEST_OUTPUT "all")
 
-# Enable Boost
-set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost 1.50 REQUIRED COMPONENTS
-  log
-  log_setup
-)
-message(STATUS "Boost version: ${Boost_VERSION}")
-message(STATUS "Boost include: ${Boost_INCLUDE_DIRS}")
-message(STATUS "Boost lib: ${Boost_LIBRARY_DIRS}")
-
 # Check for -fno-elide-constructors support
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-fno-elide-constructors" COMPILER_SUPPORTS_NO_ELIDE)
