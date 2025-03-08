@@ -17,7 +17,8 @@
 
 class JsonParserTest : public ::testing::Test {
  protected:
-  void assert_parse(const std::string_view input, json::nodes::Node* expected_ast) {
+  void assert_parse(const std::string_view input,
+                    json::nodes::Node* expected_ast) {
     json::nodes::Node* result = json::Parser::parse(input);
     ASSERT_TRUE(result) << "Parser returned nullptr for valid input";
     ASSERT_EQ(*result, *expected_ast)

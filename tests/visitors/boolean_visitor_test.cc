@@ -2,7 +2,6 @@
 
 #include <gtest/gtest.h>
 
-
 #include "json/exception.h"
 #include "nodes/array.h"
 #include "nodes/boolean.h"
