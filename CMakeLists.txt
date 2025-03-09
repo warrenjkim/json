@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(JsonParser VERSION 1.0.0 DESCRIPTION "JSON Parser Library")
+project(Json VERSION 1.0.0 DESCRIPTION "JSON Library")
 
 # Basic settings
 set(CMAKE_CXX_STANDARD 23)
