@@ -5,11 +5,11 @@
 #include <optional>
 #include <string>
 
-#include "utils/exception.h"
 #include "nodes/boolean.h"
 #include "nodes/node.h"
 #include "nodes/null.h"
 #include "nodes/string.h"
+#include "utils/exception.h"
 #include "visitors/array_visitor.h"
 #include "visitors/boolean_visitor.h"
 #include "visitors/container_type_visitor.h"

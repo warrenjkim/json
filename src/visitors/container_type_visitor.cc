@@ -1,6 +1,5 @@
 #include "visitors/container_type_visitor.h"
 
-#include "utils/exception.h"
 #include "json/value.h"
 #include "nodes/array.h"
 #include "nodes/boolean.h"
@@ -9,6 +8,7 @@
 #include "nodes/number.h"
 #include "nodes/object.h"
 #include "nodes/string.h"
+#include "utils/exception.h"
 
 namespace json {
 

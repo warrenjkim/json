@@ -4,7 +4,6 @@
 #include <optional>
 #include <vector>
 
-#include "utils/exception.h"
 #include "nodes/array.h"
 #include "nodes/boolean.h"
 #include "nodes/node.h"
@@ -12,6 +11,7 @@
 #include "nodes/number.h"
 #include "nodes/object.h"
 #include "nodes/string.h"
+#include "utils/exception.h"
 #include "visitors/array_visitor.h"
 #include "visitors/boolean_visitor.h"
 #include "visitors/null_visitor.h"

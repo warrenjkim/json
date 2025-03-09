@@ -1,8 +1,7 @@
-#include "json/utils.h"
-
 #include <optional>
 #include <string_view>
 
+#include "json/utils.h"
 #include "json/value.h"
 #include "nodes/array.h"
 #include "nodes/boolean.h"
