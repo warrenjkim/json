@@ -37,40 +37,39 @@ file(GLOB_RECURSE JSON_SOURCES
   "src/visitors/*.cc"
 )
 
-# Create the implementation library
-add_library(json_impl STATIC ${JSON_SOURCES})
-
-# Create the public interface library that users will link against
-add_library(json INTERFACE)
-
-# Set include directories for implementation
+add_library(json_impl OBJECT ${JSON_SOURCES})
 target_include_directories(json_impl PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src
   ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-# Create an interface library for test includes
-add_library(json_test_includes INTERFACE)
-target_include_directories(json_test_includes INTERFACE
-  ${CMAKE_CURRENT_SOURCE_DIR}/src
-  ${CMAKE_CURRENT_SOURCE_DIR}/include
+# main library that users will link against
+add_library(warren_json $<TARGET_OBJECTS:json_impl>)
+# namespaced alias for use within this project
+add_library(Warren::Json ALIAS warren_json)
+
+# include directories for the main library
+target_include_directories(warren_json
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
 )
 
-# Set include directories for users
-target_include_directories(json INTERFACE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
+# interface library for test includes
+if(BUILD_TESTING)
+  add_library(json_test_includes INTERFACE)
+  target_include_directories(json_test_includes INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+  )
+endif()
 
-# Link implementation to interface
-target_link_libraries(json INTERFACE json_impl)
-
-# Installation
-install(TARGETS json json_impl
-  EXPORT JsonConfig
+install(TARGETS warren_json
+  EXPORT WarrenJsonTargets
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
 )
 
 install(DIRECTORY include/
@@ -78,9 +77,28 @@ install(DIRECTORY include/
   FILES_MATCHING PATTERN "*.h" PATTERN "*.inl"
 )
 
-# Install config
-install(EXPORT JsonConfig
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/WarrenJsonConfigVersion.cmake"
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY SameMinorVersion
+)
+
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/WarrenJsonConfig.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/WarrenJsonConfig.cmake"
+  @ONLY
+)
+
+install(EXPORT WarrenJsonTargets
+  FILE WarrenJsonTargets.cmake
   NAMESPACE Warren::
+  DESTINATION lib/cmake/Warren
+)
+
+install(FILES
+  "${CMAKE_CURRENT_BINARY_DIR}/WarrenJsonConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/WarrenJsonConfigVersion.cmake"
   DESTINATION lib/cmake/Warren
 )
 
@@ -91,6 +109,7 @@ else()
   # Force OFF when used as a subproject
   set(BUILD_TESTING OFF CACHE BOOL "Build tests" FORCE)
 endif()
+
 if(BUILD_TESTING)
   # Output binaries to a subdirectory "bin"
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -136,7 +155,7 @@ if(BUILD_TESTING)
   include(cmake/CodeCoverageReportConfig.cmake)
   generate_coverage_report(
     TARGETS
-      json_impl
+      warren_json
     TESTS
       tokenizer_test
       parser_test
@@ -148,7 +167,7 @@ if(BUILD_TESTING)
       get_visitor_test
       set_visitor_test
       stringify_visitor_test
-      utils_test
       value_test
+      utils_test
   )
 endif()
