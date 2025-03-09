@@ -12,13 +12,9 @@ foreach(test_source ${TEST_SOURCES})
 
   target_link_libraries(${test_name} PRIVATE
     json_impl
+    json_test_includes
     gtest
     gtest_main
-  )
-
-  target_include_directories(${test_name} PRIVATE
-    ${CMAKE_SOURCE_DIR}/src
-    ${CMAKE_SOURCE_DIR}/include
   )
 
   add_coverage_options(${test_name})

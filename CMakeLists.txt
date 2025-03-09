@@ -47,15 +47,24 @@ add_library(json INTERFACE)
 set(PUBLIC_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/include")
 file(MAKE_DIRECTORY "${PUBLIC_INCLUDE_DIR}/warren")
 
-# Copy json.h to the warren directory and create a master header
-configure_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/include/json.h"
-  "${PUBLIC_INCLUDE_DIR}/warren/json.h"
-  COPYONLY
-)
+# Read json.h content and modify include paths
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/include/json.h" JSON_HEADER_CONTENT)
+string(REPLACE "\"json/" "\"warren/json/" JSON_HEADER_CONTENT "${JSON_HEADER_CONTENT}")
+string(REPLACE "\"nodes/" "\"warren/nodes/" JSON_HEADER_CONTENT "${JSON_HEADER_CONTENT}")
+string(REPLACE "\"parse/" "\"warren/parse/" JSON_HEADER_CONTENT "${JSON_HEADER_CONTENT}")
+string(REPLACE "\"utils/" "\"warren/utils/" JSON_HEADER_CONTENT "${JSON_HEADER_CONTENT}")
+string(REPLACE "\"visitors/" "\"warren/visitors/" JSON_HEADER_CONTENT "${JSON_HEADER_CONTENT}")
+file(WRITE "${PUBLIC_INCLUDE_DIR}/warren/json.h" "${JSON_HEADER_CONTENT}")
 
 # Set include directories for implementation
 target_include_directories(json_impl PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/src
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+# Create an interface library for test includes
+add_library(json_test_includes INTERFACE)
+target_include_directories(json_test_includes INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR}/src
   ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
