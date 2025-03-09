@@ -14,7 +14,7 @@ add_library(visitors STATIC
 
 target_link_libraries(visitors PRIVATE
   nodes
+  json_internal_includes
 )
 
 add_coverage_options(visitors)
-

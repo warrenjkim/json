@@ -10,6 +10,7 @@ add_library(nodes STATIC
 
 target_link_libraries(nodes PRIVATE
   visitors
+  json_internal_includes
 )
 
 add_coverage_options(nodes)

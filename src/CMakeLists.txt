@@ -1,5 +1,3 @@
-include_directories(${CMAKE_SOURCE_DIR}/include)
-
 # Common function for coverage options
 function(add_coverage_options target)
   if(CMAKE_BUILD_TYPE STREQUAL "Coverage")
