@@ -2,13 +2,12 @@
 
 #include <string>
 
-#include "exception.h"
-#include "json/exception.h"
 #include "nodes/array.h"
 #include "nodes/null.h"
 #include "nodes/number.h"
 #include "nodes/object.h"
 #include "nodes/string.h"
+#include "utils/exception.h"
 #include "value.h"
 #include "visitors/array_visitor.h"
 #include "visitors/get_visitor.h"

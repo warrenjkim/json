@@ -1,6 +1,6 @@
 #include "visitors/container_type_visitor.h"
 
-#include "json/exception.h"
+#include "utils/exception.h"
 #include "json/value.h"
 #include "nodes/array.h"
 #include "nodes/boolean.h"

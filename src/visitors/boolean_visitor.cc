@@ -1,6 +1,6 @@
 #include "visitors/boolean_visitor.h"
 
-#include "json/exception.h"
+#include "utils/exception.h"
 #include "nodes/array.h"
 #include "nodes/boolean.h"
 #include "nodes/null.h"

@@ -4,7 +4,7 @@
 #include <optional>
 #include <vector>
 
-#include "json/exception.h"
+#include "utils/exception.h"
 #include "nodes/array.h"
 #include "nodes/boolean.h"
 #include "nodes/node.h"

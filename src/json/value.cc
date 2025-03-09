@@ -5,7 +5,7 @@
 #include <optional>
 #include <string>
 
-#include "json/exception.h"
+#include "utils/exception.h"
 #include "nodes/boolean.h"
 #include "nodes/node.h"
 #include "nodes/null.h"

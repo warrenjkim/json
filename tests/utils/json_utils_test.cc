@@ -1,10 +1,10 @@
-#include "utils/json_utils.h"
+#include "json/utils.h"
 
 #include <gtest/gtest.h>
 
 #include <cstddef>
 
-#include "json/exception.h"
+#include "utils/exception.h"
 
 class JsonUtilsTest : public ::testing::Test {};
 
