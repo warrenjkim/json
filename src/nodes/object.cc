@@ -46,9 +46,7 @@ const bool Object::empty() const { return properties_.empty(); }
 
 dsa::Map<std::string, Node*>& Object::get() { return properties_; }
 
-const dsa::Map<std::string, Node*>& Object::get() const {
-  return properties_;
-}
+const dsa::Map<std::string, Node*>& Object::get() const { return properties_; }
 
 }  // namespace nodes
 

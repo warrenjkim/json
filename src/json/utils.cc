@@ -24,9 +24,7 @@ std::optional<dsa::Queue<Token>> tokenize(std::string_view json) {
 
 Value parse(const std::string_view json) { return Value(Parser::parse(json)); }
 
-Value parse(dsa::Queue<Token>& tokens) {
-  return Value(Parser::parse(tokens));
-}
+Value parse(dsa::Queue<Token>& tokens) { return Value(Parser::parse(tokens)); }
 
 std::string to_string(const Value& value) { return value.to_string(); }
 
