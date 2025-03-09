@@ -82,6 +82,7 @@ if(BUILD_TESTING)
       tokenizer
       parser
       visitors
+      json
     TESTS
       tokenizer_test
       parser_test
