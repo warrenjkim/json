@@ -1,18 +1,18 @@
-#include "json/value.h"
-
-#include <gtest/gtest.h>
+#include "warren/json/value.h"
 
 #include <cstddef>
 #include <string>
 
-#include "nodes/array.h"
-#include "nodes/boolean.h"
-#include "nodes/node.h"
-#include "nodes/null.h"
-#include "nodes/number.h"
-#include "nodes/object.h"
-#include "nodes/string.h"
-#include "utils/exception.h"
+#include "gtest/gtest.h"
+#include "warren/internal/nodes/array.h"
+#include "warren/internal/nodes/boolean.h"
+#include "warren/internal/nodes/node.h"
+#include "warren/internal/nodes/null.h"
+#include "warren/internal/nodes/number.h"
+#include "warren/internal/nodes/object.h"
+#include "warren/internal/nodes/string.h"
+#include "warren/json/exception.h"
+#include "warren/json/utils.h"
 
 class ValueTest : public ::testing::Test {
  protected:

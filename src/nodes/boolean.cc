@@ -1,6 +1,6 @@
-#include "nodes/boolean.h"
+#include "warren/internal/nodes/boolean.h"
 
-#include "visitors/visitor.h"
+#include "warren/internal/visitors/visitor.h"
 
 namespace json {
 

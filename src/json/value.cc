@@ -1,22 +1,21 @@
-#include "json/value.h"
+#include "warren/json/value.h"
 
 #include <cstddef>
-#include <iterator>
 #include <optional>
 #include <string>
 
-#include "nodes/boolean.h"
-#include "nodes/node.h"
-#include "nodes/null.h"
-#include "nodes/string.h"
-#include "utils/exception.h"
-#include "visitors/array_visitor.h"
-#include "visitors/boolean_visitor.h"
-#include "visitors/container_type_visitor.h"
-#include "visitors/null_visitor.h"
-#include "visitors/object_visitor.h"
-#include "visitors/string_visitor.h"
-#include "visitors/stringify_visitor.h"
+#include "warren/internal/nodes/boolean.h"
+#include "warren/internal/nodes/node.h"
+#include "warren/internal/nodes/null.h"
+#include "warren/internal/nodes/string.h"
+#include "warren/internal/visitors/array_visitor.h"
+#include "warren/internal/visitors/boolean_visitor.h"
+#include "warren/internal/visitors/container_type_visitor.h"
+#include "warren/internal/visitors/null_visitor.h"
+#include "warren/internal/visitors/object_visitor.h"
+#include "warren/internal/visitors/string_visitor.h"
+#include "warren/internal/visitors/stringify_visitor.h"
+#include "warren/json/exception.h"
 
 namespace json {
 

@@ -1,19 +1,18 @@
-#include "parse/parser.h"
-
-#include <gtest/gtest.h>
+#include "warren/internal/parse/parser.h"
 
 #include <cstdint>
 #include <string_view>
 
-#include "nodes/array.h"
-#include "nodes/boolean.h"
-#include "nodes/node.h"
-#include "nodes/null.h"
-#include "nodes/number.h"
-#include "nodes/object.h"
-#include "nodes/string.h"
-#include "parse/token.h"
-#include "utils/queue.h"
+#include "gtest/gtest.h"
+#include "warren/internal/dsa/queue.h"
+#include "warren/internal/nodes/array.h"
+#include "warren/internal/nodes/boolean.h"
+#include "warren/internal/nodes/node.h"
+#include "warren/internal/nodes/null.h"
+#include "warren/internal/nodes/number.h"
+#include "warren/internal/nodes/object.h"
+#include "warren/internal/nodes/string.h"
+#include "warren/internal/parse/token.h"
 
 class JsonParserTest : public ::testing::Test {
  protected:

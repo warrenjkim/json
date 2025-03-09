@@ -1,8 +1,8 @@
-#include "nodes/string.h"
+#include "warren/internal/nodes/string.h"
 
 #include <string>
 
-#include "visitors/visitor.h"
+#include "warren/internal/visitors/visitor.h"
 
 namespace json {
 

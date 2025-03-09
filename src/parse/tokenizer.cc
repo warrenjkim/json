@@ -1,4 +1,4 @@
-#include "parse/tokenizer.h"
+#include "warren/internal/parse/tokenizer.h"
 
 #include <cctype>
 #include <cstdio>
@@ -7,8 +7,8 @@
 #include <string_view>
 #include <utility>  // pair
 
-#include "parse/token.h"
-#include "utils/queue.h"
+#include "warren/internal/dsa/queue.h"
+#include "warren/internal/parse/token.h"
 
 namespace json {
 

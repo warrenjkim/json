@@ -1,6 +1,6 @@
-#include "nodes/number.h"
+#include "warren/internal/nodes/number.h"
 
-#include "visitors/visitor.h"
+#include "warren/internal/visitors/visitor.h"
 
 namespace json {
 

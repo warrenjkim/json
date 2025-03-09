@@ -1,23 +1,23 @@
-#include "visitors/cmp_visitor.h"
+#include "warren/internal/visitors/cmp_visitor.h"
 
 #include <cmath>
 #include <optional>
 #include <vector>
 
-#include "nodes/array.h"
-#include "nodes/boolean.h"
-#include "nodes/node.h"
-#include "nodes/null.h"
-#include "nodes/number.h"
-#include "nodes/object.h"
-#include "nodes/string.h"
-#include "utils/exception.h"
-#include "visitors/array_visitor.h"
-#include "visitors/boolean_visitor.h"
-#include "visitors/null_visitor.h"
-#include "visitors/number_visitor.h"
-#include "visitors/object_visitor.h"
-#include "visitors/string_visitor.h"
+#include "warren/internal/nodes/array.h"
+#include "warren/internal/nodes/boolean.h"
+#include "warren/internal/nodes/node.h"
+#include "warren/internal/nodes/null.h"
+#include "warren/internal/nodes/number.h"
+#include "warren/internal/nodes/object.h"
+#include "warren/internal/nodes/string.h"
+#include "warren/internal/visitors/array_visitor.h"
+#include "warren/internal/visitors/boolean_visitor.h"
+#include "warren/internal/visitors/null_visitor.h"
+#include "warren/internal/visitors/number_visitor.h"
+#include "warren/internal/visitors/object_visitor.h"
+#include "warren/internal/visitors/string_visitor.h"
+#include "warren/json/exception.h"
 
 namespace json {
 

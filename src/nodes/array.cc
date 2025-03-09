@@ -1,9 +1,9 @@
-#include "nodes/array.h"
+#include "warren/internal/nodes/array.h"
 
 #include <vector>
 
-#include "nodes/node.h"
-#include "visitors/visitor.h"
+#include "warren/internal/nodes/node.h"
+#include "warren/internal/visitors/visitor.h"
 
 namespace json {
 

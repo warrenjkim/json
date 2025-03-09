@@ -1,8 +1,8 @@
-#include "nodes/null.h"
+#include "warren/internal/nodes/null.h"
 
 #include <cstddef>
 
-#include "visitors/visitor.h"
+#include "warren/internal/visitors/visitor.h"
 
 namespace json {
 

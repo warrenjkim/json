@@ -1,7 +1,7 @@
 file(GLOB_RECURSE TEST_SOURCES
   "${CMAKE_CURRENT_SOURCE_DIR}/json/*.cc"
   "${CMAKE_CURRENT_SOURCE_DIR}/parse/*.cc"
-  "${CMAKE_CURRENT_SOURCE_DIR}/utils/*.cc"
+  "${CMAKE_CURRENT_SOURCE_DIR}/dsa/*.cc"
   "${CMAKE_CURRENT_SOURCE_DIR}/visitors/*.cc"
 )
 

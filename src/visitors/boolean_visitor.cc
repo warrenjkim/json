@@ -1,12 +1,13 @@
-#include "visitors/boolean_visitor.h"
+#include "warren/internal/visitors/boolean_visitor.h"
 
-#include "nodes/array.h"
-#include "nodes/boolean.h"
-#include "nodes/null.h"
-#include "nodes/number.h"
-#include "nodes/object.h"
-#include "nodes/string.h"
-#include "utils/exception.h"
+#include "warren/internal/nodes/array.h"
+#include "warren/internal/nodes/boolean.h"
+#include "warren/internal/nodes/node.h"
+#include "warren/internal/nodes/null.h"
+#include "warren/internal/nodes/number.h"
+#include "warren/internal/nodes/object.h"
+#include "warren/internal/nodes/string.h"
+#include "warren/json/exception.h"
 
 namespace json {
 

@@ -1,4 +1,4 @@
-#include "parse/parser.h"
+#include "warren/internal/parse/parser.h"
 
 #include <cmath>  // pow
 #include <cstddef>
@@ -7,12 +7,12 @@
 #include <string>
 #include <string_view>
 
-#include "nodes/node.h"
-#include "nodes/object.h"
-#include "parse/token.h"
-#include "parse/tokenizer.h"
-#include "utils/pair.h"
-#include "utils/queue.h"
+#include "warren/internal/dsa/pair.h"
+#include "warren/internal/dsa/queue.h"
+#include "warren/internal/nodes/node.h"
+#include "warren/internal/nodes/object.h"
+#include "warren/internal/parse/token.h"
+#include "warren/internal/parse/tokenizer.h"
 
 namespace json {
 

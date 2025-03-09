@@ -147,14 +147,8 @@ if(BUILD_TESTING)
       cmp_visitor_test
       get_visitor_test
       set_visitor_test
-      array_visitor_test
-      boolean_visitor_test
-      null_visitor_test
-      number_visitor_test
-      object_visitor_test
-      string_visitor_test
-      value_test
-      json_utils_test
       stringify_visitor_test
+      utils_test
+      value_test
   )
 endif()

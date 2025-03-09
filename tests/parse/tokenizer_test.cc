@@ -1,4 +1,4 @@
-#include "parse/tokenizer.h"
+#include "warren/internal/parse/tokenizer.h"
 
 #include <stdio.h>
 
@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "gtest/gtest.h"
-#include "parse/token.h"
+#include "warren/internal/parse/token.h"
 
 class JsonTokenizerTest : public ::testing::Test {
  protected:

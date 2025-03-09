@@ -1,15 +1,15 @@
-#include "visitors/set_visitor.h"
+#include "warren/internal/visitors/set_visitor.h"
 
-#include <gtest/gtest.h>
-
-#include "json/value.h"
-#include "nodes/array.h"
-#include "nodes/boolean.h"
-#include "nodes/node.h"
-#include "nodes/null.h"
-#include "nodes/number.h"
-#include "nodes/object.h"
-#include "nodes/string.h"
+#include "gtest/gtest.h"
+#include "warren/internal/nodes/array.h"
+#include "warren/internal/nodes/boolean.h"
+#include "warren/internal/nodes/node.h"
+#include "warren/internal/nodes/null.h"
+#include "warren/internal/nodes/number.h"
+#include "warren/internal/nodes/object.h"
+#include "warren/internal/nodes/string.h"
+#include "warren/json/exception.h"
+#include "warren/json/value.h"
 
 class SetVisitorTest : public ::testing::Test {};
 

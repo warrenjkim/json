@@ -1,9 +1,9 @@
-#include "nodes/object.h"
+#include "warren/internal/nodes/object.h"
 
 #include <string>
 
-#include "utils/map.h"
-#include "visitors/visitor.h"
+#include "warren/internal/dsa/map.h"
+#include "warren/internal/visitors/visitor.h"
 
 namespace json {
 
