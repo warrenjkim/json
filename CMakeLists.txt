@@ -26,6 +26,13 @@ if(BUILD_RELEASE)
  add_compile_definitions(NDEBUG)
 endif()
 
+# Create an interface library for internal includes
+add_library(json_internal_includes INTERFACE)
+target_include_directories(json_internal_includes INTERFACE
+  ${CMAKE_CURRENT_SOURCE_DIR}/src
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
 # implementation
 add_subdirectory(src)
 
@@ -38,13 +45,16 @@ target_include_directories(${PROJECT_NAME} INTERFACE
 
 # Link implementation to interface
 target_link_libraries(${PROJECT_NAME} INTERFACE json)
-
 set_target_properties(json PROPERTIES INTERFACE_LINK_LIBRARIES "")
 
 # installation rules
 install(TARGETS ${PROJECT_NAME} json EXPORT ${PROJECT_NAME}Config)
 install(FILES include/json.h DESTINATION include)
 install(EXPORT ${PROJECT_NAME}Config DESTINATION lib/cmake/${PROJECT_NAME})
+
+# set optimization flags based on build type
+set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -fsanitize=address -fno-omit-frame-pointer")
 
 # testing
 option(BUILD_TESTING "Build tests" OFF)
@@ -83,6 +93,8 @@ if(BUILD_TESTING)
       parser
       visitors
       json
+      nodes
+      json_utils
     TESTS
       tokenizer_test
       parser_test
@@ -104,7 +116,3 @@ if(BUILD_TESTING)
       stringify_visitor_test
   )
 endif()
-
-# set optimization flags based on build type
-set(CMAKE_CXX_FLAGS_RELEASE "-O2")
-set(CMAKE_CXX_FLAGS_DEBUG "-O0 -fsanitize=address -fno-omit-frame-pointer")
