@@ -1,8 +1,8 @@
 #pragma once
 
 // core
-#include "exception.h"
-#include "value.h"
+#include "json/exception.h"
+#include "json/value.h"
 
 // node
 #include "nodes/array.h"

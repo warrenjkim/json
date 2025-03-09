@@ -1,27 +1,29 @@
-function(create_test test_name)
-  add_executable(${test_name} ${test_name}.cc)
+file(GLOB_RECURSE TEST_SOURCES
+  "${CMAKE_CURRENT_SOURCE_DIR}/json/*.cc"
+  "${CMAKE_CURRENT_SOURCE_DIR}/parse/*.cc"
+  "${CMAKE_CURRENT_SOURCE_DIR}/utils/*.cc"
+  "${CMAKE_CURRENT_SOURCE_DIR}/visitors/*.cc"
+)
+
+foreach(test_source ${TEST_SOURCES})
+  get_filename_component(test_name ${test_source} NAME_WE)
+
+  add_executable(${test_name} ${test_source})
 
   target_link_libraries(${test_name} PRIVATE
+    json_impl
+    gtest
     gtest_main
-    json_internal_includes
-    ${ARGN}
   )
 
-  if(CMAKE_BUILD_TYPE STREQUAL "Coverage")
-    target_compile_options(${test_name} PRIVATE -g --coverage -O0)
-    target_link_options(${test_name} PRIVATE -g --coverage)
-    if(COMPILER_SUPPORTS_NO_ELIDE)
-      target_compile_options(${test_name} PRIVATE -fno-elide-constructors)
-    endif()
-  endif()
-
-  gtest_discover_tests(${test_name}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    PROPERTIES ENVIRONMENT "GTEST_COLOR=1"
+  target_include_directories(${test_name} PRIVATE
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
   )
-endfunction()
 
-add_subdirectory(parse)
-add_subdirectory(utils)
-add_subdirectory(visitors)
-add_subdirectory(json)
+  add_coverage_options(${test_name})
+
+  add_test(NAME ${test_name} COMMAND ${test_name})
+
+  gtest_discover_tests(${test_name})
+endforeach()

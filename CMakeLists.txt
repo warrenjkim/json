@@ -1,100 +1,143 @@
 cmake_minimum_required(VERSION 3.10)
-project(JsonParser VERSION 1.0.1 DESCRIPTION "JSON Parser")
+project(JsonParser VERSION 1.0.1 DESCRIPTION "JSON Parser Library")
 
-# cmake flags
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CTEST_ARGUMENTS "${CMAKE_CTEST_ARGUMENTS};--output-on-failure;--force-new-ctest-process;--verbose")
-
-# C++ standard
+# Basic settings
 set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# no cmake in the main project directory
-if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-  message(FATAL_ERROR "dumbass. lol")
+# Prevent in-source builds
+if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+  message(FATAL_ERROR "In-source builds not allowed. Please create a build directory.")
 endif()
 
-# build type
-if (CMAKE_BUILD_TYPE STREQUAL "")
-  message(STATUS "Build type set to default")
+# Set build type if not specified
+if(NOT CMAKE_BUILD_TYPE)
+  message(STATUS "Build type set to default (Debug)")
   set(CMAKE_BUILD_TYPE Debug)
 endif()
 
+# Build options
 option(BUILD_RELEASE "Build production-ready release" OFF)
 if(BUILD_RELEASE)
- set(CMAKE_BUILD_TYPE Release)
- add_compile_definitions(NDEBUG)
+  set(CMAKE_BUILD_TYPE Release)
+  add_compile_definitions(NDEBUG)
 endif()
 
-# Create an interface library for internal includes
-add_library(json_internal_includes INTERFACE)
-target_include_directories(json_internal_includes INTERFACE
+# Compiler flags
+set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -fsanitize=address -fno-omit-frame-pointer")
+
+# Collect all source files
+file(GLOB_RECURSE JSON_SOURCES
+  "src/json/*.cc"
+  "src/nodes/*.cc"
+  "src/parse/*.cc"
+  "src/utils/*.cc"
+  "src/visitors/*.cc"
+)
+
+# Create the implementation library
+add_library(json_impl STATIC ${JSON_SOURCES})
+
+# Create the public interface library that users will link against
+add_library(json INTERFACE)
+
+# Ensure include files use warren/json.h namespace
+set(PUBLIC_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/include")
+file(MAKE_DIRECTORY "${PUBLIC_INCLUDE_DIR}/warren")
+
+# Copy json.h to the warren directory and create a master header
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/include/json.h"
+  "${PUBLIC_INCLUDE_DIR}/warren/json.h"
+  COPYONLY
+)
+
+# Set include directories for implementation
+target_include_directories(json_impl PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src
   ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-# implementation
-add_subdirectory(src)
-
-# library interface (only json.h)
-add_library(${PROJECT_NAME} INTERFACE)
-target_include_directories(${PROJECT_NAME} INTERFACE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+# Set include directories for users
+target_include_directories(json INTERFACE
+  $<BUILD_INTERFACE:${PUBLIC_INCLUDE_DIR}>
   $<INSTALL_INTERFACE:include>
 )
 
 # Link implementation to interface
-target_link_libraries(${PROJECT_NAME} INTERFACE json)
-set_target_properties(json PROPERTIES INTERFACE_LINK_LIBRARIES "")
+target_link_libraries(json INTERFACE json_impl)
 
-# installation rules
-install(TARGETS ${PROJECT_NAME} json EXPORT ${PROJECT_NAME}Config)
-install(FILES include/json.h DESTINATION include)
-install(EXPORT ${PROJECT_NAME}Config DESTINATION lib/cmake/${PROJECT_NAME})
+# Installation
+install(TARGETS json json_impl
+  EXPORT JsonConfig
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
 
-# set optimization flags based on build type
-set(CMAKE_CXX_FLAGS_RELEASE "-O2")
-set(CMAKE_CXX_FLAGS_DEBUG "-O0 -fsanitize=address -fno-omit-frame-pointer")
+# Install headers - restructured to use warren/json.h namespace
+install(FILES "${PUBLIC_INCLUDE_DIR}/warren/json.h" DESTINATION include/warren)
+install(DIRECTORY include/ DESTINATION include/warren
+  FILES_MATCHING PATTERN "*.h" PATTERN "*.inl"
+  PATTERN "json.h" EXCLUDE # Skip the root json.h as we've already copied it
+)
 
-# testing
+# Install config
+install(EXPORT JsonConfig
+  NAMESPACE Warren::
+  DESTINATION lib/cmake/Warren
+)
+
+# Testing
 option(BUILD_TESTING "Build tests" OFF)
 if(BUILD_TESTING)
-  # output binaries to a subdirectory "bin"
+  # Output binaries to a subdirectory "bin"
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
   set(CMAKE_BUILD_TYPE Coverage)
 
-  # enable CMake testing
+  # Enable CMake testing
   include(CTest)
   enable_testing()
 
-  # enable GoogleTest
+  # Enable GoogleTest
   include(GoogleTest)
   if(NOT TARGET gtest AND NOT TARGET gtest_main)
-    # only include GoogleTest if targets don't already exist
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/googletest googletest)
     set(GTEST_OUTPUT "all")
   endif()
 
-  # check for -fno-elide-constructors support
+  # Check for -fno-elide-constructors support
   include(CheckCXXCompilerFlag)
   CHECK_CXX_COMPILER_FLAG("-fno-elide-constructors" COMPILER_SUPPORTS_NO_ELIDE)
 
-  # set optimization flags based on build type
-  set(CMAKE_CXX_FLAGS_COVERAGE "-O0 -fno-elide-constructors -fsanitize=address")
+  # Set optimization flags for coverage
+  set(CMAKE_CXX_FLAGS_COVERAGE "-O0 -fsanitize=address")
+  if(COMPILER_SUPPORTS_NO_ELIDE)
+    set(CMAKE_CXX_FLAGS_COVERAGE "${CMAKE_CXX_FLAGS_COVERAGE} -fno-elide-constructors")
+  endif()
 
-  # add test directory
+  # Helper function for test targets to inherit coverage settings
+  function(add_coverage_options target)
+    if(CMAKE_BUILD_TYPE STREQUAL "Coverage")
+      target_compile_options(${target} PRIVATE -g --coverage -O0)
+      target_link_options(${target} PRIVATE -g --coverage)
+      if(COMPILER_SUPPORTS_NO_ELIDE)
+        target_compile_options(${target} PRIVATE -fno-elide-constructors)
+      endif()
+    endif()
+  endfunction()
+
+  # Add test directory
   add_subdirectory(tests)
 
-  # coverage
+  # Coverage reporting
+  set(CMAKE_CTEST_ARGUMENTS "${CMAKE_CTEST_ARGUMENTS};--output-on-failure;--force-new-ctest-process;--verbose")
   include(cmake/CodeCoverageReportConfig.cmake)
   generate_coverage_report(
     TARGETS
-      tokenizer
-      parser
-      visitors
-      json
-      nodes
-      json_utils
+      json_impl
     TESTS
       tokenizer_test
       parser_test
