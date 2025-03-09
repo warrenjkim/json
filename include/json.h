@@ -1,4 +1,5 @@
 #pragma once
+[[maybe_unused]] static const char* json_h_marker = "Used";
 
 // core
 #include "json/exception.h"
