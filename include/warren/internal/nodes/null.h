@@ -14,7 +14,7 @@ class Null : public Node {
   void accept(visitors::ConstVisitor& visitor) const override;
 
  public:
-  Node* clone() override;
+  Node* clone() const override;
 
  public:
   operator nullptr_t() const;

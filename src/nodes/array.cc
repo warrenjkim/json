@@ -15,7 +15,7 @@ void Array::accept(visitors::ConstVisitor& visitor) const {
   visitor.visit(*this);
 }
 
-Node* Array::clone() {
+Node* Array::clone() const {
   Array* arr = new Array();
   for (Node* node : array_) {
     arr->push_back(node->clone());

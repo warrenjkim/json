@@ -15,7 +15,7 @@ void Object::accept(visitors::ConstVisitor& visitor) const {
   visitor.visit(*this);
 }
 
-Node* Object::clone() {
+Node* Object::clone() const {
   Object* obj = new Object();
   for (auto& [key, value] : properties_) {
     obj->insert(key, value->clone());

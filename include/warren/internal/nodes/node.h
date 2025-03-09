@@ -17,7 +17,7 @@ class Node {
   virtual void accept(visitors::ConstVisitor& visitor) const = 0;
 
  public:
-  virtual Node* clone() = 0;
+  virtual Node* clone() const = 0;
 
  public:
   const bool operator==(const Node& other) const;

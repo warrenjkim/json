@@ -50,12 +50,14 @@ class Value {
   void push_back(const bool value);
   void push_back(const char* value);
   void push_back(const Value& value);
+  void push_back(const nodes::Node* node);
 
  public:
   void insert(const std::string&, const nullptr_t);
   void insert(const std::string&, const bool value);
   void insert(const std::string&, const char* value);
   void insert(const std::string&, const Value& value);
+  void insert(const std::string&, const nodes::Node* node);
 
  public:
   void erase(ConstIterator position);
@@ -79,6 +81,7 @@ class Value {
   Value& operator=(const bool value);
   Value& operator=(const char* value);
   Value& operator=(const nullptr_t value);
+  Value& operator=(const nodes::Node* node);
 
  public:
   const std::string to_string() const;

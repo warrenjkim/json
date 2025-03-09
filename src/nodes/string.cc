@@ -14,7 +14,7 @@ void String::accept(visitors::ConstVisitor& visitor) const {
   visitor.visit(*this);
 }
 
-Node* String::clone() { return new String(value_); }
+Node* String::clone() const { return new String(value_); }
 
 String::String(std::string value) : value_(std::move(value)) {}
 

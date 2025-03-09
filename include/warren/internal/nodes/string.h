@@ -14,7 +14,7 @@ class String : public Node {
   void accept(visitors::ConstVisitor& visitor) const override;
 
  public:
-  Node* clone() override;
+  Node* clone() const override;
 
  public:
   String(std::string value);

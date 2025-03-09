@@ -12,7 +12,7 @@ class Boolean : public Node {
   void accept(visitors::ConstVisitor& visitor) const override;
 
  public:
-  Node* clone() override;
+  Node* clone() const override;
 
  public:
   Boolean(const bool value);

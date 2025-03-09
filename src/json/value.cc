@@ -180,6 +180,21 @@ void Value::push_back(const Value& value) {
   }
 }
 
+void Value::push_back(const nodes::Node* node) {
+  if (!node_) {
+    node_ = new nodes::Array();
+  }
+
+  visitors::ArrayVisitor visitor;
+  node_->accept(visitor);
+
+  if (!node) {
+    visitor.result().push_back(new nodes::Null());
+  } else {
+    visitor.result().push_back(node->clone());
+  }
+}
+
 void Value::insert(const std::string& key, const nullptr_t) {
   if (!node_) {
     node_ = new nodes::Object();
@@ -225,6 +240,21 @@ void Value::insert(const std::string& key, const Value& value) {
     visitor.result().insert(key, new nodes::Null());
   } else {
     visitor.result().insert(key, value.node_->clone());
+  }
+}
+
+void Value::insert(const std::string& key, const nodes::Node* node) {
+  if (!node_) {
+    node_ = new nodes::Object();
+  }
+
+  visitors::ObjectVisitor visitor;
+  node_->accept(visitor);
+
+  if (!node) {
+    visitor.result().insert(key, new nodes::Null());
+  } else {
+    visitor.result().insert(key, node->clone());
   }
 }
 
@@ -349,6 +379,19 @@ Value& Value::operator=(const nullptr_t value) {
   } else {
     delete node_;
     node_ = new nodes::Null();
+  }
+
+  return *this;
+}
+
+Value& Value::operator=(const nodes::Node* node) {
+  if (parent_) {
+    visitors::SetVisitor visitor(&node_, node->clone(), *key_);
+    parent_->node_->accept(visitor);
+    parent_->cache_.erase(*key_);
+  } else {
+    delete node_;
+    node_ = node->clone();
   }
 
   return *this;
