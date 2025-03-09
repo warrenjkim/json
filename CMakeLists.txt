@@ -85,7 +85,12 @@ install(EXPORT JsonConfig
 )
 
 # Testing
-option(BUILD_TESTING "Build tests" OFF)
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+  option(BUILD_TESTING "Build tests" OFF)
+else()
+  # Force OFF when used as a subproject
+  set(BUILD_TESTING OFF CACHE BOOL "Build tests" FORCE)
+endif()
 if(BUILD_TESTING)
   # Output binaries to a subdirectory "bin"
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
