@@ -31,14 +31,14 @@ class JsonParserTest : public ::testing::Test {
     ASSERT_FALSE(result) << "Parser did not fail for invalid input";
   }
 
-  void assert_parse_failure(json::utils::Queue<json::Token> input) {
+  void assert_parse_failure(json::dsa::Queue<json::Token> input) {
     json::nodes::Node* result = json::Parser::parse(input);
     ASSERT_FALSE(result) << "Parser did not fail for invalid input";
   }
 
-  json::utils::Queue<json::Token> make_token_queue(
+  json::dsa::Queue<json::Token> make_token_queue(
       std::initializer_list<json::Token> tokens) {
-    json::utils::Queue<json::Token> queue;
+    json::dsa::Queue<json::Token> queue;
     for (const auto& token : tokens) {
       queue.enqueue(token);
     }

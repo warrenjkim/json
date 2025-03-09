@@ -20,7 +20,7 @@ class Object : public Node {
 
  public:
   Object() = default;
-  Object(const utils::Map<std::string, Node*>& properties);
+  Object(const dsa::Map<std::string, Node*>& properties);
   ~Object();
 
   Object(Object&&) = delete;
@@ -34,11 +34,11 @@ class Object : public Node {
   const bool empty() const;
 
  public:
-  utils::Map<std::string, Node*>& get();
-  const utils::Map<std::string, Node*>& get() const;
+  dsa::Map<std::string, Node*>& get();
+  const dsa::Map<std::string, Node*>& get() const;
 
  private:
-  utils::Map<std::string, Node*> properties_;
+  dsa::Map<std::string, Node*> properties_;
 };
 
 }  // namespace nodes

@@ -2,7 +2,7 @@
 
 namespace json {
 
-namespace utils {
+namespace dsa {
 
 template <typename T>
 struct less {
@@ -11,6 +11,6 @@ struct less {
   }
 };
 
-}  // namespace utils
+}  // namespace dsa
 
 }  // namespace json

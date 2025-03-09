@@ -24,7 +24,7 @@ Node* Object::clone() {
   return obj;
 }
 
-Object::Object(const utils::Map<std::string, Node*>& properties) {
+Object::Object(const dsa::Map<std::string, Node*>& properties) {
   for (auto& [key, value] : properties) {
     properties_[key] = value->clone();
   }
@@ -44,9 +44,9 @@ const size_t Object::size() const { return properties_.size(); }
 
 const bool Object::empty() const { return properties_.empty(); }
 
-utils::Map<std::string, Node*>& Object::get() { return properties_; }
+dsa::Map<std::string, Node*>& Object::get() { return properties_; }
 
-const utils::Map<std::string, Node*>& Object::get() const {
+const dsa::Map<std::string, Node*>& Object::get() const {
   return properties_;
 }
 

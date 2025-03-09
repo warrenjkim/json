@@ -18,13 +18,13 @@
 
 namespace json {
 
-std::optional<utils::Queue<Token>> tokenize(std::string_view json) {
+std::optional<dsa::Queue<Token>> tokenize(std::string_view json) {
   return Tokenizer::tokenize(json);
 }
 
 Value parse(const std::string_view json) { return Value(Parser::parse(json)); }
 
-Value parse(utils::Queue<Token>& tokens) {
+Value parse(dsa::Queue<Token>& tokens) {
   return Value(Parser::parse(tokens));
 }
 

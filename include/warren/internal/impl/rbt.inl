@@ -4,7 +4,7 @@
 
 namespace json {
 
-namespace utils {
+namespace dsa {
 
 template <typename T, class Comparator, class OrderingKey>
 RBTree<T, Comparator, OrderingKey>::~RBTree() noexcept {
@@ -517,6 +517,6 @@ constexpr bool RBTree<T, Comparator, OrderingKey>::is_red(
   return node && node->color == rbt::Color::RED;
 }
 
-}  // namespace utils
+}  // namespace dsa
 
 }  // namespace json

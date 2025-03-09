@@ -3,7 +3,7 @@
 
 namespace json {
 
-namespace utils {
+namespace dsa {
 
 template <typename K, typename V>
 struct Pair {
@@ -54,6 +54,6 @@ bool operator==(const Pair<const K, const V>& lhs, const Pair<K, V>& rhs) {
   return operator==(rhs, lhs);
 }
 
-}  // namespace utils
+}  // namespace dsa
 
 }  // namespace json

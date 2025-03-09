@@ -7,7 +7,7 @@
 
 namespace json {
 
-namespace utils {
+namespace dsa {
 
 template <typename T>
 Queue<T>::Node::Node(const T& data)
@@ -197,6 +197,6 @@ void Queue<T>::deep_copy(const Queue& other) {
   size_ = other.size_;
 }
 
-}  // namespace utils
+}  // namespace dsa
 
 }  // namespace json

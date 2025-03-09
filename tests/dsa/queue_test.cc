@@ -5,16 +5,16 @@
 class QueueTest : public ::testing::Test {};
 
 TEST_F(QueueTest, DefaultConstructor) {
-  json::utils::Queue<int> queue;
+  json::dsa::Queue<int> queue;
   ASSERT_TRUE(queue.empty());
   ASSERT_FALSE(queue.front().has_value());
 }
 
 TEST_F(QueueTest, CopyConstructorNonEmpty) {
-  json::utils::Queue<int> queue1;
+  json::dsa::Queue<int> queue1;
   queue1.enqueue(10);
   queue1.enqueue(20);
-  json::utils::Queue<int> queue2(queue1);
+  json::dsa::Queue<int> queue2(queue1);
   ASSERT_EQ(queue2.size(), 2);
   ASSERT_EQ(*queue2.front(), 10);
   ASSERT_EQ(queue1.size(), 2);
@@ -22,17 +22,17 @@ TEST_F(QueueTest, CopyConstructorNonEmpty) {
 }
 
 TEST_F(QueueTest, CopyConstructorEmpty) {
-  json::utils::Queue<int> queue1;
-  json::utils::Queue<int> queue2(queue1);
+  json::dsa::Queue<int> queue1;
+  json::dsa::Queue<int> queue2(queue1);
   ASSERT_TRUE(queue2.empty());
   ASSERT_FALSE(queue2.front().has_value());
 }
 
 TEST_F(QueueTest, MoveConstructor) {
-  json::utils::Queue<int> queue1;
+  json::dsa::Queue<int> queue1;
   queue1.enqueue(5);
   queue1.enqueue(15);
-  json::utils::Queue<int> queue2(std::move(queue1));
+  json::dsa::Queue<int> queue2(std::move(queue1));
   ASSERT_EQ(queue2.size(), 2);
   ASSERT_EQ(*queue2.front(), 5);
   ASSERT_TRUE(queue1.empty());
@@ -40,10 +40,10 @@ TEST_F(QueueTest, MoveConstructor) {
 }
 
 TEST_F(QueueTest, CopyAssignment) {
-  json::utils::Queue<int> queue1;
+  json::dsa::Queue<int> queue1;
   queue1.enqueue(30);
   queue1.enqueue(40);
-  json::utils::Queue<int> queue2;
+  json::dsa::Queue<int> queue2;
   queue2 = queue1;
   ASSERT_EQ(queue2.size(), 2);
   ASSERT_EQ(*queue2.front(), 30);
@@ -52,10 +52,10 @@ TEST_F(QueueTest, CopyAssignment) {
 }
 
 TEST_F(QueueTest, MoveAssignment) {
-  json::utils::Queue<int> queue1;
+  json::dsa::Queue<int> queue1;
   queue1.enqueue(60);
   queue1.enqueue(70);
-  json::utils::Queue<int> queue2;
+  json::dsa::Queue<int> queue2;
   queue2 = std::move(queue1);
   ASSERT_EQ(queue2.size(), 2);
   ASSERT_EQ(*queue2.front(), 60);
@@ -64,7 +64,7 @@ TEST_F(QueueTest, MoveAssignment) {
 }
 
 TEST_F(QueueTest, EnqueueLValue) {
-  json::utils::Queue<int> queue;
+  json::dsa::Queue<int> queue;
   int value_1 = 10;
   int value_2 = 20;
   queue.enqueue(value_1);
@@ -74,7 +74,7 @@ TEST_F(QueueTest, EnqueueLValue) {
 }
 
 TEST_F(QueueTest, EnqueueRValue) {
-  json::utils::Queue<std::string> queue;
+  json::dsa::Queue<std::string> queue;
   std::string str_1 = "test1";
   std::string str_2 = "test2";
   queue.enqueue(std::move(str_1));
@@ -86,7 +86,7 @@ TEST_F(QueueTest, EnqueueRValue) {
 }
 
 TEST_F(QueueTest, Emplace) {
-  json::utils::Queue<std::string> queue;
+  json::dsa::Queue<std::string> queue;
   queue.emplace("test1");
   queue.emplace("test2");
   ASSERT_EQ(queue.size(), 2);
@@ -94,7 +94,7 @@ TEST_F(QueueTest, Emplace) {
 }
 
 TEST_F(QueueTest, DequeueNonEmpty) {
-  json::utils::Queue<int> queue;
+  json::dsa::Queue<int> queue;
   queue.enqueue(5);
   queue.enqueue(15);
   queue.dequeue();
@@ -103,13 +103,13 @@ TEST_F(QueueTest, DequeueNonEmpty) {
 }
 
 TEST_F(QueueTest, DequeueEmpty) {
-  json::utils::Queue<int> queue;
+  json::dsa::Queue<int> queue;
   queue.dequeue();
   ASSERT_TRUE(queue.empty());
 }
 
 TEST_F(QueueTest, FrontNonEmpty) {
-  json::utils::Queue<int> queue;
+  json::dsa::Queue<int> queue;
   queue.enqueue(10);
   queue.enqueue(20);
   queue.enqueue(30);
@@ -118,25 +118,25 @@ TEST_F(QueueTest, FrontNonEmpty) {
 }
 
 TEST_F(QueueTest, FrontEmpty) {
-  json::utils::Queue<int> queue;
+  json::dsa::Queue<int> queue;
   ASSERT_FALSE(queue.front().has_value());
 }
 
 TEST_F(QueueTest, FrontConst) {
-  const json::utils::Queue<int> const_ref_empty_queue;
+  const json::dsa::Queue<int> const_ref_empty_queue;
   ASSERT_FALSE(const_ref_empty_queue.front().has_value());
 
-  json::utils::Queue<int> non_empty_queue;
+  json::dsa::Queue<int> non_empty_queue;
   non_empty_queue.enqueue(5);
   non_empty_queue.enqueue(10);
-  const json::utils::Queue<int>& const_ref_queue = non_empty_queue;
+  const json::dsa::Queue<int>& const_ref_queue = non_empty_queue;
   auto front_value = const_ref_queue.front();
   ASSERT_TRUE(front_value.has_value());
   ASSERT_EQ(*front_value, 5);
 }
 
 TEST_F(QueueTest, Clear) {
-  json::utils::Queue<int> queue;
+  json::dsa::Queue<int> queue;
   queue.enqueue(1);
   queue.enqueue(2);
   queue.enqueue(3);
@@ -147,7 +147,7 @@ TEST_F(QueueTest, Clear) {
 }
 
 TEST_F(QueueTest, SizeAndEmpty) {
-  json::utils::Queue<int> queue;
+  json::dsa::Queue<int> queue;
   ASSERT_TRUE(queue.empty());
   ASSERT_EQ(queue.size(), 0);
   queue.enqueue(1);
@@ -166,7 +166,7 @@ TEST_F(QueueTest, SizeAndEmpty) {
 }
 
 TEST_F(QueueTest, EmptyQueueOperations) {
-  json::utils::Queue<int> queue;
+  json::dsa::Queue<int> queue;
 
   ASSERT_TRUE(queue.empty());
   ASSERT_EQ(queue.size(), 0);
@@ -188,7 +188,7 @@ TEST_F(QueueTest, EmptyQueueOperations) {
 }
 
 TEST_F(QueueTest, QueueOf) {
-  auto queue = json::utils::Queue<int>::of(1, 2, 3);
+  auto queue = json::dsa::Queue<int>::of(1, 2, 3);
 
   ASSERT_EQ(queue.size(), 3);
   ASSERT_EQ(*queue.dequeue(), 1);

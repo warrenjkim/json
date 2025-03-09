@@ -23,13 +23,13 @@ class ObjectVisitor : public Visitor {
   void visit(nodes::String& node) override;
 
  public:
-  utils::Map<std::string, nodes::Node*>& result();
+  dsa::Map<std::string, nodes::Node*>& result();
 
  public:
   ~ObjectVisitor() = default;
 
  private:
-  utils::Map<std::string, nodes::Node*>* result_;
+  dsa::Map<std::string, nodes::Node*>* result_;
 };
 
 }  // namespace visitors

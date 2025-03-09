@@ -151,7 +151,7 @@ class Value {
   nodes::Node* node_;
   Value* parent_;
   std::optional<std::string> key_;
-  utils::Map<std::string, Value> cache_;
+  dsa::Map<std::string, Value> cache_;
 
  private:
   enum ContainerType { ARRAY, OBJECT };
@@ -193,7 +193,7 @@ class Value {
     union ContainerIterator {
       std::vector<nodes::Node*>::iterator array_it =
           std::vector<nodes::Node*>::iterator();
-      utils::Map<std::string, nodes::Node*>::Iterator map_it;
+      dsa::Map<std::string, nodes::Node*>::Iterator map_it;
 
       ContainerIterator() {}
       ~ContainerIterator() {}
@@ -249,7 +249,7 @@ class Value {
     union ContainerConstIterator {
       std::vector<nodes::Node*>::const_iterator array_cit =
           std::vector<nodes::Node*>::const_iterator();
-      utils::Map<std::string, nodes::Node*>::ConstIterator map_cit;
+      dsa::Map<std::string, nodes::Node*>::ConstIterator map_cit;
       ContainerConstIterator() {}
       ~ContainerConstIterator() {}
     } cit_;

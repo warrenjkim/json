@@ -15,7 +15,7 @@ class JsonTokenizerTest : public ::testing::Test {
                            const std::vector<json::Token>& expected_tokens) {
     auto result = json::Tokenizer::tokenize(input);
     ASSERT_TRUE(result.has_value()) << "Failed to tokenize: " << input;
-    json::utils::Queue<json::Token> actual_tokens = result.value();
+    json::dsa::Queue<json::Token> actual_tokens = result.value();
     for (const json::Token& expected : expected_tokens) {
       ASSERT_TRUE(!actual_tokens.empty()) << "Fewer tokens than expected";
       const auto& actual = actual_tokens.front();

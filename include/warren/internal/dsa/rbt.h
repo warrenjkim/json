@@ -8,7 +8,7 @@
 
 namespace json {
 
-namespace utils {
+namespace dsa {
 
 namespace rbt {
 
@@ -149,7 +149,7 @@ class RBTree {
   constexpr bool is_red(const Node* node) const noexcept;
 };
 
-}  // namespace utils
+}  // namespace dsa
 
 }  // namespace json
 

@@ -17,7 +17,7 @@
 namespace json {
 
 nodes::Node* Parser::parse(const std::string_view json) {
-  std::optional<json::utils::Queue<Token>> tokens = Tokenizer::tokenize(json);
+  std::optional<json::dsa::Queue<Token>> tokens = Tokenizer::tokenize(json);
   if (!tokens || tokens->empty()) {
     return nullptr;
   }
@@ -25,7 +25,7 @@ nodes::Node* Parser::parse(const std::string_view json) {
   return parse(*tokens);
 }
 
-nodes::Node* Parser::parse(json::utils::Queue<Token>& tokens) {
+nodes::Node* Parser::parse(json::dsa::Queue<Token>& tokens) {
   if (tokens.empty()) {
     return nullptr;
   }
@@ -40,7 +40,7 @@ nodes::Node* Parser::parse(json::utils::Queue<Token>& tokens) {
   }
 }
 
-nodes::Object* Parser::parse_object(json::utils::Queue<Token>& tokens,
+nodes::Object* Parser::parse_object(json::dsa::Queue<Token>& tokens,
                                     const size_t indent_level) {
   if (!expect_next(tokens, Token('{', TokenType::OBJECT_START))) {
     return nullptr;
@@ -96,7 +96,7 @@ nodes::Object* Parser::parse_object(json::utils::Queue<Token>& tokens,
   return nullptr;
 }
 
-nodes::Array* Parser::parse_array(json::utils::Queue<Token>& tokens,
+nodes::Array* Parser::parse_array(json::dsa::Queue<Token>& tokens,
                                   const size_t indent_level) {
   if (!expect_next(tokens, Token('[', TokenType::ARRAY_START))) {
     return nullptr;
@@ -152,7 +152,7 @@ nodes::Array* Parser::parse_array(json::utils::Queue<Token>& tokens,
   return nullptr;
 }
 
-nodes::Node* Parser::parse_value(json::utils::Queue<Token>& tokens,
+nodes::Node* Parser::parse_value(json::dsa::Queue<Token>& tokens,
                                  const size_t indent_level) {
   if (tokens.empty()) {
     return nullptr;
@@ -176,7 +176,7 @@ nodes::Node* Parser::parse_value(json::utils::Queue<Token>& tokens,
   }
 }
 
-nodes::String* Parser::parse_string(json::utils::Queue<Token>& tokens,
+nodes::String* Parser::parse_string(json::dsa::Queue<Token>& tokens,
                                     const size_t indent_level) {
   if (!expect_next(tokens, Token('"', TokenType::QUOTE))) {
     return nullptr;
@@ -197,7 +197,7 @@ nodes::String* Parser::parse_string(json::utils::Queue<Token>& tokens,
   return string;
 }
 
-nodes::Number* Parser::parse_number(json::utils::Queue<Token>& tokens,
+nodes::Number* Parser::parse_number(json::dsa::Queue<Token>& tokens,
                                     const size_t indent_level) {
   std::string number_string = tokens.dequeue()->value;
   size_t exponent_index = number_string.find_first_of("eE");
@@ -217,8 +217,8 @@ nodes::Number* Parser::parse_number(json::utils::Queue<Token>& tokens,
   }
 }
 
-std::optional<utils::Pair<std::string, nodes::Node*>> Parser::parse_key_value(
-    json::utils::Queue<Token>& tokens, const size_t indent_level) {
+std::optional<dsa::Pair<std::string, nodes::Node*>> Parser::parse_key_value(
+    json::dsa::Queue<Token>& tokens, const size_t indent_level) {
   nodes::String* string = parse_string(tokens, indent_level);
   if (!string) {
     delete string;
@@ -238,10 +238,10 @@ std::optional<utils::Pair<std::string, nodes::Node*>> Parser::parse_key_value(
     return std::nullopt;
   }
 
-  return utils::Pair(key, value);
+  return dsa::Pair(key, value);
 }
 
-nodes::Boolean* Parser::parse_boolean(json::utils::Queue<Token>& tokens,
+nodes::Boolean* Parser::parse_boolean(json::dsa::Queue<Token>& tokens,
                                       const size_t indent_level) {
   std::optional<Token> token = tokens.dequeue();
   if (token->value != "true" && token->value != "false") {
@@ -251,7 +251,7 @@ nodes::Boolean* Parser::parse_boolean(json::utils::Queue<Token>& tokens,
   return new nodes::Boolean(token->value == "true" ? true : false);
 }
 
-nodes::Null* Parser::parse_null(json::utils::Queue<Token>& tokens,
+nodes::Null* Parser::parse_null(json::dsa::Queue<Token>& tokens,
                                 const size_t indent_level) {
   if (!expect_next(tokens, Token("null", TokenType::JSON_NULL))) {
     return nullptr;
@@ -260,7 +260,7 @@ nodes::Null* Parser::parse_null(json::utils::Queue<Token>& tokens,
   return new nodes::Null();
 }
 
-const bool Parser::expect_next(json::utils::Queue<Token>& tokens,
+const bool Parser::expect_next(json::dsa::Queue<Token>& tokens,
                                const Token& expected) {
   std::optional<Token> token = tokens.dequeue();
 

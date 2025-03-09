@@ -19,30 +19,30 @@ struct Token;
 class Parser {
  public:
   static nodes::Node* parse(const std::string_view json);
-  static nodes::Node* parse(utils::Queue<Token>& tokens);
+  static nodes::Node* parse(dsa::Queue<Token>& tokens);
 
  private:
-  static nodes::Object* parse_object(utils::Queue<Token>& tokens,
+  static nodes::Object* parse_object(dsa::Queue<Token>& tokens,
                                      const size_t indent_level = 0);
-  static nodes::Array* parse_array(utils::Queue<Token>& tokens,
+  static nodes::Array* parse_array(dsa::Queue<Token>& tokens,
                                    const size_t indent_level = 0);
 
  private:
-  static nodes::Node* parse_value(utils::Queue<Token>& tokens,
+  static nodes::Node* parse_value(dsa::Queue<Token>& tokens,
                                   const size_t indent_level = 0);
-  static nodes::String* parse_string(utils::Queue<Token>& tokens,
+  static nodes::String* parse_string(dsa::Queue<Token>& tokens,
                                      const size_t indent_level = 0);
-  static nodes::Number* parse_number(utils::Queue<Token>& tokens,
+  static nodes::Number* parse_number(dsa::Queue<Token>& tokens,
                                      const size_t indent_level = 0);
-  static std::optional<utils::Pair<std::string, nodes::Node*>> parse_key_value(
-      utils::Queue<Token>& tokens, const size_t indent_level = 0);
-  static nodes::Boolean* parse_boolean(utils::Queue<Token>& tokens,
+  static std::optional<dsa::Pair<std::string, nodes::Node*>> parse_key_value(
+      dsa::Queue<Token>& tokens, const size_t indent_level = 0);
+  static nodes::Boolean* parse_boolean(dsa::Queue<Token>& tokens,
                                        const size_t indent_level = 0);
-  static nodes::Null* parse_null(utils::Queue<Token>& tokens,
+  static nodes::Null* parse_null(dsa::Queue<Token>& tokens,
                                  const size_t indent_level = 0);
 
  private:
-  static const bool expect_next(utils::Queue<Token>& tokens,
+  static const bool expect_next(dsa::Queue<Token>& tokens,
                                 const Token& expected);
 
  private:

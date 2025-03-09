@@ -7,7 +7,7 @@
 
 namespace json {
 
-namespace utils {
+namespace dsa {
 
 template <typename K, typename V>
 bool Map<K, V>::operator==(const Map<K, V>& other) const {
@@ -136,13 +136,13 @@ Map<K, V>::ConstIterator Map<K, V>::find(const K& key) const {
   return node ? ConstIterator(node, &tree_) : cend();
 }
 
-}  // namespace utils
+}  // namespace dsa
 
 }  // namespace json
 
 namespace json {
 
-namespace utils {
+namespace dsa {
 
 template <typename K, typename V>
 Map<K, V>::Iterator::Iterator(Map<K, V>::MapNode* node,
@@ -298,6 +298,6 @@ bool Map<K, V>::ConstIterator::operator!=(
   return !(*this == other);
 }
 
-}  // namespace utils
+}  // namespace dsa
 
 }  // namespace json

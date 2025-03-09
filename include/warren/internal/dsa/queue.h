@@ -4,7 +4,7 @@
 
 namespace json {
 
-namespace utils {
+namespace dsa {
 
 template <typename T>
 class Queue {
@@ -59,7 +59,7 @@ class Queue {
   void deep_copy(const Queue& other);
 };
 
-}  // namespace utils
+}  // namespace dsa
 
 }  // namespace json
 

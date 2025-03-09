@@ -109,7 +109,7 @@ void CmpVisitor::visit(const nodes::Object& rhs) {
     return;
   }
 
-  utils::Map<std::string, nodes::Node*>& lhs = visitor.result();
+  dsa::Map<std::string, nodes::Node*>& lhs = visitor.result();
   if (lhs.size() != rhs.get().size()) {
     result_ = false;
     return;

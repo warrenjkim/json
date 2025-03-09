@@ -38,7 +38,7 @@ void ObjectVisitor::visit(nodes::String& node) {
   throw BadCastException("Expected type Object, but was String.");
 }
 
-utils::Map<std::string, nodes::Node*>& ObjectVisitor::result() {
+dsa::Map<std::string, nodes::Node*>& ObjectVisitor::result() {
   return *result_;
 }
 

@@ -6,7 +6,7 @@
 
 class MapTest : public ::testing::Test {
  protected:
-  json::utils::Map<std::string, int> map_;
+  json::dsa::Map<std::string, int> map_;
 };
 
 TEST_F(MapTest, CopyConstructor) {
@@ -14,7 +14,7 @@ TEST_F(MapTest, CopyConstructor) {
   map_.insert("key", 1);
 
   // act
-  json::utils::Map<std::string, int> copy(map_);
+  json::dsa::Map<std::string, int> copy(map_);
 
   // assert
   ASSERT_EQ(copy.size(), 1);
@@ -26,7 +26,7 @@ TEST_F(MapTest, MoveConstructor) {
   map_.insert("key", 1);
 
   // act
-  json::utils::Map<std::string, int> moved(std::move(map_));
+  json::dsa::Map<std::string, int> moved(std::move(map_));
 
   // assert
   ASSERT_TRUE(map_.empty());
@@ -39,7 +39,7 @@ TEST_F(MapTest, Equality) {
   map_.insert("a", 1);
   map_.insert("b", 2);
 
-  json::utils::Map<std::string, int> other;
+  json::dsa::Map<std::string, int> other;
   other.insert("a", 1);
   other.insert("b", 2);
 
@@ -137,7 +137,7 @@ TEST_F(MapTest, Iterator) {
   map_.insert("b", 2);
 
   // act + assert
-  json::utils::Map<std::string, int>::Iterator it = map_.begin();
+  json::dsa::Map<std::string, int>::Iterator it = map_.begin();
   ASSERT_EQ(it->first, "a");
   ASSERT_EQ(it->second, 1);
   it++;
@@ -150,10 +150,10 @@ TEST_F(MapTest, Iterator) {
 TEST_F(MapTest, ConstIterator) {
   // arrange
   map_.insert("a", 1);
-  const json::utils::Map<std::string, int>& cmap = map_;
+  const json::dsa::Map<std::string, int>& cmap = map_;
 
   // act + assert
-  json::utils::Map<std::string, int>::ConstIterator it = cmap.begin();
+  json::dsa::Map<std::string, int>::ConstIterator it = cmap.begin();
   it = cmap.cbegin();
   ASSERT_EQ(it->first, "a");
 }
@@ -163,7 +163,7 @@ TEST_F(MapTest, IteratorFind) {
   map_.insert("key", 1);
 
   // act
-  json::utils::Map<std::string, int>::Iterator it = map_.find("key");
+  json::dsa::Map<std::string, int>::Iterator it = map_.find("key");
 
   // assert
   ASSERT_NE(it, map_.end());

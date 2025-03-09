@@ -4,7 +4,7 @@
 
 #include "gtest/gtest.h"
 
-using json::utils::Pair;
+using json::dsa::Pair;
 
 class PairTest : public ::testing::Test {
  protected:

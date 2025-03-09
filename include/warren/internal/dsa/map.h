@@ -9,7 +9,7 @@
 
 namespace json {
 
-namespace utils {
+namespace dsa {
 
 template <typename K, typename V>
 class Map {
@@ -161,7 +161,7 @@ class Map {
   };
 };
 
-}  // namespace utils
+}  // namespace dsa
 
 }  // namespace json
 

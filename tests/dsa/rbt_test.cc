@@ -6,22 +6,22 @@
 
 class RBTreeTest : public ::testing::Test {
  protected:
-  void validate_tree_properties(const json::utils::RBTree<int>::Node* root) {
+  void validate_tree_properties(const json::dsa::RBTree<int>::Node* root) {
     if (!root) {
       return;
     }
 
     if (!root->parent) {
-      ASSERT_EQ(root->color, json::utils::rbt::Color::BLACK);
+      ASSERT_EQ(root->color, json::dsa::rbt::Color::BLACK);
     }
 
-    if (root->color == json::utils::rbt::Color::RED) {
+    if (root->color == json::dsa::rbt::Color::RED) {
       if (root->left) {
-        ASSERT_EQ(root->left->color, json::utils::rbt::Color::BLACK);
+        ASSERT_EQ(root->left->color, json::dsa::rbt::Color::BLACK);
       }
 
       if (root->right) {
-        ASSERT_EQ(root->right->color, json::utils::rbt::Color::BLACK);
+        ASSERT_EQ(root->right->color, json::dsa::rbt::Color::BLACK);
       }
     }
 
@@ -50,17 +50,17 @@ class RBTreeTest : public ::testing::Test {
     validate_tree_properties(root->right);
   }
 
-  int black_height(const json::utils::RBTree<int>::Node* node) {
+  int black_height(const json::dsa::RBTree<int>::Node* node) {
     if (!node) {
       return 1;
     }
 
     int height = black_height(node->left);
 
-    return node->color == json::utils::rbt::Color::BLACK ? height + 1 : height;
+    return node->color == json::dsa::rbt::Color::BLACK ? height + 1 : height;
   }
 
-  json::utils::RBTree<int> tree_;
+  json::dsa::RBTree<int> tree_;
 };
 
 TEST_F(RBTreeTest, CopyConstructor) {
@@ -69,7 +69,7 @@ TEST_F(RBTreeTest, CopyConstructor) {
   tree_.insert(2);
 
   // act
-  json::utils::RBTree<int> copy_tree(tree_);
+  json::dsa::RBTree<int> copy_tree(tree_);
 
   // assert
   ASSERT_EQ(copy_tree.size(), tree_.size());
@@ -82,11 +82,11 @@ TEST_F(RBTreeTest, CopyConstructor) {
 TEST_F(RBTreeTest, MoveConstructor) {
   // arrange
   tree_.insert(1);
-  json::utils::RBTree<int>::Node* original_root = tree_.root();
+  json::dsa::RBTree<int>::Node* original_root = tree_.root();
   size_t original_size = tree_.size();
 
   // act
-  json::utils::RBTree<int> moved_tree(std::move(tree_));
+  json::dsa::RBTree<int> moved_tree(std::move(tree_));
 
   // assert
   ASSERT_EQ(tree_.root(), nullptr);
@@ -100,7 +100,7 @@ TEST_F(RBTreeTest, CopyAssignment) {
   // arrange
   tree_.insert(1);
   tree_.insert(2);
-  json::utils::RBTree<int> other;
+  json::dsa::RBTree<int> other;
   other.insert(3);
 
   // act
@@ -118,9 +118,9 @@ TEST_F(RBTreeTest, CopyAssignment) {
 TEST_F(RBTreeTest, MoveAssignment) {
   // arrange
   tree_.insert(1);
-  json::utils::RBTree<int>::Node* original_root = tree_.root();
+  json::dsa::RBTree<int>::Node* original_root = tree_.root();
   size_t original_size = tree_.size();
-  json::utils::RBTree<int> other;
+  json::dsa::RBTree<int> other;
   other.insert(2);
 
   // act
