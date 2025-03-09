@@ -1,7 +1,6 @@
 #include "warren/internal/visitors/cmp_visitor.h"
 
 #include "gtest/gtest.h"
-
 #include "warren/internal/nodes/array.h"
 #include "warren/internal/nodes/boolean.h"
 #include "warren/internal/nodes/node.h"

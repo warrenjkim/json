@@ -1,8 +1,8 @@
 #pragma once
 
 #include "warren/internal/nodes/node.h"
-#include "warren/json/value.h"
 #include "warren/internal/visitors/visitor.h"
+#include "warren/json/value.h"
 
 namespace json {
 

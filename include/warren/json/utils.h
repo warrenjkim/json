@@ -3,9 +3,9 @@
 #include <string_view>
 
 #include "value.h"
+#include "warren/internal/dsa/queue.h"
 #include "warren/internal/nodes/node.h"
 #include "warren/internal/parse/token.h"
-#include "warren/internal/dsa/queue.h"
 
 namespace json {
 
