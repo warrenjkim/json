@@ -24,6 +24,10 @@ class Lexer {
   std::optional<Token> lex_string();
   std::optional<std::string> lex_ctrl();
   std::optional<std::string> to_unicode(const std::string& hex_digits);
+  std::optional<Token> lex_number();
+  std::optional<std::string> lex_integer();
+  std::optional<std::string> lex_fraction();
+  std::optional<std::string> lex_exponent();
 
   void strip_whitespace();
 

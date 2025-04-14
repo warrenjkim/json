@@ -1,6 +1,6 @@
 #include "warren/internal/parse/lexer.h"
 
-#include <cctype>    // isspace, isxdigit
+#include <cctype>    // isspace, isxdigit, isdigit, tolower
 #include <cstdint>   // uint32_t
 #include <optional>  // nullopt, optional
 
@@ -141,6 +141,82 @@ std::optional<std::string> to_unicode(const std::string& hex_digits) {
   }
 
   return result;
+}
+
+std::optional<Token> Lexer::lex_number() {
+  std::optional<std::string> integer = lex_integer();
+  if (!integer) {
+    return std::nullopt;
+  }
+
+  std::string number = *integer;
+  if (std::optional<std::string> fraction = lex_fraction()) {
+    number += *fraction;
+  }
+
+  if (std::optional<std::string> exponent = lex_exponent()) {
+    number += *exponent;
+  }
+
+  return Token(number, TokenType::NUMBER);
+}
+
+std::optional<std::string> Lexer::lex_integer() {
+  size_t start = pos_;
+  if (json_[pos_] == '-') {
+    pos_++;
+  }
+
+  if (pos_ >= json_.length()) {
+    return std::nullopt;
+  }
+
+  if (json_[pos_] == '0') {
+    pos_++;
+  } else if (json_[pos_] >= '1' && json_[pos_] <= '9') {
+    pos_++;
+    while (pos_ < json_.length() && isdigit(json_[pos_])) {
+      pos_++;
+    }
+  } else {
+    return std::nullopt;
+  }
+
+  return json_.substr(start, pos_ - start);
+}
+
+std::optional<std::string> Lexer::lex_fraction() {
+  size_t start = pos_;
+  if (json_[pos_] != '.' || ++pos_ >= json_.length() || !isdigit(json_[pos_])) {
+    return std::nullopt;
+  }
+
+  while (pos_ < json_.length() && isdigit(json_[pos_])) {
+    pos_++;
+  }
+
+  return json_.substr(start, pos_ - start);
+}
+
+std::optional<std::string> Lexer::lex_exponent() {
+  size_t start = pos_;
+  if (tolower(json_[pos_]) != 'e' || ++pos_ >= json_.length()) {
+    return std::nullopt;
+  }
+
+  if (json_[pos_] == '+' || json_[pos_] == '-') {
+    pos_++;
+  }
+
+  if (pos_ >= json_.length() || !isdigit(json_[pos_])) {
+    return std::nullopt;
+  }
+
+  while (pos_ < json_.length() && isdigit(json_[pos_])) {
+    pos_++;
+  }
+
+  return json_.substr(start, pos_ - start);
 }
 
 void Lexer::strip_whitespace() {
