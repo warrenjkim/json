@@ -8,7 +8,7 @@
 
 namespace json {
 
-Lexer::Lexer(std::string_view json) : pos_(0), json_(json) {}
+Lexer::Lexer(const std::string& json) : pos_(0), json_(json) {}
 
 std::optional<Token> Lexer::lex_null() {
   if (pos_ + 3 < json_.length() && json_[pos_] == 'n' &&

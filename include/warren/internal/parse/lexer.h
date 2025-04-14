@@ -1,7 +1,7 @@
 #pragma once
 
 #include <optional>
-#include <string_view>
+#include <string>
 
 #include "warren/internal/dsa/queue.h"
 
@@ -12,7 +12,7 @@ struct Token;
 class Lexer {
  public:
   Lexer() = delete;
-  Lexer(std::string_view json);
+  Lexer(const std::string& json);
 
  public:
   dsa::Queue<Token> lex();
@@ -29,7 +29,7 @@ class Lexer {
 
  private:
   size_t pos_;
-  std::string_view json_;
+  std::string json_;
 };
 
 }  // namespace json
