@@ -9,8 +9,14 @@ struct Token;
 
 class Lexer {
  public:
-  Lexer() = delete;
   Lexer(const std::string& json);
+
+ public:
+  Lexer() = delete;
+  Lexer(Lexer&&) = delete;
+  Lexer(const Lexer&) = delete;
+  Lexer& operator=(Lexer&&) = delete;
+  Lexer& operator=(const Lexer&) = delete;
 
  public:
   std::optional<Token> next_token();
@@ -23,7 +29,6 @@ class Lexer {
  private:
   std::optional<Token> lex_string();
   std::optional<std::string> lex_ctrl();
-  std::optional<std::string> to_unicode(const std::string& hex_digits);
 
  private:
   std::optional<Token> lex_number();
