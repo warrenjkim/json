@@ -1,8 +1,9 @@
 #include "warren/internal/parse/lexer.h"
 
-#include <cctype>    // isdigit, isspace, isxdigit, tolower
-#include <cstdint>   // uint32_t
-#include <optional>  // nullopt, optional
+#include <cctype>     // isdigit, isspace, isxdigit, tolower
+#include <cstdint>    // uint32_t
+#include <optional>   // nullopt, optional
+#include <stdexcept>  // invalid_argument, out_of_range
 
 #include "warren/internal/parse/token.h"
 

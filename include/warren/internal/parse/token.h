@@ -9,6 +9,7 @@ enum class TokenType {
   OBJECT_END,
   ARRAY_START,
   ARRAY_END,
+  QUOTE,
   COMMA,
   COLON,
   STRING,
