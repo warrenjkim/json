@@ -1,6 +1,6 @@
 #include "warren/internal/parse/lexer.h"
 
-#include <cctype>    // isspace, isxdigit, isdigit, tolower
+#include <cctype>    // isdigit, isspace, isxdigit, tolower
 #include <cstdint>   // uint32_t
 #include <optional>  // nullopt, optional
 
@@ -9,6 +9,56 @@
 namespace json {
 
 Lexer::Lexer(const std::string& json) : pos_(0), json_(json) {}
+
+std::optional<Token> Lexer::next_token() {
+  strip_whitespace();
+  if (pos_ >= json_.length()) {
+    return std::nullopt;
+  }
+
+  switch (json_[pos_]) {
+    case '"':
+      return lex_string();
+    case '-':
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+      return lex_number();
+    case 'n':
+      return lex_null();
+    case 't':
+      return lex_true();
+    case 'f':
+      return lex_false();
+    case '[':
+      pos_++;
+      return Token("[", TokenType::ARRAY_START);
+    case ']':
+      pos_++;
+      return Token("]", TokenType::ARRAY_END);
+    case '{':
+      pos_++;
+      return Token("{", TokenType::OBJECT_START);
+    case '}':
+      pos_++;
+      return Token("}", TokenType::OBJECT_END);
+    case ',':
+      pos_++;
+      return Token(",", TokenType::COMMA);
+    case ':':
+      pos_++;
+      return Token(":", TokenType::COLON);
+    default:
+      return Token(std::string(1, json_[pos_++]), TokenType::UNKNOWN);
+  }
+}
 
 std::optional<Token> Lexer::lex_null() {
   if (pos_ + 3 < json_.length() && json_[pos_] == 'n' &&
