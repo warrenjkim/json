@@ -46,15 +46,15 @@ std::optional<Token> Lexer::next_token() {
     case '{':
       pos_++;
       return Token("{", TokenType::OBJECT_START);
+    case ':':
+      pos_++;
+      return Token(":", TokenType::COLON);
     case '}':
       pos_++;
       return Token("}", TokenType::OBJECT_END);
     case ',':
       pos_++;
       return Token(",", TokenType::COMMA);
-    case ':':
-      pos_++;
-      return Token(":", TokenType::COLON);
     default:
       return Token(std::string(1, json_[pos_++]), TokenType::UNKNOWN);
   }
