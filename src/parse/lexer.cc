@@ -1,46 +1,45 @@
 #include "warren/internal/parse/lexer.h"
 
 #include <cctype>     // isdigit, isspace, isxdigit, tolower
-#include <cstdint>    // uint32_t
 #include <optional>   // nullopt, optional
-#include <stdexcept>  // invalid_argument, out_of_range
 
 #include "warren/internal/parse/token.h"
 
-namespace {
-
-// https://www.ietf.org/rfc/rfc3629.txt
-std::optional<std::string> to_unicode(const std::string& hex_digits) {
-  uint32_t code_point = 0;
-  try {
-    code_point = (uint32_t)std::stoul(hex_digits, nullptr, 16);
-  } catch (const std::out_of_range&) {
-    return std::nullopt;
-  } catch (const std::invalid_argument&) {
-    return std::nullopt;
-  }
-
-  std::string result = "";
-  if (code_point < 0x80) {
-    result += (char)(code_point);
-  } else if (code_point < 0x800) {
-    result += (char)(0xC0 | (code_point >> 6));
-    result += (char)(0x80 | (code_point & 0x3F));
-  } else if (code_point < 0x10000) {
-    result += (char)(0xE0 | (code_point >> 12));
-    result += (char)(0x80 | ((code_point >> 6) & 0x3F));
-    result += (char)(0x80 | (code_point & 0x3F));
-  } else {
-    result += (char)(0xF0 | (code_point >> 18));
-    result += (char)(0x80 | ((code_point >> 12) & 0x3F));
-    result += (char)(0x80 | ((code_point >> 6) & 0x3F));
-    result += (char)(0x80 | (code_point & 0x3F));
-  }
-
-  return result;
-}
-
-}  // namespace
+// TODO(move this to the parser)
+// namespace {
+//
+// // https://www.ietf.org/rfc/rfc3629.txt
+// std::optional<std::string> to_unicode(const std::string& hex_digits) {
+//   uint32_t code_point = 0;
+//   try {
+//     code_point = (uint32_t)std::stoul(hex_digits, nullptr, 16);
+//   } catch (const std::out_of_range&) {
+//     return std::nullopt;
+//   } catch (const std::invalid_argument&) {
+//     return std::nullopt;
+//   }
+//
+//   std::string result = "";
+//   if (code_point < 0x80) {
+//     result += (char)(code_point);
+//   } else if (code_point < 0x800) {
+//     result += (char)(0xC0 | (code_point >> 6));
+//     result += (char)(0x80 | (code_point & 0x3F));
+//   } else if (code_point < 0x10000) {
+//     result += (char)(0xE0 | (code_point >> 12));
+//     result += (char)(0x80 | ((code_point >> 6) & 0x3F));
+//     result += (char)(0x80 | (code_point & 0x3F));
+//   } else {
+//     result += (char)(0xF0 | (code_point >> 18));
+//     result += (char)(0x80 | ((code_point >> 12) & 0x3F));
+//     result += (char)(0x80 | ((code_point >> 6) & 0x3F));
+//     result += (char)(0x80 | (code_point & 0x3F));
+//   }
+//
+//   return result;
+// }
+//
+// }  // namespace
 
 namespace json {
 
@@ -212,7 +211,7 @@ std::optional<std::string> Lexer::lex_ctrl() {
         hex_digits += json_[pos_++];
       }
 
-      return to_unicode(hex_digits);
+      return "\\u" + hex_digits;
     }
     case '"':
       return "\"";
