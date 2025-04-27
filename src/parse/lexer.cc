@@ -52,21 +52,21 @@ std::optional<Token> Lexer::next_token() {
   std::optional<Token> token = std::nullopt;
   strip_whitespace();
   if (pos_ >= json_.length()) {
-    return std::nullopt;
+    return Token("", TokenType::END_OF_JSON);
   }
 
   switch (json_[pos_]) {
     case 'n':
-      token = lex_null();
+      return lex_null();
       break;
     case 't':
-      token = lex_true();
+      return lex_true();
       break;
     case 'f':
-      token = lex_false();
+      return lex_false();
       break;
     case '"':
-      token = lex_string();
+      return lex_string();
       break;
     case '-':
     case '0':
@@ -79,48 +79,40 @@ std::optional<Token> Lexer::next_token() {
     case '7':
     case '8':
     case '9':
-      token = lex_number();
+      return lex_number();
       break;
     case '[':
       pos_++;
-      token = Token("[", TokenType::ARRAY_START);
+      return Token("[", TokenType::ARRAY_START);
       break;
     case ']':
       pos_++;
-      token = Token("]", TokenType::ARRAY_END);
+      return Token("]", TokenType::ARRAY_END);
       break;
     case '{':
       pos_++;
-      token = Token("{", TokenType::OBJECT_START);
+      return Token("{", TokenType::OBJECT_START);
       break;
     case ':':
       pos_++;
-      token = Token(":", TokenType::COLON);
+      return Token(":", TokenType::COLON);
       break;
     case '}':
       pos_++;
-      token = Token("}", TokenType::OBJECT_END);
+      return Token("}", TokenType::OBJECT_END);
       break;
     case ',':
       pos_++;
-      token = Token(",", TokenType::COMMA);
+      return Token(",", TokenType::COMMA);
       break;
     default:
-      token = Token(std::string(1, json_[pos_++]), TokenType::UNKNOWN);
+      return Token(std::string(1, json_[pos_++]), TokenType::UNKNOWN);
       break;
   }
-
-  if (token) {
-    curr_ = *token;
-  }
-
-  return token;
 }
 
 Lexer& Lexer::operator++() {
-  if (std::optional<Token> next = next_token()) {
-    curr_ = *next;
-  }
+  curr_ = next_token();
 
   return *this;
 }
