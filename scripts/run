@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+set -e
+
+preset=$1
+
+if [[ -z "$preset" ]]; then
+  echo "Usage: $0 <preset>"
+  echo "Available presets:"
+  echo "  build"
+  echo "  build-debug"
+  echo "  build-test"
+  echo "  build-test-release"
+  echo "  build-coverage"
+  exit 1
+fi
+
+build_dir="build/${preset}"
+
+case "${preset}" in
+  build)
+    cmake --preset release && \
+    cmake --build --preset "${preset}"
+    ;;
+  build-debug)
+    cmake --preset debug && \
+    cmake --build --preset "${preset}"
+    ;;
+  build-test)
+    cmake --preset test && \
+    cmake --build --preset "${preset}"
+    ;;
+  build-test-release)
+    cmake --preset test-release && \
+    cmake --build --preset "${preset}"
+    ;;
+  build-coverage)
+    cmake --preset coverage && \
+    cmake --build --preset "${preset}"
+    ;;
+esac
