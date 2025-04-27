@@ -10,8 +10,8 @@
       "name": "default",
       "hidden": true,
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/${presetName}",
-      "installDir": "${sourceDir}/build/${presetName}/install",
+      "binaryDir": "${sourceDir}/build/${hostSystemName}/${presetName}",
+      "installDir": "${sourceDir}/build/${hostSystemName}/${presetName}/install",
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "CMAKE_CXX_STANDARD": "23",
