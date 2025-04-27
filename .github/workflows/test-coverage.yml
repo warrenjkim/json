@@ -18,11 +18,15 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y cmake ninja-build g++ gcovr
       - name: Build coverage
-        run: cmake --preset coverage && cmake --build --preset build-coverage
+        run: |
+          cmake --preset coverage
+          cmake --build --preset build-coverage
       - name: Run coverage
         run: ctest --preset test-coverage
+      - name: Build coverage report
+        run: cmake --build --preset build-coverage --target report
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: ${{github.workspace}}/build/coverage/report
+          path: build/coverage/report
