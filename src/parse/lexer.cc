@@ -46,8 +46,7 @@ namespace json {
 
 namespace syntax {
 
-Lexer::Lexer(const std::string& json)
-    : pos_(0), json_(json), curr_('\0', TokenType::UNKNOWN) {}
+Lexer::Lexer(const std::string& json) : pos_(0), json_(json), curr_() {}
 
 std::optional<Token> Lexer::next_token() {
   std::optional<Token> token = std::nullopt;
@@ -119,8 +118,9 @@ std::optional<Token> Lexer::next_token() {
 }
 
 Lexer& Lexer::operator++() {
-  std::optional<Token> next = next_token();
-  curr_ = (next ? *next : Token('\0', TokenType::END_OF_JSON));
+  if (std::optional<Token> next = next_token()) {
+    curr_ = *next;
+  }
 
   return *this;
 }
