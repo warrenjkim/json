@@ -3,6 +3,8 @@
 #include <optional>
 #include <string>
 
+#include "token.h"
+
 namespace json {
 
 namespace parse {
@@ -22,6 +24,11 @@ class Lexer {
 
  public:
   std::optional<Token> next_token();
+
+ public:
+  Lexer& operator++();
+  const Token& operator*() const;
+  bool eof() const;
 
  private:
   std::optional<Token> lex_null();
@@ -44,6 +51,7 @@ class Lexer {
  private:
   size_t pos_;
   std::string json_;
+  Token curr_;
 };
 
 }  // namespace parse

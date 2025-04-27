@@ -44,19 +44,31 @@ std::optional<std::string> to_unicode(const std::string& hex_digits) {
 
 namespace json {
 
-Lexer::Lexer(const std::string& json) : pos_(0), json_(json) {}
 namespace parse {
 
+Lexer::Lexer(const std::string& json)
+    : pos_(0), json_(json), curr_('\0', TokenType::UNKNOWN) {}
 
 std::optional<Token> Lexer::next_token() {
+  std::optional<Token> token = std::nullopt;
   strip_whitespace();
   if (pos_ >= json_.length()) {
     return std::nullopt;
   }
 
   switch (json_[pos_]) {
+    case 'n':
+      token = lex_null();
+      break;
+    case 't':
+      token = lex_true();
+      break;
+    case 'f':
+      token = lex_false();
+      break;
     case '"':
-      return lex_string();
+      token = lex_string();
+      break;
     case '-':
     case '0':
     case '1':
@@ -68,35 +80,54 @@ std::optional<Token> Lexer::next_token() {
     case '7':
     case '8':
     case '9':
-      return lex_number();
-    case 'n':
-      return lex_null();
-    case 't':
-      return lex_true();
-    case 'f':
-      return lex_false();
+      token = lex_number();
+      break;
     case '[':
       pos_++;
-      return Token("[", TokenType::ARRAY_START);
+      token = Token("[", TokenType::ARRAY_START);
+      break;
     case ']':
       pos_++;
-      return Token("]", TokenType::ARRAY_END);
+      token = Token("]", TokenType::ARRAY_END);
+      break;
     case '{':
       pos_++;
-      return Token("{", TokenType::OBJECT_START);
+      token = Token("{", TokenType::OBJECT_START);
+      break;
     case ':':
       pos_++;
-      return Token(":", TokenType::COLON);
+      token = Token(":", TokenType::COLON);
+      break;
     case '}':
       pos_++;
-      return Token("}", TokenType::OBJECT_END);
+      token = Token("}", TokenType::OBJECT_END);
+      break;
     case ',':
       pos_++;
-      return Token(",", TokenType::COMMA);
+      token = Token(",", TokenType::COMMA);
+      break;
     default:
-      return Token(std::string(1, json_[pos_++]), TokenType::UNKNOWN);
+      token = Token(std::string(1, json_[pos_++]), TokenType::UNKNOWN);
+      break;
   }
+
+  if (token) {
+    curr_ = *token;
+  }
+
+  return token;
 }
+
+Lexer& Lexer::operator++() {
+  std::optional<Token> next = next_token();
+  curr_ = (next ? *next : Token('\0', TokenType::END_OF_JSON));
+
+  return *this;
+}
+
+const Token& Lexer::operator*() const { return curr_; }
+
+bool Lexer::eof() const { return curr_.type == TokenType::END_OF_JSON; }
 
 std::optional<Token> Lexer::lex_null() {
   if (pos_ + 3 < json_.length() && json_[pos_] == 'n' &&
