@@ -272,13 +272,10 @@ Token Lexer::lex_integer() {
     return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
   }
 
-  if (json_[pos_] == '0') {
-    pos_++;
+  if (json_[pos_] == '0' && ++pos_ < json_.length() && isdigit(json_[pos_])) {
+    return Token(json_.substr(start, pos_ - start + 1), TokenType::UNKNOWN);
   } else if (json_[pos_] >= '1' && json_[pos_] <= '9') {
-    pos_++;
-    while (pos_ < json_.length() && isdigit(json_[pos_])) {
-      pos_++;
-    }
+    while (++pos_ < json_.length() && isdigit(json_[pos_]));
   } else {
     return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
   }
@@ -288,11 +285,11 @@ Token Lexer::lex_integer() {
 
 Token Lexer::lex_fraction() {
   size_t start = pos_;
-  if (json_[pos_] != '.' || ++pos_ >= json_.length()) {
+  if (json_[pos_] != '.') {
     return Token("", TokenType::NUMBER);
   }
 
-  if (pos_ >= json_.length() || !isdigit(json_[pos_])) {
+  if (++pos_ >= json_.length() || !isdigit(json_[pos_])) {
     return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
   }
 
