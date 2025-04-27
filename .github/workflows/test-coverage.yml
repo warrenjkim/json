@@ -16,16 +16,13 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake make g++ libboost-all-dev gcovr
-      - name: Configure CMake with coverage
-        run: cmake -B ${{github.workspace}}/build -DBUILD_TESTING=ON
-      - name: Build
-        run: cmake --build ${{github.workspace}}/build
+          sudo apt-get install -y cmake ninja g++ gcovr
+      - name: Build coverage
+        run: cmake --preset build-coverage && cmake --build --preset coverage
       - name: Run coverage
-        working-directory: ${{github.workspace}}/build
-        run: make coverage
+        run: ctest --preset coverage
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: ${{github.workspace}}/build/report
+          path: ${{github.workspace}}/build/coverage/report
