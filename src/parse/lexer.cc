@@ -175,7 +175,9 @@ Token Lexer::lex_string() {
     if (c == '"') {
       pos_++;
       return Token(res, TokenType::STRING);
-    } else if (c == '\\') {
+    }
+
+    if (c == '\\') {
       size_t start = pos_;
       std::optional<std::string> ctrl = lex_ctrl();
       if (!ctrl) {
