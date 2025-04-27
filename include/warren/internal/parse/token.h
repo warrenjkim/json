@@ -67,6 +67,6 @@ struct Token {
   }
 };
 
-}  // namespace parse
+}  // namespace syntax
 
 }  // namespace json

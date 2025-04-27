@@ -314,6 +314,6 @@ void Lexer::strip_whitespace() {
   }
 }
 
-}  // namespace parse
+}  // namespace syntax
 
 }  // namespace json

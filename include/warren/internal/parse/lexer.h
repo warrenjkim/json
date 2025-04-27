@@ -54,6 +54,6 @@ class Lexer {
   Token curr_;
 };
 
-}  // namespace parse
+}  // namespace syntax
 
 }  // namespace json
