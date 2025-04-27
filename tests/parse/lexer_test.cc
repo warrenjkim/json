@@ -48,7 +48,7 @@ TEST_F(LexerTest, LexBoolean) {
   }
 }
 
-TEST_F(LexerTest, LexUnterminatedString) {
+TEST_F(LexerTest, LexInvalidStrings) {
   {  // unterminated string
     json::syntax::Lexer lexer("\"hello");
     json::syntax::Token token = lexer.next_token();
@@ -84,7 +84,7 @@ TEST_F(LexerTest, LexString) {
   {  // unicode
     json::syntax::Lexer lexer("\"\\u0041\"");
     json::syntax::Token token = lexer.next_token();
-    EXPECT_EQ(token.value, "A");
+    EXPECT_EQ(token.value, "\\u0041");
   }
 }
 
