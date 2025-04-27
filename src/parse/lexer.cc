@@ -181,7 +181,7 @@ Token Lexer::lex_string() {
       size_t start = pos_;
       std::optional<std::string> ctrl = lex_ctrl();
       if (!ctrl) {
-        return Token(res + '\\' + json_.substr(start, pos_ - start),
+        return Token(res + json_.substr(start, pos_ - start),
                      TokenType::UNKNOWN);
       }
 
