@@ -45,6 +45,8 @@ std::optional<std::string> to_unicode(const std::string& hex_digits) {
 namespace json {
 
 Lexer::Lexer(const std::string& json) : pos_(0), json_(json) {}
+namespace parse {
+
 
 std::optional<Token> Lexer::next_token() {
   strip_whitespace();
@@ -280,5 +282,7 @@ void Lexer::strip_whitespace() {
     pos_++;
   }
 }
+
+}  // namespace parse
 
 }  // namespace json

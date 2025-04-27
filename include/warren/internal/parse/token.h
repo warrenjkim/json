@@ -4,6 +4,8 @@
 
 namespace json {
 
+namespace parse {
+
 enum class TokenType {
   OBJECT_START,
   OBJECT_END,
@@ -33,5 +35,7 @@ struct Token {
     return value == other.value && type == other.type;
   }
 };
+
+}  // namespace parse
 
 }  // namespace json

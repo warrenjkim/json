@@ -5,6 +5,8 @@
 
 namespace json {
 
+namespace parse {
+
 struct Token;
 
 class Lexer {
@@ -43,5 +45,7 @@ class Lexer {
   size_t pos_;
   std::string json_;
 };
+
+}  // namespace parse
 
 }  // namespace json
