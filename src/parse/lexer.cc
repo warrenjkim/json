@@ -121,76 +121,44 @@ const Token& Lexer::operator*() const { return curr_; }
 bool Lexer::eof() const { return curr_.type == TokenType::END_OF_JSON; }
 
 Token Lexer::lex_null() {
+  size_t start = pos_;
   if (pos_ + 3 >= json_.length()) {
-    return Token(json_.substr(pos_), TokenType::UNKNOWN);
+    return Token(json_.substr(start), TokenType::UNKNOWN);
   }
 
-  if (json_[pos_++] != 'n') {
-    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
-  }
-
-  if (json_[pos_++] != 'u') {
-    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
-  }
-
-  if (json_[pos_++] != 'l') {
-    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
-  }
-
-  if (json_[pos_++] != 'l') {
-    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
+  if (json_[pos_++] != 'n' || json_[pos_++] != 'u' || json_[pos_++] != 'l' ||
+      json_[pos_++] != 'l') {
+    return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
   }
 
   return Token("null", TokenType::JSON_NULL);
 }
 
 Token Lexer::lex_true() {
+  size_t start = pos_;
   if (pos_ + 3 >= json_.length()) {
-    return Token(json_.substr(pos_), TokenType::UNKNOWN);
+    pos_ = json_.length();
+    return Token(json_.substr(start), TokenType::UNKNOWN);
   }
 
-  if (json_[pos_++] != 't') {
-    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
-  }
-
-  if (json_[pos_++] != 'r') {
-    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
-  }
-
-  if (json_[pos_++] != 'u') {
-    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
-  }
-
-  if (json_[pos_++] != 'e') {
-    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
+  if (json_[pos_++] != 't' || json_[pos_++] != 'r' || json_[pos_++] != 'u' ||
+      json_[pos_++] != 'e') {
+    return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
   }
 
   return Token("true", TokenType::BOOLEAN);
 }
 
 Token Lexer::lex_false() {
+  size_t start = pos_;
   if (pos_ + 4 >= json_.length()) {
-    return Token(json_.substr(pos_), TokenType::UNKNOWN);
+    pos_ = json_.length();
+    return Token(json_.substr(start), TokenType::UNKNOWN);
   }
 
-  if (json_[pos_++] != 'f') {
-    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
-  }
-
-  if (json_[pos_++] != 'a') {
-    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
-  }
-
-  if (json_[pos_++] != 'l') {
-    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
-  }
-
-  if (json_[pos_++] != 's') {
-    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
-  }
-
-  if (json_[pos_++] != 'e') {
-    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
+  if (json_[pos_++] != 'f' || json_[pos_++] != 'a' || json_[pos_++] != 'l' ||
+      json_[pos_++] != 's' || json_[pos_++] != 'e') {
+    return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
   }
 
   return Token("false", TokenType::BOOLEAN);
@@ -198,7 +166,7 @@ Token Lexer::lex_false() {
 
 Token Lexer::lex_string() {
   if (++pos_ >= json_.length()) {
-    return Token("", TokenType::UNKNOWN);  // String opens but no characters
+    return Token("", TokenType::UNKNOWN);
   }
 
   std::string res = "";
