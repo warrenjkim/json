@@ -7,7 +7,7 @@
 
 namespace json {
 
-namespace parse {
+namespace syntax {
 
 struct Token;
 

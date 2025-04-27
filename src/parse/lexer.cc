@@ -44,7 +44,7 @@ std::optional<std::string> to_unicode(const std::string& hex_digits) {
 
 namespace json {
 
-namespace parse {
+namespace syntax {
 
 Lexer::Lexer(const std::string& json)
     : pos_(0), json_(json), curr_('\0', TokenType::UNKNOWN) {}
