@@ -16,7 +16,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake ninja g++ gcovr
+          sudo apt-get install -y cmake ninja-build g++ gcovr
       - name: Build coverage
         run: cmake --preset build-coverage && cmake --build --preset coverage
       - name: Run coverage
