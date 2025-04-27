@@ -48,8 +48,7 @@ namespace syntax {
 
 Lexer::Lexer(const std::string& json) : pos_(0), json_(json), curr_() {}
 
-std::optional<Token> Lexer::next_token() {
-  std::optional<Token> token = std::nullopt;
+Token Lexer::next_token() {
   strip_whitespace();
   if (pos_ >= json_.length()) {
     return Token("", TokenType::END_OF_JSON);
@@ -121,45 +120,85 @@ const Token& Lexer::operator*() const { return curr_; }
 
 bool Lexer::eof() const { return curr_.type == TokenType::END_OF_JSON; }
 
-std::optional<Token> Lexer::lex_null() {
-  if (pos_ + 3 < json_.length() && json_[pos_] == 'n' &&
-      json_[pos_ + 1] == 'u' && json_[pos_ + 2] == 'l' &&
-      json_[pos_ + 3] == 'l') {
-    pos_ += 4;
-
-    return Token("null", TokenType::JSON_NULL);
+Token Lexer::lex_null() {
+  if (pos_ + 3 >= json_.length()) {
+    return Token(json_.substr(pos_), TokenType::UNKNOWN);
   }
 
-  return std::nullopt;
-}
-
-std::optional<Token> Lexer::lex_true() {
-  if (pos_ + 3 < json_.length() && json_[pos_] == 't' &&
-      json_[pos_ + 1] == 'r' && json_[pos_ + 2] == 'u' &&
-      json_[pos_ + 3] == 'e') {
-    pos_ += 4;
-
-    return Token("true", TokenType::BOOLEAN);
+  if (json_[pos_++] != 'n') {
+    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
   }
 
-  return std::nullopt;
-}
-
-std::optional<Token> Lexer::lex_false() {
-  if (pos_ + 4 < json_.length() && json_[pos_] == 'f' &&
-      json_[pos_ + 1] == 'a' && json_[pos_ + 2] == 'l' &&
-      json_[pos_ + 3] == 's' && json_[pos_ + 4] == 'e') {
-    pos_ += 5;
-
-    return Token("false", TokenType::BOOLEAN);
+  if (json_[pos_++] != 'u') {
+    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
   }
 
-  return std::nullopt;
+  if (json_[pos_++] != 'l') {
+    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
+  }
+
+  if (json_[pos_++] != 'l') {
+    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
+  }
+
+  return Token("null", TokenType::JSON_NULL);
 }
 
-std::optional<Token> Lexer::lex_string() {
+Token Lexer::lex_true() {
+  if (pos_ + 3 >= json_.length()) {
+    return Token(json_.substr(pos_), TokenType::UNKNOWN);
+  }
+
+  if (json_[pos_++] != 't') {
+    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
+  }
+
+  if (json_[pos_++] != 'r') {
+    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
+  }
+
+  if (json_[pos_++] != 'u') {
+    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
+  }
+
+  if (json_[pos_++] != 'e') {
+    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
+  }
+
+  return Token("true", TokenType::BOOLEAN);
+}
+
+Token Lexer::lex_false() {
+  if (pos_ + 4 >= json_.length()) {
+    return Token(json_.substr(pos_), TokenType::UNKNOWN);
+  }
+
+  if (json_[pos_++] != 'f') {
+    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
+  }
+
+  if (json_[pos_++] != 'a') {
+    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
+  }
+
+  if (json_[pos_++] != 'l') {
+    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
+  }
+
+  if (json_[pos_++] != 's') {
+    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
+  }
+
+  if (json_[pos_++] != 'e') {
+    return Token(std::string(1, json_[pos_ - 1]), TokenType::UNKNOWN);
+  }
+
+  return Token("false", TokenType::BOOLEAN);
+}
+
+Token Lexer::lex_string() {
   if (++pos_ >= json_.length()) {
-    return std::nullopt;
+    return Token("", TokenType::UNKNOWN);  // String opens but no characters
   }
 
   std::string res = "";
@@ -169,9 +208,11 @@ std::optional<Token> Lexer::lex_string() {
       pos_++;
       return Token(res, TokenType::STRING);
     } else if (c == '\\') {
+      size_t start = pos_;
       std::optional<std::string> ctrl = lex_ctrl();
       if (!ctrl) {
-        return std::nullopt;
+        return Token(res + '\\' + json_.substr(start, pos_ - start),
+                     TokenType::UNKNOWN);
       }
 
       res += *ctrl;
@@ -181,7 +222,7 @@ std::optional<Token> Lexer::lex_string() {
     }
   }
 
-  return std::nullopt;
+  return Token(res, TokenType::UNKNOWN);
 }
 
 std::optional<std::string> Lexer::lex_ctrl() {
@@ -224,32 +265,43 @@ std::optional<std::string> Lexer::lex_ctrl() {
   }
 }
 
-std::optional<Token> Lexer::lex_number() {
-  std::optional<std::string> integer = lex_integer();
-  if (!integer) {
-    return std::nullopt;
+Token Lexer::lex_number() {
+  size_t start = pos_;
+
+  Token integer = lex_integer();
+  if (integer.type == TokenType::UNKNOWN) {
+    return integer;
   }
 
-  std::string number = *integer;
-  if (std::optional<std::string> fraction = lex_fraction()) {
-    number += *fraction;
+  Token fraction = lex_fraction();
+  if (fraction.type == TokenType::UNKNOWN) {
+    fraction.value = integer.value + fraction.value;
+    return fraction;
   }
 
-  if (std::optional<std::string> exponent = lex_exponent()) {
-    number += *exponent;
+  Token exponent = lex_exponent();
+  if (exponent.type == TokenType::UNKNOWN) {
+    exponent.value = integer.value + fraction.value + exponent.value;
+    return exponent;
   }
 
-  return Token(number, TokenType::NUMBER);
+  return Token(integer.value + fraction.value + exponent.value,
+               TokenType::NUMBER);
 }
 
-std::optional<std::string> Lexer::lex_integer() {
+Token Lexer::lex_integer() {
   size_t start = pos_;
+
+  if (pos_ >= json_.length()) {
+    return Token("", TokenType::UNKNOWN);
+  }
+
   if (json_[pos_] == '-') {
     pos_++;
   }
 
   if (pos_ >= json_.length()) {
-    return std::nullopt;
+    return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
   }
 
   if (json_[pos_] == '0') {
@@ -260,16 +312,20 @@ std::optional<std::string> Lexer::lex_integer() {
       pos_++;
     }
   } else {
-    return std::nullopt;
+    return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
   }
 
-  return json_.substr(start, pos_ - start);
+  return Token(json_.substr(start, pos_ - start), TokenType::NUMBER);
 }
 
-std::optional<std::string> Lexer::lex_fraction() {
+Token Lexer::lex_fraction() {
   size_t start = pos_;
-  if (json_[pos_] != '.' || ++pos_ >= json_.length() || !isdigit(json_[pos_])) {
-    return std::nullopt;
+  if (json_[pos_] != '.' || ++pos_ >= json_.length()) {
+    return Token("", TokenType::NUMBER);
+  }
+
+  if (pos_ >= json_.length() || !isdigit(json_[pos_])) {
+    return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
   }
 
   while (pos_ < json_.length() && isdigit(json_[pos_])) {
@@ -279,25 +335,25 @@ std::optional<std::string> Lexer::lex_fraction() {
   return json_.substr(start, pos_ - start);
 }
 
-std::optional<std::string> Lexer::lex_exponent() {
+Token Lexer::lex_exponent() {
   size_t start = pos_;
-  if (tolower(json_[pos_]) != 'e' || ++pos_ >= json_.length()) {
-    return std::nullopt;
+  if (pos_ >= json_.length() || tolower(json_[pos_]) != 'e') {
+    return Token("", TokenType::NUMBER);
   }
 
-  if (json_[pos_] == '+' || json_[pos_] == '-') {
+  if (++pos_ < json_.length() && (json_[pos_] == '+' || json_[pos_] == '-')) {
     pos_++;
   }
 
   if (pos_ >= json_.length() || !isdigit(json_[pos_])) {
-    return std::nullopt;
+    return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
   }
 
   while (pos_ < json_.length() && isdigit(json_[pos_])) {
     pos_++;
   }
 
-  return json_.substr(start, pos_ - start);
+  return Token(json_.substr(start, pos_ - start), TokenType::NUMBER);
 }
 
 void Lexer::strip_whitespace() {

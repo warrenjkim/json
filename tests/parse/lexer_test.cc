@@ -7,8 +7,7 @@ class LexerTest : public ::testing::Test {};
 
 TEST_F(LexerTest, LexNull) {
   json::syntax::Lexer lexer("null");
-  auto token = lexer.next_token();
-  ASSERT_TRUE(token);
+  json::syntax::Token token = lexer.next_token();
   EXPECT_EQ(token,
             json::syntax::Token("null", json::syntax::TokenType::JSON_NULL));
 }
@@ -16,48 +15,42 @@ TEST_F(LexerTest, LexNull) {
 TEST_F(LexerTest, LexBoolean) {
   {  // true
     json::syntax::Lexer lexer("true");
-    auto token = lexer.next_token();
-    ASSERT_TRUE(token);
-    EXPECT_EQ(token->type, json::syntax::TokenType::BOOLEAN);
-    EXPECT_EQ(token->value, "true");
+    json::syntax::Token token = lexer.next_token();
+    EXPECT_EQ(token.type, json::syntax::TokenType::BOOLEAN);
+    EXPECT_EQ(token.value, "true");
   }
   {  // false
     json::syntax::Lexer lexer("false");
-    auto token = lexer.next_token();
-    ASSERT_TRUE(token);
-    EXPECT_EQ(token->type, json::syntax::TokenType::BOOLEAN);
-    EXPECT_EQ(token->value, "false");
+    json::syntax::Token token = lexer.next_token();
+    EXPECT_EQ(token.type, json::syntax::TokenType::BOOLEAN);
+    EXPECT_EQ(token.value, "false");
   }
 }
 
 TEST_F(LexerTest, LexString) {
   {  // simple
     json::syntax::Lexer lexer("\"hello\"");
-    auto token = lexer.next_token();
-    ASSERT_TRUE(token);
-    EXPECT_EQ(token->type, json::syntax::TokenType::STRING);
-    EXPECT_EQ(token->value, "hello");
+    json::syntax::Token token = lexer.next_token();
+    EXPECT_EQ(token.type, json::syntax::TokenType::STRING);
+    EXPECT_EQ(token.value, "hello");
   }
   {  // escape chars
     json::syntax::Lexer lexer("\"hello\\nworld\"");
-    auto token = lexer.next_token();
-    ASSERT_TRUE(token);
-    EXPECT_EQ(token->value, "hello\nworld");
+    json::syntax::Token token = lexer.next_token();
+    EXPECT_EQ(token.value, "hello\nworld");
   }
   {  // unicode
     json::syntax::Lexer lexer("\"\\u0041\"");
-    auto token = lexer.next_token();
-    ASSERT_TRUE(token);
-    EXPECT_EQ(token->value, "A");
+    json::syntax::Token token = lexer.next_token();
+    EXPECT_EQ(token.value, "A");
   }
 }
 
 TEST_F(LexerTest, LexNumber) {
   json::syntax::Lexer lexer("123");
-  auto token = lexer.next_token();
-  ASSERT_TRUE(token);
-  EXPECT_EQ(token->type, json::syntax::TokenType::NUMBER);
-  EXPECT_EQ(token->value, "123");
+  json::syntax::Token token = lexer.next_token();
+  EXPECT_EQ(token.type, json::syntax::TokenType::NUMBER);
+  EXPECT_EQ(token.value, "123");
 }
 
 TEST_F(LexerTest, LexPunctuation) {
@@ -74,26 +67,23 @@ TEST_F(LexerTest, LexPunctuation) {
 
   for (size_t i = 0; i < inputs.size(); ++i) {
     json::syntax::Lexer lexer(inputs[i]);
-    auto token = lexer.next_token();
-    ASSERT_TRUE(token);
-    EXPECT_EQ(*token, expected[i]);
+    json::syntax::Token token = lexer.next_token();
+    EXPECT_EQ(token, expected[i]);
   }
 }
 
 TEST_F(LexerTest, LexWhitespace) {
   json::syntax::Lexer lexer("   \n\t 123");
-  auto token = lexer.next_token();
-  ASSERT_TRUE(token);
-  EXPECT_EQ(token->type, json::syntax::TokenType::NUMBER);
-  EXPECT_EQ(token->value, "123");
+  json::syntax::Token token = lexer.next_token();
+  EXPECT_EQ(token.type, json::syntax::TokenType::NUMBER);
+  EXPECT_EQ(token.value, "123");
 }
 
 TEST_F(LexerTest, LexUnknown) {
   json::syntax::Lexer lexer("@");
-  auto token = lexer.next_token();
-  ASSERT_TRUE(token);
-  EXPECT_EQ(token->type, json::syntax::TokenType::UNKNOWN);
-  EXPECT_EQ(token->value, "@");
+  json::syntax::Token token = lexer.next_token();
+  EXPECT_EQ(token.type, json::syntax::TokenType::UNKNOWN);
+  EXPECT_EQ(token.value, "@");
 }
 
 TEST_F(LexerTest, IncrementOperator) {

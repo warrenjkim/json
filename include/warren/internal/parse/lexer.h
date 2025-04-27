@@ -23,7 +23,7 @@ class Lexer {
   Lexer& operator=(const Lexer&) = delete;
 
  public:
-  std::optional<Token> next_token();
+  Token next_token();
 
  public:
   Lexer& operator++();
@@ -31,19 +31,19 @@ class Lexer {
   bool eof() const;
 
  private:
-  std::optional<Token> lex_null();
-  std::optional<Token> lex_true();
-  std::optional<Token> lex_false();
+  Token lex_null();
+  Token lex_true();
+  Token lex_false();
 
  private:
-  std::optional<Token> lex_string();
+  Token lex_string();
   std::optional<std::string> lex_ctrl();
 
  private:
-  std::optional<Token> lex_number();
-  std::optional<std::string> lex_integer();
-  std::optional<std::string> lex_fraction();
-  std::optional<std::string> lex_exponent();
+  Token lex_number();
+  Token lex_integer();
+  Token lex_fraction();
+  Token lex_exponent();
 
  private:
   void strip_whitespace();
