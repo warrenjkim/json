@@ -5,7 +5,7 @@
 
 class LexerTest : public ::testing::Test {};
 
-TEST_F(LexerTest, LexInvalidKeywords) {
+TEST_F(LexerTest, LexInvalidLogicalValues) {
   {  // incomplete null
     json::syntax::Lexer lexer("nul");
     json::syntax::Token token = lexer.next_token();
