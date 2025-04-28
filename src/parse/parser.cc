@@ -2,6 +2,7 @@
 
 #include <cmath>  // pow
 #include <cstddef>
+#include <cstdint>
 #include <exception>
 #include <optional>
 #include <string>
@@ -278,6 +279,105 @@ const bool Parser::expect_next(json::dsa::Queue<Token>& tokens,
 }
 
 }  // namespace json
+
+namespace {
+
+uint32_t to_code_point(const char c1, const char c2, const char c3,
+                       const char c4) {
+  auto to_uint = [](const char c) -> uint32_t {
+    if (c >= '0' && c <= '9') {
+      return c - '0';
+    } else if (c >= 'A' && c <= 'F') {
+      return c - 'A' + 10;
+    } else if (c >= 'a' && c <= 'f') {
+      return c - 'a' + 10;
+    }
+
+    return 0;
+  };
+
+  uint32_t code_point = 0;
+  code_point = (code_point << 4) | to_uint(c1);
+  code_point = (code_point << 4) | to_uint(c2);
+  code_point = (code_point << 4) | to_uint(c3);
+  code_point = (code_point << 4) | to_uint(c4);
+
+  return code_point;
+}
+
+// https://www.ietf.org/rfc/rfc3629.txt
+void emit_utf8(uint32_t code_point, std::string& res) {
+  if (code_point > 0x10FFFF) {
+    throw json::ParseException("Code point out of Unicode range (> 0x10FFFF)");
+  } else if (0xD800 <= code_point && code_point <= 0xDFFF) {
+    throw json::ParseException(
+        "Code point in surrogate range [0xD800, 0xDFFF]");
+  }
+
+  if (code_point < 0x80) {
+    res += (char)(code_point);
+  } else if (code_point < 0x800) {
+    res += (char)(0xC0 | (code_point >> 6));
+    res += (char)(0x80 | (code_point & 0x3F));
+  } else if (code_point < 0x10000) {
+    res += (char)(0xE0 | (code_point >> 12));
+    res += (char)(0x80 | ((code_point >> 6) & 0x3F));
+    res += (char)(0x80 | (code_point & 0x3F));
+  } else {
+    res += (char)(0xF0 | (code_point >> 18));
+    res += (char)(0x80 | ((code_point >> 12) & 0x3F));
+    res += (char)(0x80 | ((code_point >> 6) & 0x3F));
+    res += (char)(0x80 | (code_point & 0x3F));
+  }
+}
+
+void resolve_unicode_sequences(const std::string& s, std::string& res) {
+  res.reserve(s.length());
+  size_t i = 0;
+  size_t j = 0;
+  while (j < s.length()) {
+    if (s[j] == '\\' && s[j + 1] == 'u') {
+      res.append(s, i, j - i);
+      j += 6;
+
+      uint32_t code_point =
+          to_code_point(s[j - 4], s[j - 3], s[j - 2], s[j - 1]);
+
+      // Section 3.8 Surrogates
+      // https://www.unicode.org/versions/Unicode15.0.0/ch03.pdf
+      // 0xD800 <= high-surrogate code point <= 0xDBFF
+      uint16_t high_surrogate_cp = code_point;
+      if (0xD800 <= high_surrogate_cp && high_surrogate_cp <= 0xDBFF) {
+        j += 6;
+        if (j + 1 >= s.length() || s[j] != '\\' || s[j + 1] != 'u') {
+          throw json::ParseException(
+              "Expected low surrogate after high surrogate: " +
+              s.substr(j - 6, 6));
+        }
+
+        // 0xDC00 <= low-surrogate code point <= 0xDFFF
+        uint16_t low_surrogate_cp =
+            to_code_point(s[j - 4], s[j - 3], s[j - 2], s[j - 1]);
+        if (!(0xDC00 <= low_surrogate_cp && low_surrogate_cp <= 0xDFFF)) {
+          throw json::ParseException(
+              "Invalid low surrogate (" + s.substr(j - 6, 6) +
+              ") after high surrogate: " + s.substr(j - 12, 6));
+        }
+
+        code_point = 0x10000 + ((high_surrogate_cp - 0xD800) << 10) +
+                     (low_surrogate_cp - 0xDC00);
+      }
+
+      emit_utf8(code_point, res);
+      i = j;
+    }
+
+    j++;
+  }
+}
+
+}  // namespace
+
 namespace json {
 
 namespace syntax {
@@ -305,6 +405,17 @@ nodes::Boolean* Parser::parse_boolean() {
   return new nodes::Boolean(value);
 }
 
+nodes::String* Parser::parse_string() {
+  if (lexer_->type != TokenType::STRING) {
+    throw ParseException("Unexpected token: " + lexer_->value);
+  }
+
+  std::string value = "";
+  resolve_unicode_sequences(lexer_->value, value);
+  ++lexer_;
+
+  return new nodes::String(value);
+}
 
 }  // namespace syntax
 
