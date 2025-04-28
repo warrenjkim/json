@@ -14,6 +14,7 @@
 #include "warren/internal/parse/lexer.h"
 #include "warren/internal/parse/token.h"
 #include "warren/internal/parse/tokenizer.h"
+#include "warren/json/exception.h"
 
 namespace json {
 
@@ -282,6 +283,27 @@ namespace json {
 namespace syntax {
 
 Parser::Parser(Lexer&& lexer) : lexer_(std::move(lexer)), root_(nullptr) {}
+
+nodes::Null* Parser::parse_null() {
+  if (lexer_->type != TokenType::JSON_NULL) {
+    throw ParseException("Unexpected token: " + lexer_->value);
+  }
+
+  ++lexer_;
+
+  return new nodes::Null();
+}
+
+nodes::Boolean* Parser::parse_boolean() {
+  if (lexer_->type != TokenType::BOOLEAN) {
+    throw ParseException("Unexpected token: " + lexer_->value);
+  }
+
+  bool value = lexer_->value == "true";
+  ++lexer_;
+
+  return new nodes::Boolean(value);
+}
 
 
 }  // namespace syntax
