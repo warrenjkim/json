@@ -11,6 +11,7 @@
 #include "warren/internal/dsa/queue.h"
 #include "warren/internal/nodes/node.h"
 #include "warren/internal/nodes/object.h"
+#include "warren/internal/parse/lexer.h"
 #include "warren/internal/parse/token.h"
 #include "warren/internal/parse/tokenizer.h"
 
@@ -274,5 +275,15 @@ const bool Parser::expect_next(json::dsa::Queue<Token>& tokens,
 
   return token && (*token == expected);
 }
+
+}  // namespace json
+namespace json {
+
+namespace syntax {
+
+Parser::Parser(Lexer&& lexer) : lexer_(std::move(lexer)), root_(nullptr) {}
+
+
+}  // namespace syntax
 
 }  // namespace json
