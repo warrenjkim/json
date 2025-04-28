@@ -14,12 +14,12 @@ struct Token;
 class Lexer {
  public:
   Lexer(const std::string& json);
+  Lexer(Lexer&&) = default;
+  Lexer& operator=(Lexer&&) = default;
 
  public:
   Lexer() = delete;
-  Lexer(Lexer&&) = delete;
   Lexer(const Lexer&) = delete;
-  Lexer& operator=(Lexer&&) = delete;
   Lexer& operator=(const Lexer&) = delete;
 
  public:
@@ -28,6 +28,7 @@ class Lexer {
  public:
   Lexer& operator++();
   const Token& operator*() const;
+  const Token* operator->() const;
   bool eof() const;
 
  private:
