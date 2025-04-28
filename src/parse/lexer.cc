@@ -117,6 +117,8 @@ Lexer& Lexer::operator++() {
 
 const Token& Lexer::operator*() const { return curr_; }
 
+const Token* Lexer::operator->() const { return &curr_; }
+
 bool Lexer::eof() const { return curr_.type == TokenType::END_OF_JSON; }
 
 Token Lexer::lex_null() {
