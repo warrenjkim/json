@@ -11,6 +11,7 @@
 #include "warren/internal/nodes/number.h"
 #include "warren/internal/nodes/object.h"
 #include "warren/internal/nodes/string.h"
+#include "warren/internal/parse/lexer.h"
 
 namespace json {
 
@@ -53,5 +54,44 @@ class Parser {
   Parser& operator=(Parser&&) = delete;
   Parser& operator=(const Parser&) = delete;
 };
+
+}  // namespace json
+
+namespace json {
+
+namespace syntax {
+
+class Parser {
+ public:
+  Parser(Lexer&& lexer);
+
+ public:
+  Parser() = delete;
+  ~Parser() = delete;
+  Parser(Parser&&) = delete;
+  Parser(const Parser&) = delete;
+  Parser& operator=(Parser&&) = delete;
+  Parser& operator=(const Parser&) = delete;
+
+ public:
+  nodes::Node* parse();
+
+ private:
+  nodes::Node* parse_value();
+
+ private:
+  nodes::Object* parse_object();
+  nodes::Array* parse_array();
+  nodes::String* parse_string();
+  nodes::Number* parse_number();
+  nodes::Boolean* parse_boolean();
+  nodes::Null* parse_null();
+
+ private:
+  Lexer lexer_;
+  nodes::Node* root_;
+};
+
+}  // namespace syntax
 
 }  // namespace json
