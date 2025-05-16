@@ -26,6 +26,18 @@ struct Integral {
   Integral() : i8(0), type(UNSET) {}
 };
 
+struct Numeric {
+  enum { UNSET, INTEGRAL, FLOAT, DOUBLE } type;
+
+  union {
+    Integral integer;
+    float flt;
+    double dbl;
+  };
+
+  Numeric() : integer(), type(UNSET) {}
+};
+
 }  // namespace dsa
 
 }  // namespace json
