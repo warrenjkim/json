@@ -6,7 +6,6 @@ namespace dsa {
 
 struct Integral {
   enum {
-    UNSET,
     INT8,   // char
     INT16,  // short
     INT32,  // int
@@ -23,7 +22,7 @@ struct Integral {
     uint64_t accumulator;
   };
 
-  Integral() : i8(0), type(UNSET) {}
+  Integral() : i8(0), type(INT8) {}
 };
 
 struct Numeric {

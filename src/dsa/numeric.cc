@@ -20,9 +20,6 @@ Integral to_integral(std::string_view sv) {
 
     int8_t digit = c - '0';
     switch (res.type) {
-      case Integral::UNSET:
-        res.accumulator += digit;
-        break;
       case Integral::INT8:
         res.accumulator *= 10;
         res.accumulator += digit;
@@ -67,8 +64,6 @@ Integral to_integral(std::string_view sv) {
 
   int sign = (-1 * (-1 * negative));
   switch (res.type) {
-    case Integral::UNSET:
-      break;
     case Integral::INT8:
       res.i8 = sign * int8_t(res.accumulator);
       break;
