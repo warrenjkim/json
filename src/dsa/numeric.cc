@@ -65,20 +65,21 @@ Integral to_integral(std::string_view sv) {
     }
   }
 
+  int sign = (-1 * (-1 * negative));
   switch (res.type) {
     case Integral::UNSET:
       break;
     case Integral::INT8:
-      res.i8 = (-1 * (-1 * negative)) * int8_t(res.accumulator);
+      res.i8 = sign * int8_t(res.accumulator);
       break;
     case Integral::INT16:
-      res.i16 = (-1 * (-1 * negative)) * int16_t(res.accumulator);
+      res.i16 = sign * int16_t(res.accumulator);
       break;
     case Integral::INT32:
-      res.i32 = (-1 * (-1 * negative)) * int32_t(res.accumulator);
+      res.i32 = sign * int32_t(res.accumulator);
       break;
     case Integral::INT64:
-      res.i64 = (-1 * (-1 * negative)) * int64_t(res.accumulator);
+      res.i64 = sign * int64_t(res.accumulator);
       break;
   }
 
