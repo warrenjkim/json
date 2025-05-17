@@ -3,6 +3,21 @@
 #include <string>
 #include <string_view>
 
+namespace {
+
+// semantic representation of the floating point (denormalized)
+struct FloatingPoint {
+  bool negative;
+  std::string digits;            // intgr + frac (base 10)
+  json::dsa::Integral exponent;  // adjusted exponent (base 10)
+
+  FloatingPoint(const bool negative, std::string digits,
+                json::dsa::Integral exponent)
+      : negative(negative), digits(std::move(digits)), exponent(exponent) {}
+};
+
+}  // namespace
+
 namespace json {
 
 namespace dsa {
@@ -79,6 +94,18 @@ Integral to_integral(std::string_view sv) {
   }
 
   return res;
+}
+
+FloatingPoint to_floating_point(std::string_view intgr, std::string_view frac,
+                                std::string_view exp) {
+  Integral exponent = to_integral(exp) - frac.length();
+  size_t i = 0;
+  if (!intgr.empty() && intgr.front() == '-') {
+    i++;
+  }
+
+  std::string digits = std::string(intgr.substr(i)) + std::string(frac);
+  return FloatingPoint(i == 1, std::move(digits), exponent);
 }
 
 }  // namespace dsa
