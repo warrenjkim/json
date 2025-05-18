@@ -149,7 +149,7 @@ Integral to_integral(std::string_view intgr) {
     }
   }
 
-  int sign = (-1 * (-1 + negative));
+  int sign = negative ? -1 : 1;
   switch (res.type) {
     case Integral::INT8:
       res.i8 = sign * int8_t(res.accumulator);
