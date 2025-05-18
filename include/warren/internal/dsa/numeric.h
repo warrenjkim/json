@@ -72,7 +72,7 @@ struct Integral {
 };
 
 struct Numeric {
-  enum { UNSET, INTEGRAL, FLOAT, DOUBLE } type;
+  enum { INTEGRAL, FLOAT, DOUBLE } type;
 
   union {
     Integral intgr;
@@ -80,7 +80,7 @@ struct Numeric {
     double dbl;
   };
 
-  Numeric() : intgr(), type(UNSET) {}
+  Numeric() : intgr(), type(INTEGRAL) {}
 };
 
 }  // namespace dsa
