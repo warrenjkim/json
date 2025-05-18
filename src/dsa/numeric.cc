@@ -1,11 +1,12 @@
 #include "warren/internal/dsa/numeric.h"
 
-#include <cstddef>
+#include <cstddef>  // size_t
 #include <cstdint>
-#include <cstring>
+#include <cstring>  // memcpy
 #include <optional>
 #include <string>
 #include <string_view>
+#include <utility>  // move
 
 namespace {
 
