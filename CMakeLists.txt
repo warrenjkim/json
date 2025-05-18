@@ -41,6 +41,7 @@ if(BUILD_COVERAGE)
       pair_test
       queue_test
       rbt_test
+      numeric_test
       utils_test
       value_test
       lexer_test
