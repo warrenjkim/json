@@ -164,6 +164,65 @@ FloatingPoint to_floating_point(std::string_view intgr, std::string_view frac,
   return FloatingPoint(i == 1, std::move(digits), exponent);
 }
 
+NormalizedFloatingPoint normalize(const FloatingPoint& fp) {
+  uint64_t N = to_uint64(fp.digits);
+  uint64_t D = 1;
+  int64_t exp = 0;
+  switch (fp.exponent.type) {
+    case Integral::INT8:
+      exp = fp.exponent.i8;
+      break;
+    case Integral::INT16:
+      exp = fp.exponent.i16;
+      break;
+    case Integral::INT32:
+      exp = fp.exponent.i32;
+      break;
+    case Integral::INT64:
+      exp = fp.exponent.i64;
+      break;
+  }
+
+  if (exp < 0) {
+    D *= pow10(-exp);
+  } else {
+    N *= pow10(exp);
+  }
+
+  // normalize N and D s.t. N/D < 2
+  int64_t exponent = 0;
+  while (N >= (D << 1)) {
+    D <<= 1;
+    exponent++;
+  }
+
+  // normalize N and D s.t. N/D >= 1
+  while (N < D) {
+    N <<= 1;
+    exponent--;
+  }
+
+  // stores exactly 64 bits of precision of the fractional part of the
+  // binary expansion of N / D \in [1, 2).
+  // the leading 1 is implicit in IEEE 754 ==> we don't need to store it.
+  // for i \in [0, 64)
+  //   b_i = \floor{(2 * r_i) / D}
+  //   r_{i + 1} = (2 * r_i) - (b_i * D)
+  uint64_t significand = 0;
+  N -= D;
+  for (size_t i = 0; i < 64; i++) {
+    N <<= 1;
+    significand <<= 1;
+
+    if (N >= D) {
+      significand |= 1;
+      N -= D;
+    }
+  }
+
+  return NormalizedFloatingPoint(fp.negative, significand, exponent);
+}
+
 }  // namespace dsa
 
 }  // namespace json
