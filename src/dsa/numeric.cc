@@ -93,10 +93,10 @@ namespace json {
 
 namespace dsa {
 
-Integral to_integral(std::string_view sv) {
+Integral to_integral(std::string_view intgr) {
   Integral res;
   bool negative = false;
-  for (const char c : sv) {
+  for (const char c : intgr) {
     if (c == '-') {
       negative = true;
       continue;
@@ -137,7 +137,7 @@ Integral to_integral(std::string_view sv) {
         if ((!negative && res.accumulator > (INT64_MAX - digit) / 10) ||
             (negative &&
              res.accumulator > (uint64_t(INT64_MAX) + 1 - digit) / 10)) {
-          throw std::out_of_range("Number " + std::string(sv) +
+          throw std::out_of_range("Number " + std::string(intgr) +
                                   " is out of range of int64_t limits");
         }
 

@@ -75,12 +75,12 @@ struct Numeric {
   enum { UNSET, INTEGRAL, FLOAT, DOUBLE } type;
 
   union {
-    Integral integer;
+    Integral intgr;
     float flt;
     double dbl;
   };
 
-  Numeric() : integer(), type(UNSET) {}
+  Numeric() : intgr(), type(UNSET) {}
 };
 
 }  // namespace dsa
