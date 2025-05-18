@@ -2,7 +2,7 @@ file(GLOB_RECURSE JSON_SOURCES
   "json/*.cc"
   "nodes/*.cc"
   "parse/*.cc"
-  "utils/*.cc"
+  "dsa/*.cc"
   "visitors/*.cc"
 )
 
