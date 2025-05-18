@@ -238,7 +238,7 @@ NormalizedFloatingPoint normalize(const FloatingPoint& fp) {
   return NormalizedFloatingPoint(fp.negative, significand, exponent);
 }
 
-std::optional<float> to_binary32(NormalizedFloatingPoint&& nfp) {
+std::optional<float> to_binary32(NormalizedFloatingPoint nfp) {
   uint64_t mask = (1ULL << (64 - (FLOAT_SIGNIFICAND_BITS + GRS_BITS))) - 1;
   uint64_t top = nfp.significand >> (64 - (FLOAT_SIGNIFICAND_BITS + GRS_BITS));
 
@@ -273,7 +273,7 @@ std::optional<float> to_binary32(NormalizedFloatingPoint&& nfp) {
   return res;
 }
 
-double to_binary64(NormalizedFloatingPoint&& nfp) {
+double to_binary64(NormalizedFloatingPoint nfp) {
   uint64_t mask = (1ULL << (64 - (DOUBLE_SIGNIFICAND_BITS + GRS_BITS))) - 1;
   uint64_t top = nfp.significand >> (64 - (DOUBLE_SIGNIFICAND_BITS + GRS_BITS));
 
