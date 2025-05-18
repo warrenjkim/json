@@ -16,6 +16,11 @@ namespace {
 #define FLOAT_BIAS 127
 #define FLOAT_SIGNIFICAND_BITS 23
 
+#define DOUBLE_EMIN 1
+#define DOUBLE_EMAX 2046
+#define DOUBLE_BIAS 1023
+#define DOUBLE_SIGNIFICAND_BITS 52
+
 // semantic representation of the floating point (denormalized)
 struct FloatingPoint {
   bool negative;
@@ -264,6 +269,47 @@ std::optional<float> to_binary32(NormalizedFloatingPoint&& nfp) {
 
   float res = 0;
   memcpy(&res, &bits, sizeof(float));
+
+  return res;
+}
+
+double to_binary64(NormalizedFloatingPoint&& nfp) {
+  uint64_t mask = (1ULL << (64 - (DOUBLE_SIGNIFICAND_BITS + GRS_BITS))) - 1;
+  uint64_t top = nfp.significand >> (64 - (DOUBLE_SIGNIFICAND_BITS + GRS_BITS));
+
+  uint64_t mantissa = top >> 3;
+  bool guard = (top >> 2) & 1;
+  bool round = (top >> 1) & 1;
+  bool sticky = ((top & 1) | (nfp.significand & mask));
+
+  // round up to the nearest even number
+  bool round_up = (guard && (round || sticky || (mantissa & 1)));
+  if (round_up) {
+    mantissa++;
+
+    if (mantissa == (1ULL << DOUBLE_SIGNIFICAND_BITS)) {
+      // rounding overflowed into the implicit bit
+      mantissa = 0;
+      nfp.exponent++;
+    }
+  }
+
+  nfp.exponent += DOUBLE_BIAS;
+
+  double res = 0;
+  uint64_t bits = 0;
+  if (nfp.exponent >= DOUBLE_EMIN && nfp.exponent <= DOUBLE_EMAX) {
+    bits = (uint64_t(nfp.negative) << 63) | (uint64_t(nfp.exponent) << 52) |
+           mantissa;
+  } else if (nfp.exponent < DOUBLE_EMIN) {
+    // clamp subnormals to 0 and preserve sign
+    bits = uint64_t(nfp.negative) << 63;
+  } else if (nfp.exponent > DOUBLE_EMAX) {
+    // clamp overflow to infinity
+    bits = (uint64_t(nfp.negative) << 63) | (0x7FFULL << 52);
+  }
+
+  memcpy(&res, &bits, sizeof(double));
 
   return res;
 }
