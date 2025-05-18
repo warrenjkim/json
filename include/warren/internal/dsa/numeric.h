@@ -1,6 +1,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <stdexcept>
+#include <string_view>
 
 namespace json {
 
@@ -83,6 +84,10 @@ struct Numeric {
   Numeric() : intgr(), type(INTEGRAL) {}
 };
 
+Integral to_integral(std::string_view intgr);
+
+Numeric to_numeric(std::string_view intgr, std::string_view frac,
+                   std::string_view exp);
 }  // namespace dsa
 
 }  // namespace json
