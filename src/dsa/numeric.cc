@@ -1,5 +1,6 @@
 #include "warren/internal/dsa/numeric.h"
 
+#include <cstdint>
 #include <string>
 #include <string_view>
 
@@ -15,6 +16,61 @@ struct FloatingPoint {
                 json::dsa::Integral exponent)
       : negative(negative), digits(std::move(digits)), exponent(exponent) {}
 };
+
+// normalized representation of the floating point s.t.
+// value = (-1)^{negative} * (significand / 2^{64}) * 2^{exponent}
+struct NormalizedFloatingPoint {
+  bool negative;
+  uint64_t significand;  // fully binary expanded significand (64-bit precision)
+  int64_t exponent;      // unbiased exponent (base 2)
+
+  NormalizedFloatingPoint(const bool negative, const uint64_t significand,
+                          const int64_t exponent)
+      : negative(negative), significand(significand), exponent(exponent) {}
+};
+
+}  // namespace
+
+namespace {
+
+uint64_t pow10(int64_t n) {
+  if (n >= 20) {
+    throw std::out_of_range("Target number is out of range of uint64_t limits");
+  }
+
+  uint64_t res = 1;
+  uint64_t base = 10;
+  while (n > 0) {
+    if (n & 1) {
+      res *= base;
+    }
+
+    base *= base;
+    n /= 2;
+  }
+
+  return res;
+}
+
+uint64_t to_uint64(std::string_view digits) {
+  uint64_t res = 0;
+  for (const char c : digits) {
+    if (res > UINT64_MAX / 10) {
+      throw std::out_of_range("Number " + std::string(digits) +
+                              " is out of range of uint64_t limits");
+    }
+
+    res *= 10;
+    if (res > UINT64_MAX - (c - '0')) {
+      throw std::out_of_range("Number " + std::string(digits) +
+                              " is out of range of uint64_t limits");
+    }
+
+    res += (c - '0');
+  }
+
+  return res;
+}
 
 }  // namespace
 
