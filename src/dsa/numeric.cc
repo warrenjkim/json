@@ -1,10 +1,20 @@
 #include "warren/internal/dsa/numeric.h"
 
+#include <cstddef>
 #include <cstdint>
+#include <cstring>
+#include <optional>
 #include <string>
 #include <string_view>
 
 namespace {
+
+#define GRS_BITS 3
+
+#define FLOAT_EMIN 1
+#define FLOAT_EMAX 254
+#define FLOAT_BIAS 127
+#define FLOAT_SIGNIFICAND_BITS 23
 
 // semantic representation of the floating point (denormalized)
 struct FloatingPoint {
@@ -221,6 +231,41 @@ NormalizedFloatingPoint normalize(const FloatingPoint& fp) {
   }
 
   return NormalizedFloatingPoint(fp.negative, significand, exponent);
+}
+
+std::optional<float> to_binary32(NormalizedFloatingPoint&& nfp) {
+  uint64_t mask = (1ULL << (64 - (FLOAT_SIGNIFICAND_BITS + GRS_BITS))) - 1;
+  uint64_t top = nfp.significand >> (64 - (FLOAT_SIGNIFICAND_BITS + GRS_BITS));
+
+  uint32_t mantissa = top >> 3;
+  bool guard = (top >> 2) & 1;
+  bool round = (top >> 1) & 1;
+  bool sticky = ((top & 1) | (nfp.significand & mask));
+
+  // round up to the nearest even number
+  bool round_up = (guard && (round || sticky || (mantissa & 1)));
+  if (round_up) {
+    mantissa++;
+
+    if (mantissa == (1U << FLOAT_SIGNIFICAND_BITS)) {
+      // rounding overflowed into the implicit bit
+      mantissa = 0;
+      nfp.exponent++;
+    }
+  }
+
+  nfp.exponent += FLOAT_BIAS;
+  if (nfp.exponent > FLOAT_EMAX || nfp.exponent < FLOAT_EMIN) {
+    return std::nullopt;
+  }
+
+  uint32_t bits = (uint32_t(nfp.negative) << 31) |
+                  (uint32_t(nfp.exponent) << 23) | mantissa;
+
+  float res = 0;
+  memcpy(&res, &bits, sizeof(float));
+
+  return res;
 }
 
 }  // namespace dsa
