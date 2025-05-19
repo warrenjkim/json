@@ -59,3 +59,36 @@ TEST(NumericTest, ToInt64NegativePromotion) {  // < INT32_MIN
   EXPECT_EQ(i64.type, json::dsa::Integral::INT64);
   EXPECT_EQ(i64.i64, -2147483649LL);
 }
+
+// TODO(implement bigint to properly handle clamping)
+TEST(NumericTest, ToNumericUnderflowThrows) {
+  EXPECT_THROW(json::dsa::to_numeric("1", "", "-400"), std::out_of_range);
+}
+
+// TODO(implement bigint to properly handle clamping)
+TEST(NumericTest, ToNumericNegativeUnderflowThrows) {
+  EXPECT_THROW(json::dsa::to_numeric("-1", "", "-400"), std::out_of_range);
+}
+
+// TODO(implement bigint to properly handle clamping)
+TEST(NumericTest, ToNumericOverflowThrows) {
+  EXPECT_THROW(json::dsa::to_numeric("1", "", "400"), std::out_of_range);
+}
+
+// TODO(implement bigint to properly handle clamping)
+TEST(NumericTest, ToNumericNegativeOverflowThrows) {
+  EXPECT_THROW(json::dsa::to_numeric("-1", "", "400"), std::out_of_range);
+}
+
+TEST(NumericTest, ToNumericIntegral) {
+  json::dsa::Numeric num = json::dsa::to_numeric("12345", "", "");
+  EXPECT_EQ(num.type, json::dsa::Numeric::INTEGRAL);
+  EXPECT_EQ(num.intgr.type, json::dsa::Integral::INT16);
+  EXPECT_EQ(num.intgr.i32, 12345);
+}
+
+TEST(NumericTest, ToNumericDouble) {
+  json::dsa::Numeric num = json::dsa::to_numeric("43", "25", "10");
+  EXPECT_EQ(num.type, json::dsa::Numeric::DOUBLE);
+  EXPECT_DOUBLE_EQ(num.dbl, 43.25e10);
+}
