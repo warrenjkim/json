@@ -497,6 +497,10 @@ nodes::Array* Parser::parse_array() {
   ++lexer_;
 
   nodes::Array* value = new nodes::Array();
+  if (lexer_->type == TokenType::ARRAY_END) {
+    return value;
+  }
+
   while (true) {
     value->push_back(parse_value());
     if (lexer_->type == TokenType::ARRAY_END) {
@@ -527,6 +531,10 @@ nodes::Object* Parser::parse_object() {
   ++lexer_;
 
   nodes::Object* value = new nodes::Object();
+  if (lexer_->type == TokenType::OBJECT_END) {
+    return value;
+  }
+
   while (true) {
     nodes::String* key = parse_string();
     if (lexer_->type != TokenType::COLON) {
