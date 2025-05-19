@@ -80,12 +80,12 @@ class Parser {
   nodes::Node* parse_value();
 
  private:
-  nodes::Object* parse_object();
-  nodes::Array* parse_array();
+  nodes::Null* parse_null();
+  nodes::Boolean* parse_boolean();
   nodes::String* parse_string();
   nodes::Number* parse_number();
-  nodes::Boolean* parse_boolean();
-  nodes::Null* parse_null();
+  nodes::Object* parse_object();
+  nodes::Array* parse_array();
 
  private:
   Lexer lexer_;
