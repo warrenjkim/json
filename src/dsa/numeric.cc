@@ -3,7 +3,6 @@
 #include <cstddef>  // size_t
 #include <cstdint>
 #include <cstring>  // memcpy
-#include <optional>
 #include <string>
 #include <string_view>
 #include <utility>  // move
@@ -239,40 +238,44 @@ NormalizedFloatingPoint normalize(FloatingPoint&& fp) {
   return NormalizedFloatingPoint(fp.negative, significand, exponent);
 }
 
-std::optional<float> to_binary32(NormalizedFloatingPoint nfp) {
-  uint64_t mask = (1ULL << (64 - (FLOAT_SIGNIFICAND_BITS + GRS_BITS))) - 1;
-  uint64_t top = nfp.significand >> (64 - (FLOAT_SIGNIFICAND_BITS + GRS_BITS));
-
-  uint32_t mantissa = top >> 3;
-  bool guard = (top >> 2) & 1;
-  bool round = (top >> 1) & 1;
-  bool sticky = ((top & 1) | (nfp.significand & mask));
-
-  // round up to the nearest even number
-  bool round_up = (guard && (round || sticky || (mantissa & 1)));
-  if (round_up) {
-    mantissa++;
-
-    if (mantissa == (1U << FLOAT_SIGNIFICAND_BITS)) {
-      // rounding overflowed into the implicit bit
-      mantissa = 0;
-      nfp.exponent++;
-    }
-  }
-
-  nfp.exponent += FLOAT_BIAS;
-  if (nfp.exponent > FLOAT_EMAX || nfp.exponent < FLOAT_EMIN) {
-    return std::nullopt;
-  }
-
-  uint32_t bits = (uint32_t(nfp.negative) << 31) |
-                  (uint32_t(nfp.exponent) << 23) | mantissa;
-
-  float res = 0;
-  memcpy(&res, &bits, sizeof(float));
-
-  return res;
-}
+// TODO(this is currently an internal function that nobody calls. since i
+// haven't implemented bigint yet, i can't accurately determine if i should
+// promote or not)
+// std::optional<float> to_binary32(NormalizedFloatingPoint nfp) {
+//   uint64_t mask = (1ULL << (64 - (FLOAT_SIGNIFICAND_BITS + GRS_BITS))) - 1;
+//   uint64_t top = nfp.significand >> (64 - (FLOAT_SIGNIFICAND_BITS +
+//   GRS_BITS));
+//
+//   uint32_t mantissa = top >> 3;
+//   bool guard = (top >> 2) & 1;
+//   bool round = (top >> 1) & 1;
+//   bool sticky = ((top & 1) | (nfp.significand & mask));
+//
+//   // round up to the nearest even number
+//   bool round_up = (guard && (round || sticky || (mantissa & 1)));
+//   if (round_up) {
+//     mantissa++;
+//
+//     if (mantissa == (1U << FLOAT_SIGNIFICAND_BITS)) {
+//       // rounding overflowed into the implicit bit
+//       mantissa = 0;
+//       nfp.exponent++;
+//     }
+//   }
+//
+//   nfp.exponent += FLOAT_BIAS;
+//   if (nfp.exponent > FLOAT_EMAX || nfp.exponent < FLOAT_EMIN) {
+//     return std::nullopt;
+//   }
+//
+//   uint32_t bits = (uint32_t(nfp.negative) << 31) |
+//                   (uint32_t(nfp.exponent) << 23) | mantissa;
+//
+//   float res = 0;
+//   memcpy(&res, &bits, sizeof(float));
+//
+//   return res;
+// }
 
 double to_binary64(NormalizedFloatingPoint nfp) {
   uint64_t mask = (1ULL << (64 - (DOUBLE_SIGNIFICAND_BITS + GRS_BITS))) - 1;
@@ -298,17 +301,17 @@ double to_binary64(NormalizedFloatingPoint nfp) {
   nfp.exponent += DOUBLE_BIAS;
 
   double res = 0;
-  uint64_t bits = 0;
-  if (nfp.exponent >= DOUBLE_EMIN && nfp.exponent <= DOUBLE_EMAX) {
-    bits = (uint64_t(nfp.negative) << 63) | (uint64_t(nfp.exponent) << 52) |
-           mantissa;
-  } else if (nfp.exponent < DOUBLE_EMIN) {
-    // clamp subnormals to 0 and preserve sign
-    bits = uint64_t(nfp.negative) << 63;
-  } else if (nfp.exponent > DOUBLE_EMAX) {
-    // clamp overflow to infinity
-    bits = (uint64_t(nfp.negative) << 63) | (0x7FFULL << 52);
-  }
+  uint64_t bits = (uint64_t(nfp.negative) << 63) |
+                  (uint64_t(nfp.exponent) << 52) | mantissa;
+
+  // TODO(i need to implement bigint before i can implement any clamping logic)
+  // if (nfp.exponent < DOUBLE_EMIN) {
+  //   // clamp subnormals to 0 and preserve sign
+  //   bits = uint64_t(nfp.negative) << 63;
+  // } else if (nfp.exponent > DOUBLE_EMAX) {
+  //   // clamp overflow to infinity
+  //   bits = (uint64_t(nfp.negative) << 63) | (0x7FFULL << 52);
+  // }
 
   memcpy(&res, &bits, sizeof(double));
 
@@ -323,10 +326,11 @@ Numeric to_numeric(std::string_view intgr, std::string_view frac,
 
   NormalizedFloatingPoint nfp =
       normalize(std::move(to_floating_point(intgr, frac, exp)));
-  std::optional<float> flt = to_binary32(nfp);
-  if (flt) {
-    return Numeric(*flt);
-  }
+  // TODO(find a way to parse into a float as well)
+  // std::optional<float> flt = to_binary32(nfp);
+  // if (flt) {
+  //   return Numeric(*flt);
+  // }
 
   return Numeric(to_binary64(std::move(nfp)));
 }

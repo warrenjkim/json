@@ -72,17 +72,19 @@ struct Integral {
   }
 };
 
+// TODO(i want to ultimately implement promotion logic from float to double, but
+// i haven't implemented bigint yet, so i can't implement any clamping logic)
 struct Numeric {
-  enum { INTEGRAL, FLOAT, DOUBLE } type;
+  enum { INTEGRAL, /* FLOAT, */ DOUBLE } type;
 
   union {
     Integral intgr;
-    float flt;
+    // float flt;
     double dbl;
   };
 
   Numeric(Integral&& intgr) : intgr(std::move(intgr)), type(INTEGRAL) {}
-  Numeric(float flt) : flt(flt), type(FLOAT) {}
+  // Numeric(float flt) : flt(flt), type(FLOAT) {}
   Numeric(double dbl) : dbl(dbl), type(DOUBLE) {}
 };
 
