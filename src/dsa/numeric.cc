@@ -317,26 +317,18 @@ double to_binary64(NormalizedFloatingPoint nfp) {
 
 Numeric to_numeric(std::string_view intgr, std::string_view frac,
                    std::string_view exp) {
-  Numeric res;
   if (frac.empty() && exp.empty()) {
-    res.intgr = to_integral(intgr);
-    res.type = Numeric::INTEGRAL;
-
-    return res;
+    return Numeric(std::move(to_integral(intgr)));
   }
 
   NormalizedFloatingPoint nfp =
       normalize(std::move(to_floating_point(intgr, frac, exp)));
   std::optional<float> flt = to_binary32(nfp);
   if (flt) {
-    res.flt = *flt;
-    res.type = Numeric::FLOAT;
-  } else {
-    res.dbl = to_binary64(std::move(nfp));
-    res.type = Numeric::DOUBLE;
+    return Numeric(*flt);
   }
 
-  return res;
+  return Numeric(to_binary64(std::move(nfp)));
 }
 
 }  // namespace dsa

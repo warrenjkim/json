@@ -81,7 +81,9 @@ struct Numeric {
     double dbl;
   };
 
-  Numeric() : intgr(), type(INTEGRAL) {}
+  Numeric(Integral&& intgr) : intgr(std::move(intgr)), type(INTEGRAL) {}
+  Numeric(float flt) : flt(flt), type(FLOAT) {}
+  Numeric(double dbl) : dbl(dbl), type(DOUBLE) {}
 };
 
 Integral to_integral(std::string_view intgr);
