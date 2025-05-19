@@ -1,7 +1,12 @@
-#include <cstddef>
+#pragma once
+
+#include <algorithm>  // max
+#include <cmath>      // abs
 #include <cstdint>
-#include <stdexcept>
+#include <stdexcept>  // runtime_error
 #include <string_view>
+
+#include "warren/internal/utils/concepts.h"
 
 namespace json {
 
@@ -27,49 +32,62 @@ struct Integral {
 
   Integral() : i8(0), type(INT8) {}
 
-  Integral operator-(const size_t rhs) const {
-    int64_t lhs = 0;
+  explicit Integral(const int64_t value) {
+    if (value >= INT8_MIN && value <= INT8_MAX) {
+      i8 = static_cast<int8_t>(value);
+      type = INT8;
+    } else if (value >= INT16_MIN && value <= INT16_MAX) {
+      i16 = static_cast<int16_t>(value);
+      type = INT16;
+    } else if (value >= INT32_MIN && value <= INT32_MAX) {
+      i32 = static_cast<int32_t>(value);
+      type = INT32;
+    } else {
+      i64 = value;
+      type = INT64;
+    }
+  }
+
+  [[noreturn]] void unreachable() const {
+    throw std::runtime_error("Invalid Integral");
+  }
+
+  template <ReasonableNumber T>
+  explicit operator T() const {
+    switch (type) {
+      case INT8:
+        return static_cast<T>(i8);
+      case INT16:
+        return static_cast<T>(i16);
+      case INT32:
+        return static_cast<T>(i32);
+      case INT64:
+        return static_cast<T>(i64);
+    }
+
+    unreachable();
+  }
+
+  bool operator==(const Integral& rhs) const {
+    if (type != rhs.type) {
+      return false;
+    }
+
     switch (type) {
       case Integral::INT8:
-        lhs = i8;
-        break;
+        return i8 == rhs.i8;
       case Integral::INT16:
-        lhs = i16;
-        break;
+        return i16 == rhs.i16;
       case Integral::INT32:
-        lhs = i32;
-        break;
+        return i32 == rhs.i32;
       case Integral::INT64:
-        lhs = i64;
-        break;
+        return i64 == rhs.i64;
     }
 
-    if (rhs > size_t(INT64_MAX)) {
-      throw std::out_of_range("rhs is too large for int64_t subtraction");
-    }
-
-    if (lhs < INT64_MIN + int64_t(rhs)) {
-      throw std::out_of_range("Integral subtraction would underflow");
-    }
-
-    lhs -= int64_t(rhs);
-    Integral res;
-    if (lhs >= INT8_MIN && lhs <= INT8_MAX) {
-      res.i8 = int8_t(lhs);
-      res.type = Integral::INT8;
-    } else if (lhs >= INT16_MIN && lhs <= INT16_MAX) {
-      res.i16 = int16_t(lhs);
-      res.type = Integral::INT16;
-    } else if (lhs >= INT32_MIN && lhs <= INT32_MAX) {
-      res.i32 = int32_t(lhs);
-      res.type = Integral::INT32;
-    } else {
-      res.type = Integral::INT64;
-      res.i64 = lhs;
-    }
-
-    return res;
+    unreachable();
   }
+
+  bool operator!=(const Integral& rhs) const { return !operator==(rhs); }
 };
 
 // TODO(i want to ultimately implement promotion logic from float to double, but
@@ -79,13 +97,45 @@ struct Numeric {
 
   union {
     Integral intgr;
-    // float flt;
     double dbl;
   };
 
   Numeric(Integral&& intgr) : intgr(std::move(intgr)), type(INTEGRAL) {}
-  // Numeric(float flt) : flt(flt), type(FLOAT) {}
   Numeric(double dbl) : dbl(dbl), type(DOUBLE) {}
+
+  [[noreturn]] void unreachable() const {
+    throw std::runtime_error("Invalid Numeric");
+  }
+
+  template <ReasonableNumber T>
+  explicit operator T() const {
+    switch (type) {
+      case INTEGRAL:
+        return static_cast<T>(intgr);
+      case DOUBLE:
+        return static_cast<T>(dbl);
+    }
+
+    unreachable();
+  }
+
+  bool operator==(const Numeric& rhs) const {
+    if (type != rhs.type) {
+      return false;
+    }
+
+    switch (type) {
+      case Numeric::INTEGRAL:
+        return intgr == rhs.intgr;
+      case Numeric::DOUBLE:
+        return std::abs(dbl - rhs.dbl) <
+               (1e-10 * std::max(std::abs(dbl), std::abs(rhs.dbl)));
+    }
+
+    unreachable();
+  }
+
+  bool operator!=(const Numeric& rhs) const { return !operator==(rhs); }
 };
 
 Integral to_integral(std::string_view intgr);

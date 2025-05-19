@@ -169,7 +169,18 @@ Integral to_integral(std::string_view intgr) {
 
 FloatingPoint to_floating_point(std::string_view intgr, std::string_view frac,
                                 std::string_view exp) {
-  Integral exponent = to_integral(exp) - frac.length();
+  int64_t lhs = static_cast<int64_t>(to_integral(exp));
+  size_t rhs = frac.length();
+
+  if (rhs > size_t(INT64_MAX)) {
+    throw std::out_of_range("rhs is too large for int64_t subtraction");
+  }
+
+  if (lhs < INT64_MIN + int64_t(rhs)) {
+    throw std::out_of_range("Integral subtraction would underflow");
+  }
+
+  Integral exponent = Integral(lhs - int64_t(rhs));
   size_t i = 0;
   if (!intgr.empty() && intgr.front() == '-') {
     i++;
