@@ -375,6 +375,10 @@ void resolve_unicode_sequences(const std::string& s, std::string& res) {
 
     j++;
   }
+
+  if (i < s.length()) {
+    res.append(s, i, s.length() - i);
+  }
 }
 
 }  // namespace
@@ -386,6 +390,7 @@ namespace syntax {
 Parser::Parser(Lexer&& lexer) : lexer_(std::move(lexer)), root_(nullptr) {}
 
 nodes::Node* Parser::parse() {
+  ++lexer_;
   nodes::Node* json = parse_value();
   if (lexer_->type != TokenType::END_OF_JSON) {
     throw ParseException("Unexpected token: " + lexer_->value);
@@ -484,9 +489,21 @@ nodes::Number* Parser::parse_number() {
     }
   }
 
-  return new nodes::Number(std::move(
-      dsa::to_numeric(value.substr(0, i), value.substr(i + 1, j - i - 1),
-                      value.substr(j + 1, k - j - 1))));
+  std::string_view integer = value.substr(0, i);
+
+  std::string_view fraction;
+  if (j > i + 1) {
+    fraction = value.substr(i + 1, j - i - 1);
+  }
+
+  std::string_view exponent;
+  if (k > j + 1) {
+    exponent = value.substr(j + 1, k - j - 1);
+  }
+
+  ++lexer_;
+
+  return new nodes::Number(dsa::to_numeric(integer, fraction, exponent));
 }
 
 nodes::Array* Parser::parse_array() {
@@ -498,6 +515,7 @@ nodes::Array* Parser::parse_array() {
 
   nodes::Array* value = new nodes::Array();
   if (lexer_->type == TokenType::ARRAY_END) {
+    ++lexer_;
     return value;
   }
 
@@ -532,6 +550,7 @@ nodes::Object* Parser::parse_object() {
 
   nodes::Object* value = new nodes::Object();
   if (lexer_->type == TokenType::OBJECT_END) {
+    ++lexer_;
     return value;
   }
 
@@ -543,7 +562,7 @@ nodes::Object* Parser::parse_object() {
 
     ++lexer_;
     nodes::Node* val = parse_value();
-    value->insert(key->get(), parse_value());
+    value->insert(key->get(), val);
     delete key;
     if (lexer_->type == TokenType::OBJECT_END) {
       break;
