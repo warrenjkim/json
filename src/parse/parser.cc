@@ -419,6 +419,10 @@ nodes::String* Parser::parse_string() {
 }
 
 nodes::Number* Parser::parse_number() {
+  if (lexer_->type != TokenType::NUMBER) {
+    throw ParseException("Unexpected token: " + lexer_->value);
+  }
+
   std::string_view value = lexer_->value;
   // integer
   size_t i = 0;
