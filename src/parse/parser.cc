@@ -8,6 +8,7 @@
 #include <string>
 #include <string_view>
 
+#include "warren/internal/dsa/numeric.h"
 #include "warren/internal/dsa/pair.h"
 #include "warren/internal/dsa/queue.h"
 #include "warren/internal/nodes/node.h"
@@ -415,6 +416,45 @@ nodes::String* Parser::parse_string() {
   ++lexer_;
 
   return new nodes::String(value);
+}
+
+nodes::Number* Parser::parse_number() {
+  std::string_view value = lexer_->value;
+  // integer
+  size_t i = 0;
+  if (value[i] == '-') {
+    i++;
+  }
+
+  while (i < value.length() && isdigit(value[i])) {
+    i++;
+  }
+
+  // fraction
+  size_t j = i;
+  if (j < value.length() && value[j] == '.') {
+    j++;
+    while (j < value.length() && isdigit(value[j])) {
+      j++;
+    }
+  }
+
+  // exponent
+  size_t k = j;
+  if (k < value.length() && tolower(value[k]) == 'e') {
+    k++;
+    if (value[k] == '+' || value[k] == '-') {
+      k++;
+    }
+
+    while (k < value.length() && isdigit(value[k])) {
+      k++;
+    }
+  }
+
+  return new nodes::Number(std::move(
+      dsa::to_numeric(value.substr(0, i), value.substr(i + 1, j - i - 1),
+                      value.substr(j + 1, k - j - 1))));
 }
 
 }  // namespace syntax
