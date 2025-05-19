@@ -510,6 +510,44 @@ nodes::Array* Parser::parse_array() {
   return value;
 }
 
+nodes::Object* Parser::parse_object() {
+  if (lexer_->type != TokenType::OBJECT_START) {
+    throw ParseException("Unexpected token: " + lexer_->value);
+  }
+
+  ++lexer_;
+
+  nodes::Object* value = new nodes::Object();
+  while (true) {
+    nodes::String* key = parse_string();
+    if (lexer_->type != TokenType::COLON) {
+      throw ParseException("Unexpected token: " + lexer_->value);
+    }
+
+    ++lexer_;
+    nodes::Node* val = parse_value();
+    value->insert(key->get(), parse_value());
+    delete key;
+    if (lexer_->type == TokenType::OBJECT_END) {
+      break;
+    }
+
+    if (lexer_->type != TokenType::COMMA) {
+      throw ParseException("Unexpected token: " + lexer_->value);
+    }
+
+    ++lexer_;
+  }
+
+  if (lexer_->type != TokenType::OBJECT_END) {
+    throw ParseException("Unexpected token: " + lexer_->value);
+  }
+
+  ++lexer_;
+
+  return value;
+}
+
 }  // namespace syntax
 
 }  // namespace json
