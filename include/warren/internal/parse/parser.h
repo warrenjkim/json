@@ -66,9 +66,8 @@ class Parser {
   Parser(Lexer&& lexer);
 
  public:
-  Parser() = delete;
-  ~Parser() = delete;
-  Parser(Parser&&) = delete;
+  ~Parser() = default;
+  Parser(Parser&&) = default;
   Parser(const Parser&) = delete;
   Parser& operator=(Parser&&) = delete;
   Parser& operator=(const Parser&) = delete;
