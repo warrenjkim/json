@@ -480,6 +480,36 @@ nodes::Number* Parser::parse_number() {
                       value.substr(j + 1, k - j - 1))));
 }
 
+nodes::Array* Parser::parse_array() {
+  if (lexer_->type != TokenType::ARRAY_START) {
+    throw ParseException("Unexpected token: " + lexer_->value);
+  }
+
+  ++lexer_;
+
+  nodes::Array* value = new nodes::Array();
+  while (true) {
+    value->push_back(parse_value());
+    if (lexer_->type == TokenType::ARRAY_END) {
+      break;
+    }
+
+    if (lexer_->type != TokenType::COMMA) {
+      throw ParseException("Unexpected token: " + lexer_->value);
+    }
+
+    ++lexer_;
+  }
+
+  if (lexer_->type != TokenType::ARRAY_END) {
+    throw ParseException("Unexpected token: " + lexer_->value);
+  }
+
+  ++lexer_;
+
+  return value;
+}
+
 }  // namespace syntax
 
 }  // namespace json
