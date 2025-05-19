@@ -385,6 +385,15 @@ namespace syntax {
 
 Parser::Parser(Lexer&& lexer) : lexer_(std::move(lexer)), root_(nullptr) {}
 
+nodes::Node* Parser::parse() {
+  nodes::Node* json = parse_value();
+  if (lexer_->type != TokenType::END_OF_JSON) {
+    throw ParseException("Unexpected token: " + lexer_->value);
+  }
+
+  return json;
+}
+
 nodes::Node* Parser::parse_value() {
   switch (lexer_->type) {
     case TokenType::BOOLEAN:
