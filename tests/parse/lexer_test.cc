@@ -164,12 +164,12 @@ TEST_F(LexerTest, IncrementOperator) {
   json::syntax::Lexer lexer("true false");
 
   ++lexer;
-  ASSERT_FALSE(lexer.eof());
+  EXPECT_FALSE(lexer.eof());
   EXPECT_EQ((*lexer).type, json::syntax::TokenType::BOOLEAN);
   EXPECT_EQ((*lexer).value, "true");
 
   ++lexer;
-  ASSERT_FALSE(lexer.eof());
+  EXPECT_FALSE(lexer.eof());
   EXPECT_EQ((*lexer).type, json::syntax::TokenType::BOOLEAN);
   EXPECT_EQ((*lexer).value, "false");
 

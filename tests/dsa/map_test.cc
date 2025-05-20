@@ -17,8 +17,8 @@ TEST_F(MapTest, CopyConstructor) {
   json::dsa::Map<std::string, int> copy(map_);
 
   // assert
-  ASSERT_EQ(copy.size(), 1);
-  ASSERT_EQ(copy.at("key"), 1);
+  EXPECT_EQ(copy.size(), 1);
+  EXPECT_EQ(copy.at("key"), 1);
 }
 
 TEST_F(MapTest, MoveConstructor) {
@@ -29,9 +29,9 @@ TEST_F(MapTest, MoveConstructor) {
   json::dsa::Map<std::string, int> moved(std::move(map_));
 
   // assert
-  ASSERT_TRUE(map_.empty());
-  ASSERT_EQ(moved.size(), 1);
-  ASSERT_EQ(moved.at("key"), 1);
+  EXPECT_TRUE(map_.empty());
+  EXPECT_EQ(moved.size(), 1);
+  EXPECT_EQ(moved.at("key"), 1);
 }
 
 TEST_F(MapTest, Equality) {
@@ -44,8 +44,8 @@ TEST_F(MapTest, Equality) {
   other.insert("b", 2);
 
   // act + assert
-  ASSERT_TRUE(map_ == other);
-  ASSERT_FALSE(map_ != other);
+  EXPECT_TRUE(map_ == other);
+  EXPECT_FALSE(map_ != other);
 }
 
 TEST_F(MapTest, SubscriptOperator) {
@@ -53,18 +53,18 @@ TEST_F(MapTest, SubscriptOperator) {
   map_["key"] = 1;
 
   // assert
-  ASSERT_EQ(map_.size(), 1);
-  ASSERT_EQ(map_["key"], 1);
+  EXPECT_EQ(map_.size(), 1);
+  EXPECT_EQ(map_["key"], 1);
 
   // arrange + act
   map_["key"] = 2;
 
   // assert
-  ASSERT_EQ(map_.size(), 1);
-  ASSERT_EQ(map_["key"], 2);
+  EXPECT_EQ(map_.size(), 1);
+  EXPECT_EQ(map_["key"], 2);
 
   // arrange + act + assert
-  ASSERT_EQ(map_["new"], 0);
+  EXPECT_EQ(map_["new"], 0);
 }
 
 TEST_F(MapTest, At) {
@@ -75,10 +75,10 @@ TEST_F(MapTest, At) {
   std::optional<int> val = map_.at("key");
 
   // assert
-  ASSERT_TRUE(val.has_value());
-  ASSERT_EQ(*val, 1);
+  EXPECT_TRUE(val.has_value());
+  EXPECT_EQ(*val, 1);
 
-  ASSERT_FALSE(map_.at("nonexistent").has_value());
+  EXPECT_FALSE(map_.at("nonexistent").has_value());
 }
 
 TEST_F(MapTest, Contains) {
@@ -86,8 +86,8 @@ TEST_F(MapTest, Contains) {
   map_.insert("key", 1);
 
   // act + assert
-  ASSERT_TRUE(map_.contains("key"));
-  ASSERT_FALSE(map_.contains("nonexistent"));
+  EXPECT_TRUE(map_.contains("key"));
+  EXPECT_FALSE(map_.contains("nonexistent"));
 }
 
 TEST_F(MapTest, Insert) {
@@ -95,14 +95,14 @@ TEST_F(MapTest, Insert) {
   map_.insert("key", 1);
 
   // assert
-  ASSERT_TRUE(map_.contains("key"));
-  ASSERT_EQ(map_.at("key"), 1);
+  EXPECT_TRUE(map_.contains("key"));
+  EXPECT_EQ(map_.at("key"), 1);
 
   // arrange + act
   map_.insert("key", 2);
 
   // assert
-  ASSERT_EQ(map_.at("key"), 2);
+  EXPECT_EQ(map_.at("key"), 2);
 }
 
 TEST_F(MapTest, Remove) {
@@ -113,7 +113,7 @@ TEST_F(MapTest, Remove) {
   map_.erase("key");
 
   // assert
-  ASSERT_FALSE(map_.contains("key"));
+  EXPECT_FALSE(map_.contains("key"));
 
   // arrange + act + assert
   map_.erase("nonexistent");
@@ -128,7 +128,7 @@ TEST_F(MapTest, Clear) {
   map_.clear();
 
   // assert
-  ASSERT_TRUE(map_.empty());
+  EXPECT_TRUE(map_.empty());
 }
 
 TEST_F(MapTest, Iterator) {
@@ -138,13 +138,13 @@ TEST_F(MapTest, Iterator) {
 
   // act + assert
   json::dsa::Map<std::string, int>::Iterator it = map_.begin();
-  ASSERT_EQ(it->first, "a");
-  ASSERT_EQ(it->second, 1);
+  EXPECT_EQ(it->first, "a");
+  EXPECT_EQ(it->second, 1);
   it++;
-  ASSERT_EQ(it->first, "b");
-  ASSERT_EQ(it->second, 2);
+  EXPECT_EQ(it->first, "b");
+  EXPECT_EQ(it->second, 2);
   ++it;
-  ASSERT_EQ(it, map_.end());
+  EXPECT_EQ(it, map_.end());
 }
 
 TEST_F(MapTest, ConstIterator) {
@@ -155,7 +155,7 @@ TEST_F(MapTest, ConstIterator) {
   // act + assert
   json::dsa::Map<std::string, int>::ConstIterator it = cmap.begin();
   it = cmap.cbegin();
-  ASSERT_EQ(it->first, "a");
+  EXPECT_EQ(it->first, "a");
 }
 
 TEST_F(MapTest, IteratorFind) {
@@ -166,14 +166,14 @@ TEST_F(MapTest, IteratorFind) {
   json::dsa::Map<std::string, int>::Iterator it = map_.find("key");
 
   // assert
-  ASSERT_NE(it, map_.end());
-  ASSERT_EQ(it->second, 1);
+  EXPECT_NE(it, map_.end());
+  EXPECT_EQ(it->second, 1);
 
   // act
   it = map_.find("nonexistent");
 
   // assert
-  ASSERT_EQ(it, map_.end());
+  EXPECT_EQ(it, map_.end());
 }
 
 TEST_F(MapTest, Erase) {
@@ -187,5 +187,5 @@ TEST_F(MapTest, Erase) {
   map_.erase(map_.begin());
 
   // assert
-  ASSERT_EQ(map_.size(), 3);
+  EXPECT_EQ(map_.size(), 3);
 }

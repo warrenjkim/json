@@ -14,24 +14,24 @@ class JsonTokenizerTest : public ::testing::Test {
   void assert_tokenization(const std::string_view input,
                            const std::vector<json::Token>& expected_tokens) {
     auto result = json::Tokenizer::tokenize(input);
-    ASSERT_TRUE(result.has_value()) << "Failed to tokenize: " << input;
+    EXPECT_TRUE(result.has_value()) << "Failed to tokenize: " << input;
     json::dsa::Queue<json::Token> actual_tokens = result.value();
     for (const json::Token& expected : expected_tokens) {
-      ASSERT_TRUE(!actual_tokens.empty()) << "Fewer tokens than expected";
+      EXPECT_TRUE(!actual_tokens.empty()) << "Fewer tokens than expected";
       const auto& actual = actual_tokens.front();
-      ASSERT_EQ(expected, actual)
+      EXPECT_EQ(expected, actual)
           << "Token mismatch. \nExpected: value='" + expected.value +
                  "', type=" + std::to_string(static_cast<int>(expected.type)) +
                  "\n" + "Actual: value='" + actual->value +
                  "', type=" + std::to_string(static_cast<int>(actual->type));
       actual_tokens.dequeue();
     }
-    ASSERT_TRUE(actual_tokens.empty()) << "More tokens than expected";
+    EXPECT_TRUE(actual_tokens.empty()) << "More tokens than expected";
   }
 
   void assert_invalid_input(const std::string_view input) {
     auto result = json::Tokenizer::tokenize(input);
-    ASSERT_FALSE(result.has_value())
+    EXPECT_FALSE(result.has_value())
         << "Incorrectly tokenized invalid input: " << input;
   }
 };

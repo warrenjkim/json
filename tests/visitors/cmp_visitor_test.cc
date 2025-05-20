@@ -14,13 +14,13 @@ class CmpVisitorTest : public ::testing::Test {
   void assert_equal(json::nodes::Node* lhs, json::nodes::Node* rhs) {
     json::visitors::CmpVisitor visitor(rhs);
     lhs->accept(visitor);
-    ASSERT_TRUE(visitor.result()) << "ASTs are not equal";
+    EXPECT_TRUE(visitor.result()) << "ASTs are not equal";
   }
 
   void assert_not_equal(json::nodes::Node* lhs, json::nodes::Node* rhs) {
     json::visitors::CmpVisitor visitor(rhs);
     lhs->accept(visitor);
-    ASSERT_FALSE(visitor.result()) << "ASTs are unexpectedly equal";
+    EXPECT_FALSE(visitor.result()) << "ASTs are unexpectedly equal";
   }
 };
 

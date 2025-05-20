@@ -27,7 +27,7 @@ TEST_F(SetVisitorTest, SetObjectValue) {
   // assert
   json::nodes::Object* expected_root = new json::nodes::Object();
   expected_root->insert("key", num.clone());
-  ASSERT_EQ(json::Value(root), json::Value(expected_root));
+  EXPECT_EQ(json::Value(root), json::Value(expected_root));
 }
 
 TEST_F(SetVisitorTest, SetArrayValue) {
@@ -44,7 +44,7 @@ TEST_F(SetVisitorTest, SetArrayValue) {
   // assert
   json::nodes::Array* expected_root = new json::nodes::Array();
   expected_root->push_back(num.clone());
-  ASSERT_EQ(json::Value(root), json::Value(expected_root));
+  EXPECT_EQ(json::Value(root), json::Value(expected_root));
 }
 
 TEST_F(SetVisitorTest, SetBooleanValueThrowsException) {
@@ -55,7 +55,7 @@ TEST_F(SetVisitorTest, SetBooleanValueThrowsException) {
 
   // act + assert
   json::visitors::SetVisitor visitor(&string, num, "key");
-  ASSERT_THROW(root->accept(visitor), json::UnexpectedParentException);
+  EXPECT_THROW(root->accept(visitor), json::UnexpectedParentException);
 
   delete root;
   delete string;
@@ -70,7 +70,7 @@ TEST_F(SetVisitorTest, SetNullValueThrowsException) {
 
   // act + assert
   json::visitors::SetVisitor visitor(&string, num, "key");
-  ASSERT_THROW(root->accept(visitor), json::UnexpectedParentException);
+  EXPECT_THROW(root->accept(visitor), json::UnexpectedParentException);
 
   delete root;
   delete string;
@@ -85,7 +85,7 @@ TEST_F(SetVisitorTest, SetNumberValueThrowsException) {
 
   // act + assert
   json::visitors::SetVisitor visitor(&string, num, "key");
-  ASSERT_THROW(root->accept(visitor), json::UnexpectedParentException);
+  EXPECT_THROW(root->accept(visitor), json::UnexpectedParentException);
 
   delete root;
   delete num;
@@ -100,7 +100,7 @@ TEST_F(SetVisitorTest, SetStringValueThrowsException) {
 
   // act + assert
   json::visitors::SetVisitor visitor(&string, num, "key");
-  ASSERT_THROW(root->accept(visitor), json::UnexpectedParentException);
+  EXPECT_THROW(root->accept(visitor), json::UnexpectedParentException);
 
   delete root;
   delete num;

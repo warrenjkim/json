@@ -19,8 +19,8 @@ class JsonParserTest : public ::testing::Test {
   void assert_parse(const std::string_view input,
                     json::nodes::Node* expected_ast) {
     json::nodes::Node* result = json::Parser::parse(input);
-    ASSERT_TRUE(result) << "Parser returned nullptr for valid input";
-    ASSERT_EQ(*result, *expected_ast)
+    EXPECT_TRUE(result) << "Parser returned nullptr for valid input";
+    EXPECT_EQ(*result, *expected_ast)
         << "Parsed result does not match expected AST";
 
     delete result;
@@ -28,12 +28,12 @@ class JsonParserTest : public ::testing::Test {
 
   void assert_parse_failure(const std::string_view input) {
     json::nodes::Node* result = json::Parser::parse(input);
-    ASSERT_FALSE(result) << "Parser did not fail for invalid input";
+    EXPECT_FALSE(result) << "Parser did not fail for invalid input";
   }
 
   void assert_parse_failure(json::dsa::Queue<json::Token> input) {
     json::nodes::Node* result = json::Parser::parse(input);
-    ASSERT_FALSE(result) << "Parser did not fail for invalid input";
+    EXPECT_FALSE(result) << "Parser did not fail for invalid input";
   }
 
   json::dsa::Queue<json::Token> make_token_queue(
@@ -130,8 +130,8 @@ TEST_F(JsonParserTest, ScientificNotation) {
 TEST_F(JsonParserTest, DISABLED_ZeroWithExponent) {
   // arrange
   json::nodes::Array arr;
-  arr.push_back(new json::nodes::Number(json::dsa::Numeric(0)));  // 0e0
-  arr.push_back(new json::nodes::Number(json::dsa::Numeric(0)));  // -0e-0
+  arr.push_back(new json::nodes::Number(json::dsa::Numeric(0e0)));    // 0e0
+  arr.push_back(new json::nodes::Number(json::dsa::Numeric(-0e-0)));  // -0e-0
 
   // act + assert
   assert_parse("[0e0,-0e-0]", &arr);
