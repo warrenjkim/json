@@ -97,7 +97,7 @@ void CmpVisitor::visit(const nodes::Number& rhs) {
     return;
   }
 
-  result_ = std::abs(visitor.result() - rhs.get()) < 1e-10;
+  result_ = visitor.result() == rhs.get();
 }
 
 void CmpVisitor::visit(const nodes::Object& rhs) {
