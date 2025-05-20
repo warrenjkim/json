@@ -122,10 +122,18 @@ TEST_F(LexerTest, LexInvalidNumbers) {
 }
 
 TEST_F(LexerTest, LexNumber) {
-  json::syntax::Lexer lexer("123");
-  json::syntax::Token token = lexer.next_token();
-  EXPECT_EQ(token.type, json::syntax::TokenType::NUMBER);
-  EXPECT_EQ(token.value, "123");
+  {  // 123
+    json::syntax::Lexer lexer("123");
+    json::syntax::Token token = lexer.next_token();
+    EXPECT_EQ(token.type, json::syntax::TokenType::NUMBER);
+    EXPECT_EQ(token.value, "123");
+  }
+  {  // 12.34
+    json::syntax::Lexer lexer("12.34");
+    json::syntax::Token token = lexer.next_token();
+    EXPECT_EQ(token.type, json::syntax::TokenType::NUMBER);
+    EXPECT_EQ(token.value, "12.34");
+  }
 }
 
 TEST_F(LexerTest, LexPunctuation) {
