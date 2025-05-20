@@ -285,23 +285,23 @@ namespace {
 
 uint32_t to_code_point(const char c1, const char c2, const char c3,
                        const char c4) {
-  auto to_uint = [](const char c) -> uint32_t {
+  auto to_uint32 = [](const char c) -> uint32_t {
     if (c >= '0' && c <= '9') {
-      return c - '0';
+      return uint32_t(c - '0');
     } else if (c >= 'A' && c <= 'F') {
-      return c - 'A' + 10;
+      return uint32_t(c - 'A' + 10);
     } else if (c >= 'a' && c <= 'f') {
-      return c - 'a' + 10;
+      return uint32_t(c - 'a' + 10);
     }
 
     return 0;
   };
 
   uint32_t code_point = 0;
-  code_point = (code_point << 4) | to_uint(c1);
-  code_point = (code_point << 4) | to_uint(c2);
-  code_point = (code_point << 4) | to_uint(c3);
-  code_point = (code_point << 4) | to_uint(c4);
+  code_point = (code_point << 4) | to_uint32(c1);
+  code_point = (code_point << 4) | to_uint32(c2);
+  code_point = (code_point << 4) | to_uint32(c3);
+  code_point = (code_point << 4) | to_uint32(c4);
 
   return code_point;
 }
@@ -456,56 +456,56 @@ nodes::Number* Parser::parse_number() {
     throw ParseException("Unexpected token: " + lexer_->value);
   }
 
-  std::string_view value = lexer_->value;
+  std::string_view number = lexer_->value;
   // integer
   size_t i = 0;
-  if (value[i] == '-') {
+  if (number[i] == '-') {
     i++;
   }
 
-  while (i < value.length() && isdigit(value[i])) {
+  while (i < number.length() && isdigit(number[i])) {
     i++;
   }
 
   // fraction
   size_t j = i;
-  if (j < value.length() && value[j] == '.') {
+  if (j < number.length() && number[j] == '.') {
     j++;
-    while (j < value.length() && isdigit(value[j])) {
+    while (j < number.length() && isdigit(number[j])) {
       j++;
     }
   }
 
   // exponent
   size_t k = j;
-  if (k < value.length() && tolower(value[k]) == 'e') {
+  if (k < number.length() && tolower(number[k]) == 'e') {
     k++;
-    if (value[k] == '+' || value[k] == '-') {
+    if (number[k] == '+' || number[k] == '-') {
       k++;
     }
 
-    while (k < value.length() && isdigit(value[k])) {
+    while (k < number.length() && isdigit(number[k])) {
       k++;
     }
   }
 
-  std::string_view integer = value.substr(0, i);
+  std::string_view integer = number.substr(0, i);
 
-  std::string_view fraction;
+  std::string_view fraction = "";
   if (j > i + 1) {
-    fraction = value.substr(i + 1, j - i - 1);
+    fraction = number.substr(i + 1, j - i - 1);
   }
 
-  std::string_view exponent;
+  std::string_view exponent = "";
   if (k > j + 1) {
-    exponent = value.substr(j + 1, k - j - 1);
+    exponent = number.substr(j + 1, k - j - 1);
   }
 
-  nodes::Number* number =
+  nodes::Number* value =
       new nodes::Number(dsa::to_numeric(integer, fraction, exponent));
   ++lexer_;
 
-  return number;
+  return value;
 }
 
 nodes::Array* Parser::parse_array() {
@@ -563,8 +563,7 @@ nodes::Object* Parser::parse_object() {
     }
 
     ++lexer_;
-    nodes::Node* val = parse_value();
-    value->insert(key->get(), val);
+    value->insert(key->get(), parse_value());
     delete key;
     if (lexer_->type == TokenType::OBJECT_END) {
       break;
