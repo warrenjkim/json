@@ -203,15 +203,23 @@ nodes::Number* Parser::parse_number(json::dsa::Queue<Token>& tokens,
   size_t exponent_index = number_string.find_first_of("eE");
   double base = 0.0;
   int exponent = 0;
+  bool intgr = true;
   try {
     if (exponent_index != std::string::npos) {
+      intgr = false;
       base = std::stod(number_string.substr(0, exponent_index));
       exponent = std::stoi(number_string.substr(exponent_index + 1));
     } else {
+      if (number_string.find_first_of(".") != std::string::npos) {
+        intgr = false;
+      }
+
       base = std::stod(number_string);
     }
 
-    return new nodes::Number(dsa::Numeric(base * std::pow(10, exponent)));
+    return new nodes::Number(intgr
+                                 ? dsa::Numeric(int64_t(base))
+                                 : dsa::Numeric(base * std::pow(10, exponent)));
   } catch (const std::exception& e) {
     return nullptr;
   }
