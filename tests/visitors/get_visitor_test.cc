@@ -15,7 +15,7 @@ class GetVisitorTest : public ::testing::Test {
   void SetUp() override {
     object_.insert("key", new json::nodes::String("value"));
 
-    array_.push_back(new json::nodes::Number(1));
+    array_.push_back(new json::nodes::Number(json::dsa::Numeric(1)));
     array_.push_back(new json::nodes::Boolean(true));
     array_.push_back(new json::nodes::String("string"));
     array_.push_back(new json::nodes::Null());
@@ -67,7 +67,7 @@ TEST_F(GetVisitorTest, ArrayInvalidIndex) {
 TEST_F(GetVisitorTest, Number) {
   json::visitors::GetVisitor visitor(0);
   array_.accept(visitor);
-  ASSERT_EQ(*(visitor.result()), json::nodes::Number(1));
+  ASSERT_EQ(*(visitor.result()), json::nodes::Number(json::dsa::Numeric(1)));
 }
 
 TEST_F(GetVisitorTest, NumberBadAccessKey) {

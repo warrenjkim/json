@@ -51,7 +51,7 @@ TEST_F(SetVisitorTest, SetBooleanValueThrowsException) {
   // arrange
   json::nodes::Boolean* root = new json::nodes::Boolean(true);
   json::nodes::Node* string = new json::nodes::String("value");
-  json::nodes::Number* num = new json::nodes::Number(123);
+  json::nodes::Number* num = new json::nodes::Number(json::dsa::Numeric(123));
 
   // act + assert
   json::visitors::SetVisitor visitor(&string, num, "key");
@@ -66,7 +66,7 @@ TEST_F(SetVisitorTest, SetNullValueThrowsException) {
   // arrange
   json::nodes::Null* root = new json::nodes::Null();
   json::nodes::Node* string = new json::nodes::String("value");
-  json::nodes::Number* num = new json::nodes::Number(123);
+  json::nodes::Number* num = new json::nodes::Number(json::dsa::Numeric(123));
 
   // act + assert
   json::visitors::SetVisitor visitor(&string, num, "key");
@@ -79,9 +79,9 @@ TEST_F(SetVisitorTest, SetNullValueThrowsException) {
 
 TEST_F(SetVisitorTest, SetNumberValueThrowsException) {
   // arrange
-  json::nodes::Number* root = new json::nodes::Number(42);
+  json::nodes::Number* root = new json::nodes::Number(json::dsa::Numeric(42));
   json::nodes::Node* string = new json::nodes::String("value");
-  json::nodes::Number* num = new json::nodes::Number(123);
+  json::nodes::Number* num = new json::nodes::Number(json::dsa::Numeric(123));
 
   // act + assert
   json::visitors::SetVisitor visitor(&string, num, "key");
@@ -96,7 +96,7 @@ TEST_F(SetVisitorTest, SetStringValueThrowsException) {
   // arrange
   json::nodes::String* root = new json::nodes::String("test");
   json::nodes::Node* string = new json::nodes::String("value");
-  json::nodes::Number* num = new json::nodes::Number(123);
+  json::nodes::Number* num = new json::nodes::Number(json::dsa::Numeric(123));
 
   // act + assert
   json::visitors::SetVisitor visitor(&string, num, "key");

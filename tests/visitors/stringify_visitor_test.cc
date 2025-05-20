@@ -8,7 +8,6 @@
 #include "warren/internal/nodes/number.h"
 #include "warren/internal/nodes/object.h"
 #include "warren/internal/nodes/string.h"
-#include "warren/json/exception.h"
 
 class StringifyVisitorTest : public ::testing::Test {};
 
@@ -33,11 +32,11 @@ TEST_F(StringifyVisitorTest, Null) {
 TEST_F(StringifyVisitorTest, Number) {
   json::visitors::StringifyVisitor visitor;
 
-  json::nodes::Number(10).accept(visitor);
+  json::nodes::Number(json::dsa::Numeric(10)).accept(visitor);
   ASSERT_EQ(visitor.result(), "10");
 
   visitor = json::visitors::StringifyVisitor();
-  json::nodes::Number(12.34).accept(visitor);
+  json::nodes::Number(json::dsa::Numeric(12.34)).accept(visitor);
   ASSERT_EQ(visitor.result(), "12.34");
 }
 
