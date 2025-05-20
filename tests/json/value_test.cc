@@ -4,6 +4,7 @@
 #include <string>
 
 #include "gtest/gtest.h"
+#include "warren/internal/dsa/numeric.h"
 #include "warren/internal/nodes/array.h"
 #include "warren/internal/nodes/boolean.h"
 #include "warren/internal/nodes/node.h"
@@ -12,7 +13,6 @@
 #include "warren/internal/nodes/object.h"
 #include "warren/internal/nodes/string.h"
 #include "warren/json/exception.h"
-#include "warren/json/utils.h"
 
 class ValueTest : public ::testing::Test {
  protected:
@@ -20,11 +20,11 @@ class ValueTest : public ::testing::Test {
     root_ = new json::nodes::Object();
     root_->insert("null", new json::nodes::Null());
     root_->insert("bool", new json::nodes::Boolean(true));
-    root_->insert("number", new json::nodes::Number(42.5));
+    root_->insert("number", new json::nodes::Number(json::dsa::Numeric(42.5)));
     root_->insert("string", new json::nodes::String("hello"));
 
     array_ = new json::nodes::Array();
-    array_->push_back(new json::nodes::Number(1));
+    array_->push_back(new json::nodes::Number(json::dsa::Numeric(1)));
     array_->push_back(new json::nodes::String("two"));
     array_->push_back(new json::nodes::Boolean(false));
     array_->push_back(new json::nodes::Null());
@@ -47,7 +47,7 @@ TEST_F(ValueTest, ConvertNumberToInt) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::nodes::Number(42.5));
+  json::Value value(new json::nodes::Number(json::dsa::Numeric(42.5)));
   int result = value;
   ASSERT_EQ(result, 42);
 }
@@ -57,7 +57,7 @@ TEST_F(ValueTest, ConvertNumberToDouble) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::nodes::Number(42.5));
+  json::Value value(new json::nodes::Number(json::dsa::Numeric(42.5)));
   double result = value;
   ASSERT_DOUBLE_EQ(result, 42.5);
 }
@@ -67,7 +67,7 @@ TEST_F(ValueTest, ConvertNumberToFloat) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::nodes::Number(42.5));
+  json::Value value(new json::nodes::Number(json::dsa::Numeric(42.5)));
   float result = value;
   ASSERT_FLOAT_EQ(result, 42.5f);
 }
@@ -143,7 +143,7 @@ TEST_F(ValueTest, CompareNumberToInt) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::nodes::Number(42));
+  json::Value value(new json::nodes::Number(json::dsa::Numeric(42)));
   ASSERT_TRUE(value == 42);
   ASSERT_TRUE(42 == value);
 }
@@ -153,7 +153,7 @@ TEST_F(ValueTest, CompareNumberToDouble) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::nodes::Number(42));
+  json::Value value(new json::nodes::Number(json::dsa::Numeric(42)));
   ASSERT_TRUE(value == 42.0);
   ASSERT_TRUE(42.0 == value);
 }
@@ -193,8 +193,8 @@ TEST_F(ValueTest, CompareValueToValueNumber) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value1(new json::nodes::Number(42));
-  json::Value value2(new json::nodes::Number(42));
+  json::Value value1(new json::nodes::Number(json::dsa::Numeric(42)));
+  json::Value value2(new json::nodes::Number(json::dsa::Numeric(42)));
   ASSERT_TRUE(value1 == value2);
 }
 
@@ -243,7 +243,7 @@ TEST_F(ValueTest, CompareValueToValueNotSameType) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value1(new json::nodes::Number(42));
+  json::Value value1(new json::nodes::Number(json::dsa::Numeric(42)));
   json::Value value2(new json::nodes::String("string"));
   ASSERT_FALSE(value1 == value2);
 }
@@ -263,7 +263,7 @@ TEST_F(ValueTest, BadCastNumberToBool) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::nodes::Number(42));
+  json::Value value(new json::nodes::Number(json::dsa::Numeric(42)));
   ASSERT_THROW(bool b = value, json::BadCastException);
 }
 
@@ -300,7 +300,7 @@ TEST_F(ValueTest, BadCastNumberToString) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::nodes::Number(42));
+  json::Value value(new json::nodes::Number(json::dsa::Numeric(42)));
   ASSERT_THROW(std::string s = value, json::BadCastException);
 }
 
@@ -309,7 +309,7 @@ TEST_F(ValueTest, BadAccessNumberAsObject) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::nodes::Number(42));
+  json::Value value(new json::nodes::Number(json::dsa::Numeric(42)));
   ASSERT_THROW((void)value["key"], json::BadAccessException);
 }
 
@@ -318,7 +318,7 @@ TEST_F(ValueTest, BadAccessNumberAsArray) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::nodes::Number(42));
+  json::Value value(new json::nodes::Number(json::dsa::Numeric(42)));
   ASSERT_THROW(value[0], json::BadAccessException);
 }
 
@@ -460,7 +460,7 @@ TEST_F(ValueTest, UpdatePrimitiveTypes) {
   delete array_;
   delete nested_obj_;
 
-  json::Value number_val(new json::nodes::Number(42));
+  json::Value number_val(new json::nodes::Number(json::dsa::Numeric(42)));
   json::Value string_val(new json::nodes::String("test"));
   json::Value bool_val(new json::nodes::Boolean(false));
 
@@ -490,7 +490,7 @@ TEST_F(ValueTest, AddToEmptyArrayNumberFirst) {
   delete nested_obj_;
 
   json::nodes::Array array;
-  array.push_back(new json::nodes::Number(10));
+  array.push_back(new json::nodes::Number(json::dsa::Numeric(10)));
   array.push_back(new json::nodes::Boolean(true));
 
   json::Value value;
@@ -508,7 +508,7 @@ TEST_F(ValueTest, AddToEmptyArrayBooleanFirst) {
 
   json::nodes::Array array;
   array.push_back(new json::nodes::Boolean(true));
-  array.push_back(new json::nodes::Number(10));
+  array.push_back(new json::nodes::Number(json::dsa::Numeric(10)));
 
   json::Value value;
   value.push_back(true);
@@ -574,10 +574,10 @@ TEST_F(ValueTest, AddToEmptyArrayValueFirst) {
   delete array_;
   delete nested_obj_;
 
-  json::Value num(new json::nodes::Number(8));
+  json::Value num(new json::nodes::Number(json::dsa::Numeric(8)));
 
   json::nodes::Array array;
-  array.push_back(new json::nodes::Number(8));
+  array.push_back(new json::nodes::Number(json::dsa::Numeric(8)));
   array.push_back(new json::nodes::String("string"));
 
   json::Value value;
@@ -613,7 +613,7 @@ TEST_F(ValueTest, AddToEmptyObjectNumberFirst) {
   delete nested_obj_;
 
   json::nodes::Object object;
-  object.insert("num", new json::nodes::Number(10));
+  object.insert("num", new json::nodes::Number(json::dsa::Numeric(10)));
   object.insert("bool", new json::nodes::Boolean(true));
 
   json::Value value;
@@ -631,7 +631,7 @@ TEST_F(ValueTest, AddToEmptyObjectBooleanFirst) {
 
   json::nodes::Object object;
   object.insert("bool", new json::nodes::Boolean(true));
-  object.insert("num", new json::nodes::Number(10));
+  object.insert("num", new json::nodes::Number(json::dsa::Numeric(10)));
 
   json::Value value;
   value.insert("bool", true);
@@ -697,10 +697,10 @@ TEST_F(ValueTest, AddToEmptyObjectValueFirst) {
   delete array_;
   delete nested_obj_;
 
-  json::Value num(new json::nodes::Number(8));
+  json::Value num(new json::nodes::Number(json::dsa::Numeric(8)));
 
   json::nodes::Object object;
-  object.insert("val", new json::nodes::Number(8));
+  object.insert("val", new json::nodes::Number(json::dsa::Numeric(8)));
   object.insert("str", new json::nodes::String("string"));
 
   json::Value value;
@@ -791,7 +791,7 @@ TEST_F(ValueTest, AssignNull) {
   delete array_;
   delete nested_obj_;
 
-  json::Value val(new json::nodes::Number(42));
+  json::Value val(new json::nodes::Number(json::dsa::Numeric(42)));
   val = nullptr;
   ASSERT_EQ(val, nullptr);
 }
@@ -801,7 +801,7 @@ TEST_F(ValueTest, CopyConstructor) {
   delete array_;
   delete nested_obj_;
 
-  json::Value val(new json::nodes::Number(42));
+  json::Value val(new json::nodes::Number(json::dsa::Numeric(42)));
   json::Value val_2(val);
   ASSERT_EQ(val, val_2);
 }
@@ -1299,7 +1299,7 @@ TEST_F(ValueTest, ObjectErase) {
   json::nodes::Object* expected = new json::nodes::Object();
   expected->insert("null", new json::nodes::Null());
   expected->insert("bool", new json::nodes::Boolean(true));
-  expected->insert("number", new json::nodes::Number(42.5));
+  expected->insert("number", new json::nodes::Number(json::dsa::Numeric(42.5)));
   expected->insert("string", new json::nodes::String("hello"));
   expected->insert("object", nested_obj_->clone());
 
@@ -1336,7 +1336,7 @@ TEST_F(ValueTest, ObjectEraseRange) {
   // arrange
   json::nodes::Object* expected = new json::nodes::Object();
   expected->insert("null", new json::nodes::Null());
-  expected->insert("number", new json::nodes::Number(42.5));
+  expected->insert("number", new json::nodes::Number(json::dsa::Numeric(42.5)));
   expected->insert("string", new json::nodes::String("hello"));
   expected->insert("object", nested_obj_->clone());
 

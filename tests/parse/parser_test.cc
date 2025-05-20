@@ -74,9 +74,9 @@ TEST_F(JsonParserTest, EmptyArray) {
 TEST_F(JsonParserTest, SimpleArray) {
   // arrange
   json::nodes::Array arr;
-  arr.push_back(new json::nodes::Number(1));
-  arr.push_back(new json::nodes::Number(2));
-  arr.push_back(new json::nodes::Number(3));
+  arr.push_back(new json::nodes::Number(json::dsa::Numeric(1)));
+  arr.push_back(new json::nodes::Number(json::dsa::Numeric(2)));
+  arr.push_back(new json::nodes::Number(json::dsa::Numeric(3)));
 
   // act + assert
   assert_parse("[1, 2, 3]", &arr);
@@ -96,10 +96,10 @@ TEST_F(JsonParserTest, LogicalValues) {
 TEST_F(JsonParserTest, Integers) {
   // arrange
   json::nodes::Array arr;
-  arr.push_back(new json::nodes::Number(0));
-  arr.push_back(new json::nodes::Number(42));
-  arr.push_back(new json::nodes::Number(0));
-  arr.push_back(new json::nodes::Number(-42));
+  arr.push_back(new json::nodes::Number(json::dsa::Numeric(0)));
+  arr.push_back(new json::nodes::Number(json::dsa::Numeric(42)));
+  arr.push_back(new json::nodes::Number(json::dsa::Numeric(0)));
+  arr.push_back(new json::nodes::Number(json::dsa::Numeric(-42)));
 
   // act + assert
   assert_parse("[0,42,-0,-42]", &arr);
@@ -108,8 +108,8 @@ TEST_F(JsonParserTest, Integers) {
 TEST_F(JsonParserTest, Floats) {
   // arrange
   json::nodes::Array arr;
-  arr.push_back(new json::nodes::Number(3.14));
-  arr.push_back(new json::nodes::Number(-3.14));
+  arr.push_back(new json::nodes::Number(json::dsa::Numeric(3.14)));
+  arr.push_back(new json::nodes::Number(json::dsa::Numeric(-3.14)));
 
   // act + assert
   assert_parse("[3.14,-3.14]", &arr);
@@ -119,9 +119,9 @@ TEST_F(JsonParserTest, ScientificNotation) {
   // arrange
   json::nodes::Array arr;
   arr.push_back(new json::nodes::Number(static_cast<int64_t>(1e10)));
-  arr.push_back(new json::nodes::Number(1e-10));
-  arr.push_back(new json::nodes::Number(1.23e10));
-  arr.push_back(new json::nodes::Number(-1.23e-10));
+  arr.push_back(new json::nodes::Number(json::dsa::Numeric(1e-10)));
+  arr.push_back(new json::nodes::Number(json::dsa::Numeric(1.23e10)));
+  arr.push_back(new json::nodes::Number(json::dsa::Numeric(-1.23e-10)));
 
   // act + assert
   assert_parse("[1e10,1e-10,1.23e+10,-1.23E-10]", &arr);
@@ -130,8 +130,8 @@ TEST_F(JsonParserTest, ScientificNotation) {
 TEST_F(JsonParserTest, ZeroWithExponent) {
   // arrange
   json::nodes::Array arr;
-  arr.push_back(new json::nodes::Number(0));  // 0e0
-  arr.push_back(new json::nodes::Number(0));  // -0e-0
+  arr.push_back(new json::nodes::Number(json::dsa::Numeric(0)));  // 0e0
+  arr.push_back(new json::nodes::Number(json::dsa::Numeric(0)));  // -0e-0
 
   // act + assert
   assert_parse("[0e0,-0e-0]", &arr);
@@ -140,9 +140,9 @@ TEST_F(JsonParserTest, ZeroWithExponent) {
 TEST_F(JsonParserTest, LargeExponents) {
   // arrange
   json::nodes::Array arr;
-  arr.push_back(new json::nodes::Number(1e-123));
-  arr.push_back(new json::nodes::Number(1e123));
-  arr.push_back(new json::nodes::Number(1e308));
+  arr.push_back(new json::nodes::Number(json::dsa::Numeric(1e-123)));
+  arr.push_back(new json::nodes::Number(json::dsa::Numeric(1e123)));
+  arr.push_back(new json::nodes::Number(json::dsa::Numeric(1e308)));
 
   // act + assert
   assert_parse("[1e-123,1e+123,1e308]", &arr);
@@ -151,8 +151,10 @@ TEST_F(JsonParserTest, LargeExponents) {
 TEST_F(JsonParserTest, VerySmallAndLargeNumbers) {
   // arrange
   json::nodes::Array arr;
-  arr.push_back(new json::nodes::Number(0.0000000000000000000001));
-  arr.push_back(new json::nodes::Number(9999999999999999999999.0));
+  arr.push_back(
+      new json::nodes::Number(json::dsa::Numeric(0.0000000000000000000001)));
+  arr.push_back(
+      new json::nodes::Number(json::dsa::Numeric(9999999999999999999999.0)));
 
   // act + assert
   assert_parse("[0.0000000000000000000001,9999999999999999999999]", &arr);
@@ -183,7 +185,7 @@ TEST_F(JsonParserTest, ComplexStructure) {
   inner_obj->insert("first", new json::nodes::String("John"));
   inner_obj->insert("last", new json::nodes::String("Doe"));
   obj.insert("name", inner_obj);
-  obj.insert("age", new json::nodes::Number(30));
+  obj.insert("age", new json::nodes::Number(json::dsa::Numeric(30)));
   obj.insert("isStudent", new json::nodes::Boolean(false));
 
   json::nodes::Array* hobbies = new json::nodes::Array();
