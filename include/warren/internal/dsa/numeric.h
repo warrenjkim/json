@@ -101,7 +101,13 @@ struct Numeric {
   };
 
   Numeric() : intgr(), type(INTEGRAL) {}
+
+  template <ReasonableInteger T>
+  Numeric(const T integer)
+      : intgr(std::move(Integral(integer))), type(INTEGRAL) {}
+
   Numeric(Integral&& intgr) : intgr(std::move(intgr)), type(INTEGRAL) {}
+
   Numeric(double dbl) : dbl(dbl), type(DOUBLE) {}
 
   [[noreturn]] void unreachable() const {
