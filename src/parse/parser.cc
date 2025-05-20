@@ -211,7 +211,7 @@ nodes::Number* Parser::parse_number(json::dsa::Queue<Token>& tokens,
       base = std::stod(number_string);
     }
 
-    return new nodes::Number(base * std::pow(10, exponent));
+    return new nodes::Number(dsa::Numeric(base * std::pow(10, exponent)));
   } catch (const std::exception& e) {
     return nullptr;
   }

@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include "warren/internal/dsa/numeric.h"
 #include "warren/internal/nodes/array.h"
 #include "warren/internal/nodes/null.h"
 #include "warren/internal/nodes/number.h"
@@ -20,7 +21,7 @@ namespace json {
 
 template <ReasonableNumber T>
 Value::Value(const T value)
-    : node_(new nodes::Number(value)), parent_(nullptr) {}
+    : node_(new nodes::Number(dsa::Numeric(value))), parent_(nullptr) {}
 
 template <ReasonableString T>
 Value::Value(const T& value)
@@ -58,7 +59,7 @@ void Value::insert(const std::string& key, const T value) {
   visitors::ObjectVisitor visitor;
   node_->accept(visitor);
 
-  visitor.result().insert(key, new nodes::Number(value));
+  visitor.result().insert(key, new nodes::Number(dsa::Numeric(value)));
 }
 
 template <ReasonableString T>
@@ -150,12 +151,13 @@ Value& Value::operator[](const T& key) {
 template <ReasonableNumber T>
 Value& Value::operator=(const T value) {
   if (parent_) {
-    visitors::SetVisitor visitor(&node_, new nodes::Number(value), *key_);
+    visitors::SetVisitor visitor(&node_, new nodes::Number(dsa::Numeric(value)),
+                                 *key_);
     parent_->node_->accept(visitor);
     parent_->cache_.erase(*key_);
   } else {
     delete node_;
-    node_ = new nodes::Number(value);
+    node_ = new nodes::Number(dsa::Numeric(value));
   }
 
   return *this;
@@ -177,7 +179,7 @@ Value& Value::operator=(const T& value) {
 
 template <ReasonableNumber T>
 bool operator==(const Value& lhs, const T rhs) {
-  return lhs.node_ && *lhs.node_ == nodes::Number(rhs);
+  return lhs.node_ && *lhs.node_ == nodes::Number(dsa::Numeric(rhs));
 }
 
 template <ReasonableString T>

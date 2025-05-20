@@ -34,7 +34,7 @@ nodes::Boolean* Boolean() { return new nodes::Boolean(false); }
 
 nodes::Null* Null() { return new nodes::Null(); }
 
-nodes::Number* Number() { return new nodes::Number(0); }
+nodes::Number* Number() { return new nodes::Number(dsa::Numeric()); }
 
 nodes::Object* Object() { return new nodes::Object(); }
 
