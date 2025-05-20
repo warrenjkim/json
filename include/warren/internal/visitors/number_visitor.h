@@ -1,5 +1,6 @@
 #pragma once
 
+#include "warren/internal/dsa/numeric.h"
 #include "warren/internal/nodes/node.h"
 #include "warren/internal/visitors/visitor.h"
 
@@ -20,13 +21,13 @@ class NumberVisitor : public Visitor {
   void visit(nodes::String& node) override;
 
  public:
-  double result();
+  dsa::Numeric result();
 
  public:
   ~NumberVisitor() = default;
 
  private:
-  double result_;
+  dsa::Numeric result_;
 };
 
 }  // namespace visitors

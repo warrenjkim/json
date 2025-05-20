@@ -37,7 +37,7 @@ void NumberVisitor::visit(nodes::String& node) {
   throw BadCastException("Expected type Number, but was String.");
 }
 
-double NumberVisitor::result() { return result_; }
+dsa::Numeric NumberVisitor::result() { return result_; }
 
 }  // namespace visitors
 
