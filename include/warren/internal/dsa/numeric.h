@@ -100,6 +100,7 @@ struct Numeric {
     double dbl;
   };
 
+  Numeric() : intgr(), type(INTEGRAL) {}
   Numeric(Integral&& intgr) : intgr(std::move(intgr)), type(INTEGRAL) {}
   Numeric(double dbl) : dbl(dbl), type(DOUBLE) {}
 
