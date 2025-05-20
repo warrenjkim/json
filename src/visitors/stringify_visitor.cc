@@ -3,6 +3,7 @@
 #include <cmath>  // floor
 #include <string>
 
+#include "warren/internal/dsa/numeric.h"
 #include "warren/internal/nodes/array.h"
 #include "warren/internal/nodes/boolean.h"
 #include "warren/internal/nodes/node.h"
@@ -47,11 +48,10 @@ void StringifyVisitor::visit(nodes::Boolean& node) {
 void StringifyVisitor::visit(nodes::Null& node) { result_ += "null"; }
 
 void StringifyVisitor::visit(nodes::Number& node) {
-  double number = node.get();
-  result_ += std::floor(number) == number
-                 ? std::to_string((int64_t)number)
-                 : std::to_string(number).substr(
-                       0, std::to_string(number).find_last_not_of('0') + 1);
+  dsa::Numeric number = node.get();
+  result_ += (number.type == dsa::Numeric::INTEGRAL)
+                 ? std::to_string(static_cast<int64_t>(number.intgr))
+                 : std::to_string(number.dbl);
 }
 
 void StringifyVisitor::visit(nodes::Object& node) {
