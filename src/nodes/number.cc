@@ -1,5 +1,6 @@
 #include "warren/internal/nodes/number.h"
 
+#include "warren/internal/dsa/numeric.h"
 #include "warren/internal/visitors/visitor.h"
 
 namespace json {
@@ -14,11 +15,11 @@ void Number::accept(visitors::ConstVisitor& visitor) const {
 
 Node* Number::clone() const { return new Number(value_); }
 
-Number::Number(double value) : value_(value) {}
+Number::Number(const dsa::Numeric& value) : value_(value) {}
 
-double Number::get() { return value_; }
+dsa::Numeric Number::get() { return value_; }
 
-const double Number::get() const { return value_; }
+const dsa::Numeric Number::get() const { return value_; }
 
 }  // namespace nodes
 
