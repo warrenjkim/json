@@ -264,7 +264,7 @@ Token Lexer::lex_fraction() {
     pos_++;
   }
 
-  return json_.substr(start, pos_ - start);
+  return Token(json_.substr(start, pos_ - start), TokenType::NUMBER);
 }
 
 Token Lexer::lex_exponent() {
