@@ -501,9 +501,11 @@ nodes::Number* Parser::parse_number() {
     exponent = value.substr(j + 1, k - j - 1);
   }
 
+  nodes::Number* number =
+      new nodes::Number(dsa::to_numeric(integer, fraction, exponent));
   ++lexer_;
 
-  return new nodes::Number(dsa::to_numeric(integer, fraction, exponent));
+  return number;
 }
 
 nodes::Array* Parser::parse_array() {
