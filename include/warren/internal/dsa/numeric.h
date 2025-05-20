@@ -106,11 +106,9 @@ struct Numeric {
   template <ReasonableNumber T>
   explicit Numeric(T value) {
     if (std::is_integral_v<T>) {
-      std::cout << "here" << std::endl;
       new (&intgr) Integral(value);
       type = INTEGRAL;
     } else {
-      std::cout << "sjflajkd" << std::endl;
       dbl = value;
       type = DOUBLE;
     }
