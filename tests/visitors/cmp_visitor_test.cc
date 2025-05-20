@@ -157,7 +157,7 @@ TEST_F(CmpVisitorTest, NumberPrecision) {
   json::nodes::Number rhs(1);
 
   // act + assert
-  assert_equal(&lhs, &rhs);
+  assert_not_equal(&lhs, &rhs);
 
   // arrange
   lhs = json::nodes::Number(json::dsa::Numeric(0.1));

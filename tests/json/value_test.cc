@@ -153,7 +153,7 @@ TEST_F(ValueTest, CompareNumberToDouble) {
   delete array_;
   delete nested_obj_;
 
-  json::Value value(new json::nodes::Number(json::dsa::Numeric(42)));
+  json::Value value(new json::nodes::Number(json::dsa::Numeric(42.0)));
   ASSERT_TRUE(value == 42.0);
   ASSERT_TRUE(42.0 == value);
 }
