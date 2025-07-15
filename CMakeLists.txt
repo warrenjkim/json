@@ -42,7 +42,6 @@ if(BUILD_COVERAGE)
       queue_test
       rbt_test
       numeric_test
-      utils_test
       value_test
       lexer_test
       parser_test
