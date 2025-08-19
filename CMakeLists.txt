@@ -45,7 +45,6 @@ if(BUILD_COVERAGE)
       value_test
       lexer_test
       parser_test
-      tokenizer_test
       cmp_visitor_test
       get_visitor_test
       set_visitor_test
