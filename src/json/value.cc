@@ -69,7 +69,7 @@ Value& Value::operator=(Value&& other) {
 
         parent_->node_->accept(visitor);
         delete visitor.result()[*key_];
-        visitor.result().insert(*key_, node_);
+        visitor.result().insert({*key_, node_});
       } break;
     }
   }
@@ -203,7 +203,7 @@ void Value::insert(const std::string& key, const nullptr_t) {
   visitors::ObjectVisitor visitor;
   node_->accept(visitor);
 
-  visitor.result().insert(key, new nodes::Null());
+  visitor.result().insert({key, new nodes::Null()});
 }
 
 void Value::insert(const std::string& key, bool value) {
@@ -214,7 +214,7 @@ void Value::insert(const std::string& key, bool value) {
   visitors::ObjectVisitor visitor;
   node_->accept(visitor);
 
-  visitor.result().insert(key, new nodes::Boolean(value));
+  visitor.result().insert({key, new nodes::Boolean(value)});
 }
 
 void Value::insert(const std::string& key, const char* value) {
@@ -225,7 +225,7 @@ void Value::insert(const std::string& key, const char* value) {
   visitors::ObjectVisitor visitor;
   node_->accept(visitor);
 
-  visitor.result().insert(key, new nodes::String(value));
+  visitor.result().insert({key, new nodes::String(value)});
 }
 
 void Value::insert(const std::string& key, const Value& value) {
@@ -237,9 +237,9 @@ void Value::insert(const std::string& key, const Value& value) {
   node_->accept(visitor);
 
   if (!value.node_) {
-    visitor.result().insert(key, new nodes::Null());
+    visitor.result().insert({key, new nodes::Null()});
   } else {
-    visitor.result().insert(key, value.node_->clone());
+    visitor.result().insert({key, value.node_->clone()});
   }
 }
 
@@ -252,9 +252,9 @@ void Value::insert(const std::string& key, const nodes::Node* node) {
   node_->accept(visitor);
 
   if (!node) {
-    visitor.result().insert(key, new nodes::Null());
+    visitor.result().insert({key, new nodes::Null()});
   } else {
-    visitor.result().insert(key, node->clone());
+    visitor.result().insert({key, node->clone()});
   }
 }
 
@@ -337,7 +337,7 @@ Value& Value::operator[](const char* key) {
 
   visitors::GetVisitor visitor(key);
   node_->accept(visitor);
-  cache_.insert(key, Value());
+  cache_.insert({key, Value()});
   cache_[key].node_ = visitor.result();
   cache_[key].parent_ = this;
   cache_[key].key_ = key;

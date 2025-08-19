@@ -1,8 +1,8 @@
 #include "warren/internal/nodes/object.h"
 
+#include <map>
 #include <string>
 
-#include "warren/internal/dsa/map.h"
 #include "warren/internal/visitors/visitor.h"
 
 namespace json {
@@ -24,7 +24,7 @@ Node* Object::clone() const {
   return obj;
 }
 
-Object::Object(const dsa::Map<std::string, Node*>& properties) {
+Object::Object(const std::map<std::string, Node*>& properties) {
   for (auto& [key, value] : properties) {
     properties_[key] = value->clone();
   }
@@ -37,16 +37,16 @@ Object::~Object() {
 }
 
 void Object::insert(const std::string& key, Node* value) {
-  properties_.insert(key, value);
+  properties_.insert({key, value});
 }
 
 const size_t Object::size() const { return properties_.size(); }
 
 const bool Object::empty() const { return properties_.empty(); }
 
-dsa::Map<std::string, Node*>& Object::get() { return properties_; }
+std::map<std::string, Node*>& Object::get() { return properties_; }
 
-const dsa::Map<std::string, Node*>& Object::get() const { return properties_; }
+const std::map<std::string, Node*>& Object::get() const { return properties_; }
 
 }  // namespace nodes
 

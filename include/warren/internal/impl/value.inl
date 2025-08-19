@@ -59,7 +59,7 @@ void Value::insert(const std::string& key, const T value) {
   visitors::ObjectVisitor visitor;
   node_->accept(visitor);
 
-  visitor.result().insert(key, new nodes::Number(dsa::Numeric(value)));
+  visitor.result().insert({key, new nodes::Number(dsa::Numeric(value))});
 }
 
 template <ReasonableString T>
@@ -70,7 +70,7 @@ void Value::insert(const std::string& key, const T& value) {
   visitors::ObjectVisitor visitor;
   node_->accept(visitor);
 
-  visitor.result().insert(key, new nodes::String(value));
+  visitor.result().insert({key, new nodes::String(value)});
 }
 
 template <ReasonableInteger T>
@@ -120,7 +120,7 @@ Value& Value::operator[](const T index) {
 
   visitors::GetVisitor visitor(index);
   node_->accept(visitor);
-  cache_.insert(key, Value());
+  cache_.insert({key, Value()});
   cache_[key].node_ = visitor.result();
   cache_[key].parent_ = this;
   cache_[key].key_ = key;

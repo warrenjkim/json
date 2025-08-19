@@ -12,7 +12,6 @@
 #include "warren/internal/nodes/number.h"
 #include "warren/internal/nodes/object.h"
 #include "warren/internal/nodes/string.h"
-#include "warren/json/exception.h"
 
 class ValueTest : public ::testing::Test {
  protected:
@@ -824,11 +823,11 @@ TEST_F(ValueTest, ObjectMoveSemantics) {
 
   // assert
   json::nodes::Object expected_obj1;
-  expected_obj1.get().insert("key2", new json::nodes::String("value2"));
+  expected_obj1.get().insert({"key2", new json::nodes::String("value2")});
 
   json::nodes::Object expected_obj2;
-  expected_obj2.get().insert("keyA", new json::nodes::String("valueA"));
-  expected_obj2.get().insert("keyX", new json::nodes::String("value1"));
+  expected_obj2.get().insert({"keyA", new json::nodes::String("valueA")});
+  expected_obj2.get().insert({"keyX", new json::nodes::String("value1")});
 
   EXPECT_EQ(obj1, expected_obj1);
   EXPECT_EQ(obj2, expected_obj2);
@@ -881,8 +880,8 @@ TEST_F(ValueTest, ObjectRemove) {
 
   // assert
   json::nodes::Object expected_obj;
-  expected_obj.get().insert("key1", new json::nodes::String("value1"));
-  expected_obj.get().insert("key3", new json::nodes::String("value3"));
+  expected_obj.get().insert({"key1", new json::nodes::String("value1")});
+  expected_obj.get().insert({"key3", new json::nodes::String("value3")});
 
   EXPECT_EQ(obj, expected_obj);
 }

@@ -1,6 +1,7 @@
 #include "warren/internal/visitors/object_visitor.h"
 
-#include "warren/internal/dsa/map.h"
+#include <map>
+
 #include "warren/internal/nodes/array.h"
 #include "warren/internal/nodes/boolean.h"
 #include "warren/internal/nodes/node.h"
@@ -38,7 +39,7 @@ void ObjectVisitor::visit(nodes::String& node) {
   throw BadCastException("Expected type Object, but was String.");
 }
 
-dsa::Map<std::string, nodes::Node*>& ObjectVisitor::result() {
+std::map<std::string, nodes::Node*>& ObjectVisitor::result() {
   return *result_;
 }
 

@@ -1,8 +1,8 @@
 #pragma once
 
+#include <map>
 #include <string>
 
-#include "warren/internal/dsa/map.h"
 #include "warren/internal/nodes/node.h"
 #include "warren/internal/visitors/visitor.h"
 
@@ -23,13 +23,13 @@ class ObjectVisitor : public Visitor {
   void visit(nodes::String& node) override;
 
  public:
-  dsa::Map<std::string, nodes::Node*>& result();
+  std::map<std::string, nodes::Node*>& result();
 
  public:
   ~ObjectVisitor() = default;
 
  private:
-  dsa::Map<std::string, nodes::Node*>* result_;
+  std::map<std::string, nodes::Node*>* result_;
 };
 
 }  // namespace visitors

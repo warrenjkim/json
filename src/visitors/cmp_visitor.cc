@@ -1,6 +1,6 @@
 #include "warren/internal/visitors/cmp_visitor.h"
 
-#include <cmath>
+#include <map>
 #include <optional>
 #include <vector>
 
@@ -109,7 +109,7 @@ void CmpVisitor::visit(const nodes::Object& rhs) {
     return;
   }
 
-  dsa::Map<std::string, nodes::Node*>& lhs = visitor.result();
+  std::map<std::string, nodes::Node*>& lhs = visitor.result();
   if (lhs.size() != rhs.get().size()) {
     result_ = false;
     return;

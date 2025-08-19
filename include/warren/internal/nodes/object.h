@@ -1,10 +1,10 @@
 #pragma once
 
 #include <cstddef>
+#include <map>
 #include <string>
 
 #include "node.h"
-#include "warren/internal/dsa/map.h"
 
 namespace json {
 
@@ -20,7 +20,7 @@ class Object : public Node {
 
  public:
   Object() = default;
-  Object(const dsa::Map<std::string, Node*>& properties);
+  Object(const std::map<std::string, Node*>& properties);
   ~Object();
 
   Object(Object&&) = delete;
@@ -34,11 +34,11 @@ class Object : public Node {
   const bool empty() const;
 
  public:
-  dsa::Map<std::string, Node*>& get();
-  const dsa::Map<std::string, Node*>& get() const;
+  std::map<std::string, Node*>& get();
+  const std::map<std::string, Node*>& get() const;
 
  private:
-  dsa::Map<std::string, Node*> properties_;
+  std::map<std::string, Node*> properties_;
 };
 
 }  // namespace nodes

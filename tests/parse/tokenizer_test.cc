@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include <optional>
+#include <queue>
 #include <string>
 #include <vector>
 
@@ -15,16 +16,16 @@ class JsonTokenizerTest : public ::testing::Test {
                            const std::vector<json::Token>& expected_tokens) {
     auto result = json::Tokenizer::tokenize(input);
     EXPECT_TRUE(result.has_value()) << "Failed to tokenize: " << input;
-    json::dsa::Queue<json::Token> actual_tokens = result.value();
+    std::queue<json::Token> actual_tokens = result.value();
     for (const json::Token& expected : expected_tokens) {
       EXPECT_TRUE(!actual_tokens.empty()) << "Fewer tokens than expected";
       const auto& actual = actual_tokens.front();
       EXPECT_EQ(expected, actual)
           << "Token mismatch. \nExpected: value='" + expected.value +
                  "', type=" + std::to_string(static_cast<int>(expected.type)) +
-                 "\n" + "Actual: value='" + actual->value +
-                 "', type=" + std::to_string(static_cast<int>(actual->type));
-      actual_tokens.dequeue();
+                 "\n" + "Actual: value='" + actual.value +
+                 "', type=" + std::to_string(static_cast<int>(actual.type));
+      actual_tokens.pop();
     }
     EXPECT_TRUE(actual_tokens.empty()) << "More tokens than expected";
   }

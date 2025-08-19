@@ -3,18 +3,17 @@
 #include <cctype>
 #include <cstdio>
 #include <optional>
+#include <queue>
 #include <string>
 #include <string_view>
 #include <utility>  // pair
 
-#include "warren/internal/dsa/queue.h"
 #include "warren/internal/parse/token.h"
 
 namespace json {
 
-std::optional<json::dsa::Queue<Token>> Tokenizer::tokenize(
-    std::string_view json) {
-  json::dsa::Queue<Token> tokens;
+std::optional<std::queue<Token>> Tokenizer::tokenize(std::string_view json) {
+  std::queue<Token> tokens;
 
   size_t index = strip_whitespace(json, 0);
   if (index >= json.length()) {
@@ -46,9 +45,10 @@ std::optional<json::dsa::Queue<Token>> Tokenizer::tokenize(
   return tokens;
 }
 
-std::optional<size_t> Tokenizer::tokenize_object(
-    const std::string_view json, size_t index, json::dsa::Queue<Token>& tokens,
-    const size_t indent_level) {
+std::optional<size_t> Tokenizer::tokenize_object(const std::string_view json,
+                                                 size_t index,
+                                                 std::queue<Token>& tokens,
+                                                 const size_t indent_level) {
   char c = json[index];
   tokens.emplace(c, TokenType::OBJECT_START);
 
@@ -95,7 +95,7 @@ std::optional<size_t> Tokenizer::tokenize_object(
 
 std::optional<size_t> Tokenizer::tokenize_array(const std::string_view json,
                                                 size_t index,
-                                                json::dsa::Queue<Token>& tokens,
+                                                std::queue<Token>& tokens,
                                                 const size_t indent_level) {
   char c = json[index];
   tokens.emplace(c, TokenType::ARRAY_START);
@@ -143,7 +143,7 @@ std::optional<size_t> Tokenizer::tokenize_array(const std::string_view json,
 
 std::optional<size_t> Tokenizer::tokenize_value(const std::string_view json,
                                                 size_t index,
-                                                json::dsa::Queue<Token>& tokens,
+                                                std::queue<Token>& tokens,
                                                 const size_t indent_level) {
   char c = json[index];
   if (c == '"') {
@@ -161,9 +161,10 @@ std::optional<size_t> Tokenizer::tokenize_value(const std::string_view json,
   return std::nullopt;
 }
 
-std::optional<size_t> Tokenizer::tokenize_string(
-    const std::string_view json, size_t index, json::dsa::Queue<Token>& tokens,
-    const size_t indent_level) {
+std::optional<size_t> Tokenizer::tokenize_string(const std::string_view json,
+                                                 size_t index,
+                                                 std::queue<Token>& tokens,
+                                                 const size_t indent_level) {
   char c = json[index++];
   tokens.emplace(c, TokenType::QUOTE);
 
@@ -198,9 +199,10 @@ std::optional<size_t> Tokenizer::tokenize_string(
   return std::nullopt;
 }
 
-std::optional<size_t> Tokenizer::tokenize_number(
-    const std::string_view json, size_t index, json::dsa::Queue<Token>& tokens,
-    const size_t indent_level) {
+std::optional<size_t> Tokenizer::tokenize_number(const std::string_view json,
+                                                 size_t index,
+                                                 std::queue<Token>& tokens,
+                                                 const size_t indent_level) {
   std::string token = "";
   if (json[index] == '-') {
     token += '-';
@@ -250,9 +252,10 @@ std::optional<size_t> Tokenizer::tokenize_number(
   return index;
 }
 
-std::optional<size_t> Tokenizer::tokenize_key_value(
-    const std::string_view json, size_t index, json::dsa::Queue<Token>& tokens,
-    const size_t indent_level) {
+std::optional<size_t> Tokenizer::tokenize_key_value(const std::string_view json,
+                                                    size_t index,
+                                                    std::queue<Token>& tokens,
+                                                    const size_t indent_level) {
   std::optional<size_t> new_index =
       tokenize_string(json, index, tokens, indent_level + 1);
   if (!new_index) {
@@ -301,7 +304,7 @@ std::pair<size_t, std::string> Tokenizer::tokenize_integer(
 }
 
 std::optional<size_t> Tokenizer::tokenize_logical_value(
-    const std::string_view json, size_t index, json::dsa::Queue<Token>& tokens,
+    const std::string_view json, size_t index, std::queue<Token>& tokens,
     const size_t indent_level) {
   switch (json[index]) {
     case 't':
@@ -335,7 +338,7 @@ std::optional<size_t> Tokenizer::tokenize_logical_value(
 
 std::optional<std::pair<size_t, std::string>>
 Tokenizer::tokenize_control_character(const std::string_view json, size_t index,
-                                      json::dsa::Queue<Token>& tokens,
+                                      std::queue<Token>& tokens,
                                       const size_t indent_level) {
   if (index >= json.length()) {
     return std::nullopt;

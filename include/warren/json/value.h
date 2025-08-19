@@ -1,10 +1,10 @@
 #pragma once
 
 #include <cstddef>
+#include <map>
 #include <string>
 #include <vector>
 
-#include "warren/internal/dsa/map.h"
 #include "warren/internal/nodes/node.h"
 #include "warren/internal/utils/concepts.h"
 
@@ -154,7 +154,7 @@ class Value {
   nodes::Node* node_;
   Value* parent_;
   std::optional<std::string> key_;
-  dsa::Map<std::string, Value> cache_;
+  std::map<std::string, Value> cache_;
 
  private:
   enum ContainerType { ARRAY, OBJECT };
@@ -196,7 +196,7 @@ class Value {
     union ContainerIterator {
       std::vector<nodes::Node*>::iterator array_it =
           std::vector<nodes::Node*>::iterator();
-      dsa::Map<std::string, nodes::Node*>::Iterator map_it;
+      std::map<std::string, nodes::Node*>::iterator map_it;
 
       ContainerIterator() {}
       ~ContainerIterator() {}
@@ -252,7 +252,7 @@ class Value {
     union ContainerConstIterator {
       std::vector<nodes::Node*>::const_iterator array_cit =
           std::vector<nodes::Node*>::const_iterator();
-      dsa::Map<std::string, nodes::Node*>::ConstIterator map_cit;
+      std::map<std::string, nodes::Node*>::const_iterator map_cit;
       ContainerConstIterator() {}
       ~ContainerConstIterator() {}
     } cit_;
