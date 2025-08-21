@@ -3,7 +3,6 @@ file(GLOB_RECURSE JSON_SOURCES
   "nodes/*.cc"
   "parse/*.cc"
   "dsa/*.cc"
-  "visitors/*.cc"
 )
 
 add_library(warren_json ${JSON_SOURCES})

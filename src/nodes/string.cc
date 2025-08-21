@@ -2,17 +2,9 @@
 
 #include <string>
 
-#include "warren/internal/visitors/visitor.h"
-
 namespace json {
 
 namespace nodes {
-
-void String::accept(visitors::Visitor& visitor) { visitor.visit(*this); }
-
-void String::accept(visitors::ConstVisitor& visitor) const {
-  visitor.visit(*this);
-}
 
 Node* String::clone() const { return new String(value_); }
 

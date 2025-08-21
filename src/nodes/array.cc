@@ -3,17 +3,10 @@
 #include <vector>
 
 #include "warren/internal/nodes/node.h"
-#include "warren/internal/visitors/visitor.h"
 
 namespace json {
 
 namespace nodes {
-
-void Array::accept(visitors::Visitor& visitor) { visitor.visit(*this); }
-
-void Array::accept(visitors::ConstVisitor& visitor) const {
-  visitor.visit(*this);
-}
 
 Node* Array::clone() const {
   Array* arr = new Array();

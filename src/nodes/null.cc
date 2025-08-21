@@ -2,17 +2,9 @@
 
 #include <cstddef>
 
-#include "warren/internal/visitors/visitor.h"
-
 namespace json {
 
 namespace nodes {
-
-void Null::accept(visitors::Visitor& visitor) { visitor.visit(*this); }
-
-void Null::accept(visitors::ConstVisitor& visitor) const {
-  visitor.visit(*this);
-}
 
 Node* Null::clone() const { return new Null(); }
 

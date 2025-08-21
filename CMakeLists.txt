@@ -42,12 +42,7 @@ if(BUILD_COVERAGE)
       queue_test
       rbt_test
       numeric_test
-      value_test
       lexer_test
       parser_test
-      cmp_visitor_test
-      get_visitor_test
-      set_visitor_test
-      stringify_visitor_test
   )
 endif()

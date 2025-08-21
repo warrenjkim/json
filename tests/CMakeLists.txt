@@ -31,11 +31,6 @@ function(add_unit_test test_name relative_path)
 endfunction()
 
 add_unit_test(numeric_test dsa/numeric_test.cc)
-add_unit_test(value_test json/value_test.cc)
 add_unit_test(lexer_test parse/lexer_test.cc)
 add_unit_test(parser_test parse/parser_test.cc)
-add_unit_test(cmp_visitor_test visitors/cmp_visitor_test.cc)
-add_unit_test(get_visitor_test visitors/get_visitor_test.cc)
-add_unit_test(set_visitor_test visitors/set_visitor_test.cc)
-add_unit_test(stringify_visitor_test visitors/stringify_visitor_test.cc)
 

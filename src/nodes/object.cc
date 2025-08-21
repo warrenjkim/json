@@ -3,17 +3,9 @@
 #include <map>
 #include <string>
 
-#include "warren/internal/visitors/visitor.h"
-
 namespace json {
 
 namespace nodes {
-
-void Object::accept(visitors::Visitor& visitor) { visitor.visit(*this); }
-
-void Object::accept(visitors::ConstVisitor& visitor) const {
-  visitor.visit(*this);
-}
 
 Node* Object::clone() const {
   Object* obj = new Object();
