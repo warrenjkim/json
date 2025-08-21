@@ -1,0 +1,11 @@
+common --announce_rc
+common --color=yes
+common --curses=yes
+
+common --check_direct_dependencies=warning
+
+build --cxxopt=-std=gnu++23
+build --cxxopt=-Wall
+build --cxxopt=-Wextra
+build --verbose_failures
+build --keep_going
