@@ -37,50 +37,7 @@ jobs:
       - name: Build all targets
         run: bazel build //...
 
-      - name: Run tests with coverage
-        run: bazel coverage //tests/...
+      - name: Run tests
+        run: bazel test //tests/...
 
-      - name: Install lcov
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y lcov
-
-      - name: Generate HTML coverage report
-        run: |
-          # Find the coverage file (Bazel puts it in different locations)
-          COVERAGE_FILE=$(find bazel-out -name "_coverage_report.dat" -o -name "coverage.dat" | head -1)
-
-          if [ -f "$COVERAGE_FILE" ]; then
-            echo "Found coverage file: $COVERAGE_FILE"
-            genhtml "$COVERAGE_FILE" \
-              --output-directory coverage-html \
-              --title "Warren JSON Library Coverage" \
-              --show-details \
-              --legend \
-              --highlight \
-              --frames
-          else
-            echo "Coverage file not found, searching for .gcov files..."
-            mkdir -p coverage-html
-            echo "<html><body><h1>No coverage data found</h1></body></html>" > coverage-html/index.html
-          fi
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage-html
-          retention-days: 30
-
-      - name: Print coverage summary
-        run: |
-          if [ -d "coverage-html" ] && [ -f "coverage-html/index.html" ]; then
-            echo "Coverage report generated successfully"
-            # Try to extract summary info
-            if command -v lcov >/dev/null 2>&1; then
-              COVERAGE_FILE=$(find bazel-out -name "_coverage_report.dat" -o -name "coverage.dat" | head -1)
-              if [ -f "$COVERAGE_FILE" ]; then
-                lcov --summary "$COVERAGE_FILE"
-              fi
-            fi
-          fi
+      # TODO(add coverage)
