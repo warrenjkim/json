@@ -6,10 +6,7 @@
 #include "token.h"
 
 namespace json {
-
 namespace syntax {
-
-struct Token;
 
 class Lexer {
  public:
@@ -56,5 +53,4 @@ class Lexer {
 };
 
 }  // namespace syntax
-
 }  // namespace json

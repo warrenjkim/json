@@ -1,12 +1,11 @@
-#include "warren/internal/parse/lexer.h"
+#include "lexer.h"
 
 #include <cctype>    // isdigit, isspace, isxdigit, tolower
 #include <optional>  // nullopt, optional
 
-#include "warren/internal/parse/token.h"
+#include "token.h"
 
 namespace json {
-
 namespace syntax {
 
 Lexer::Lexer(const std::string& json) : pos_(0), json_(json), curr_() {}
@@ -20,16 +19,12 @@ Token Lexer::next_token() {
   switch (json_[pos_]) {
     case 'n':
       return lex_null();
-      break;
     case 't':
       return lex_true();
-      break;
     case 'f':
       return lex_false();
-      break;
     case '"':
       return lex_string();
-      break;
     case '-':
     case '0':
     case '1':
@@ -42,34 +37,26 @@ Token Lexer::next_token() {
     case '8':
     case '9':
       return lex_number();
-      break;
     case '[':
       pos_++;
       return Token("[", TokenType::ARRAY_START);
-      break;
     case ']':
       pos_++;
       return Token("]", TokenType::ARRAY_END);
-      break;
     case '{':
       pos_++;
       return Token("{", TokenType::OBJECT_START);
-      break;
     case ':':
       pos_++;
       return Token(":", TokenType::COLON);
-      break;
     case '}':
       pos_++;
       return Token("}", TokenType::OBJECT_END);
-      break;
     case ',':
       pos_++;
       return Token(",", TokenType::COMMA);
-      break;
     default:
       return Token(std::string(1, json_[pos_++]), TokenType::UNKNOWN);
-      break;
   }
 }
 
@@ -201,8 +188,6 @@ std::optional<std::string> Lexer::lex_ctrl() {
 }
 
 Token Lexer::lex_number() {
-  size_t start = pos_;
-
   Token integer = lex_integer();
   if (integer.type == TokenType::UNKNOWN) {
     return integer;
@@ -295,5 +280,4 @@ void Lexer::strip_whitespace() {
 }
 
 }  // namespace syntax
-
 }  // namespace json

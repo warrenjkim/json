@@ -1,7 +1,7 @@
-#include "warren/internal/parse/lexer.h"
+#include "warren/json/internal/parse/lexer.h"
 
 #include "gtest/gtest.h"
-#include "warren/internal/parse/token.h"
+#include "warren/json/internal/parse/token.h"
 
 class LexerTest : public ::testing::Test {};
 

@@ -1,4 +1,5 @@
-**/build*
+**/bazel-*
 **/.cache
 **/compile_commands.json
-**/logs
+external/
+**/.DS_Store

@@ -3,7 +3,6 @@
 #include <string>
 
 namespace json {
-
 namespace syntax {
 
 enum class TokenType {
@@ -23,8 +22,8 @@ enum class TokenType {
 };
 
 struct Token {
-  std::string value;
   TokenType type;
+  std::string value;
 
   Token(std::string value = "", TokenType type = TokenType::UNKNOWN)
       : type(type), value(std::move(value)) {}
@@ -35,5 +34,4 @@ struct Token {
 };
 
 }  // namespace syntax
-
 }  // namespace json

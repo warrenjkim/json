@@ -1,16 +1,16 @@
-#include "warren/internal/parse/parser.h"
+#include "parser.h"
 
 #include <cstddef>
 #include <cstdint>
+#include <map>
 #include <string>
-#include <string_view>
+#include <vector>
 
-#include "warren/internal/dsa/numeric.h"
-#include "warren/internal/nodes/node.h"
-#include "warren/internal/nodes/object.h"
-#include "warren/internal/parse/lexer.h"
-#include "warren/internal/parse/token.h"
-#include "warren/json/exception.h"
+#include "lexer.h"
+#include "token.h"
+#include "warren/json/internal/ast/object.h"
+#include "warren/json/node.h"
+#include "warren/json/utils/exception.h"
 
 namespace {
 
@@ -115,14 +115,13 @@ void resolve_unicode_sequences(const std::string& s, std::string& res) {
 }  // namespace
 
 namespace json {
-
 namespace syntax {
 
-Parser::Parser(Lexer&& lexer) : lexer_(std::move(lexer)), root_(nullptr) {}
+Parser::Parser(Lexer lexer) : lexer_(std::move(lexer)) {}
 
-nodes::Node* Parser::parse() {
+ast::Node* Parser::parse() {
   ++lexer_;
-  nodes::Node* json = parse_value();
+  ast::Node* json = parse_value();
   if (lexer_->type != TokenType::END_OF_JSON) {
     throw ParseException("Unexpected token: " + lexer_->value);
   }
@@ -130,7 +129,7 @@ nodes::Node* Parser::parse() {
   return json;
 }
 
-nodes::Node* Parser::parse_value() {
+ast::Node* Parser::parse_value() {
   switch (lexer_->type) {
     case TokenType::BOOLEAN:
       return parse_boolean();
@@ -149,17 +148,17 @@ nodes::Node* Parser::parse_value() {
   }
 }
 
-nodes::Null* Parser::parse_null() {
+ast::Null* Parser::parse_null() {
   if (lexer_->type != TokenType::JSON_NULL) {
     throw ParseException("Unexpected token: " + lexer_->value);
   }
 
   ++lexer_;
 
-  return new nodes::Null();
+  return new ast::Null();
 }
 
-nodes::Boolean* Parser::parse_boolean() {
+ast::Boolean* Parser::parse_boolean() {
   if (lexer_->type != TokenType::BOOLEAN) {
     throw ParseException("Unexpected token: " + lexer_->value);
   }
@@ -167,10 +166,10 @@ nodes::Boolean* Parser::parse_boolean() {
   bool value = lexer_->value == "true";
   ++lexer_;
 
-  return new nodes::Boolean(value);
+  return new ast::Boolean(value);
 }
 
-nodes::String* Parser::parse_string() {
+ast::String* Parser::parse_string() {
   if (lexer_->type != TokenType::STRING) {
     throw ParseException("Unexpected token: " + lexer_->value);
   }
@@ -179,81 +178,35 @@ nodes::String* Parser::parse_string() {
   resolve_unicode_sequences(lexer_->value, value);
   ++lexer_;
 
-  return new nodes::String(value);
+  return new ast::String(std::move(value));
 }
 
-nodes::Number* Parser::parse_number() {
+ast::Number* Parser::parse_number() {
   if (lexer_->type != TokenType::NUMBER) {
     throw ParseException("Unexpected token: " + lexer_->value);
   }
 
-  std::string_view number = lexer_->value;
-  // integer
-  size_t i = 0;
-  if (number[i] == '-') {
-    i++;
-  }
-
-  while (i < number.length() && isdigit(number[i])) {
-    i++;
-  }
-
-  // fraction
-  size_t j = i;
-  if (j < number.length() && number[j] == '.') {
-    j++;
-    while (j < number.length() && isdigit(number[j])) {
-      j++;
-    }
-  }
-
-  // exponent
-  size_t k = j;
-  if (k < number.length() && tolower(number[k]) == 'e') {
-    k++;
-    if (number[k] == '+' || number[k] == '-') {
-      k++;
-    }
-
-    while (k < number.length() && isdigit(number[k])) {
-      k++;
-    }
-  }
-
-  std::string_view integer = number.substr(0, i);
-
-  std::string_view fraction = "";
-  if (j > i + 1) {
-    fraction = number.substr(i + 1, j - i - 1);
-  }
-
-  std::string_view exponent = "";
-  if (k > j + 1) {
-    exponent = number.substr(j + 1, k - j - 1);
-  }
-
-  nodes::Number* value =
-      new nodes::Number(dsa::to_numeric(integer, fraction, exponent));
+  double value = std::stod(lexer_->value);
   ++lexer_;
 
-  return value;
+  return new ast::Number(value);
 }
 
-nodes::Array* Parser::parse_array() {
+ast::Array* Parser::parse_array() {
   if (lexer_->type != TokenType::ARRAY_START) {
     throw ParseException("Unexpected token: " + lexer_->value);
   }
 
   ++lexer_;
 
-  nodes::Array* value = new nodes::Array();
+  std::vector<ast::Node*> value;
   if (lexer_->type == TokenType::ARRAY_END) {
     ++lexer_;
-    return value;
+    return new ast::Array(std::move(value));
   }
 
   while (true) {
-    value->push_back(parse_value());
+    value.push_back(parse_value());
     if (lexer_->type == TokenType::ARRAY_END) {
       break;
     }
@@ -271,30 +224,30 @@ nodes::Array* Parser::parse_array() {
 
   ++lexer_;
 
-  return value;
+  return new ast::Array(std::move(value));
 }
 
-nodes::Object* Parser::parse_object() {
+ast::Object* Parser::parse_object() {
   if (lexer_->type != TokenType::OBJECT_START) {
     throw ParseException("Unexpected token: " + lexer_->value);
   }
 
   ++lexer_;
 
-  nodes::Object* value = new nodes::Object();
+  std::map<std::string, ast::Node*> value;
   if (lexer_->type == TokenType::OBJECT_END) {
     ++lexer_;
-    return value;
+    return new ast::Object(std::move(value));
   }
 
   while (true) {
-    nodes::String* key = parse_string();
+    ast::String* key = parse_string();
     if (lexer_->type != TokenType::COLON) {
       throw ParseException("Unexpected token: " + lexer_->value);
     }
 
     ++lexer_;
-    value->insert(key->get(), parse_value());
+    value[key->value] = parse_value();
     delete key;
     if (lexer_->type == TokenType::OBJECT_END) {
       break;
@@ -313,9 +266,8 @@ nodes::Object* Parser::parse_object() {
 
   ++lexer_;
 
-  return value;
+  return new ast::Object(std::move(value));
 }
 
 }  // namespace syntax
-
 }  // namespace json
