@@ -2,6 +2,7 @@ cc_library(
     name = "api",
     hdrs = [
         "node.h",
+        "value.h",
         "visitor.h",
     ],
     include_prefix = "warren/json",
