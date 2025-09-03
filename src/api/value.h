@@ -22,13 +22,37 @@ class Value {
   Value(double n);
   Value(int64_t n);
   Value(nullptr_t);
+
   Value(const char* s);
   Value(std::string s);
+  Value& operator=(const char* s);
+  Value& operator=(std::string s);
 
   explicit Value(array_t a);
+  Value& operator=(array_t a);
+
   explicit Value(object_t o);
+  Value& operator=(object_t o);
 
  private:
+  void destroy() {
+    switch (type_) {
+      case Type::ARRAY:
+        a_.~array_t();
+        break;
+      case Type::OBJECT:
+        o_.~object_t();
+        break;
+      case Type::STRING:
+        s_.~basic_string();
+        break;
+      default:
+        break;
+    }
+
+    type_ = Type::JSON_NULL;
+  }
+
   union {
     array_t a_;
     bool b_;
