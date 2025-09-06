@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+#include "utils/exception.h"
+
 namespace json {
 
 class Value {
@@ -187,6 +189,66 @@ class Value {
     return *this;
   }
 
+  // array
+  Value& operator[](size_t i) {
+    assert_type(Type::ARRAY);
+    return a_[i];
+  }
+
+  const Value& operator[](size_t i) const {
+    assert_type(Type::ARRAY);
+    return a_[i];
+  }
+
+  void push_back(const Value& value) {
+    if (type_ == Type::JSON_NULL) {
+      destroy();
+      ::new ((void*)(&a_)) array_t();
+      type_ = Type::ARRAY;
+    }
+
+    assert_type(Type::ARRAY);
+    a_.push_back(value);
+  }
+
+  void erase(size_t i) {
+    assert_type(Type::ARRAY);
+    a_.erase(a_.begin() + i);
+  }
+
+  // object
+  Value& operator[](const std::string& key) {
+    if (type_ == Type::JSON_NULL) {
+      destroy();
+      ::new ((void*)(&o_)) object_t();
+      type_ = Type::OBJECT;
+    }
+
+    assert_type(Type::OBJECT);
+    return o_[key];
+  }
+
+  const Value& at(const std::string& key) const {
+    assert_type(Type::OBJECT);
+    return o_.at(key);
+  }
+
+  void insert(const std::string& key, const Value& value) {
+    if (type_ == Type::JSON_NULL) {
+      destroy();
+      ::new ((void*)(&o_)) object_t();
+      type_ = Type::OBJECT;
+    }
+
+    assert_type(Type::OBJECT);
+    o_.insert({key, value});
+  }
+
+  void erase(const std::string& key) {
+    assert_type(Type::OBJECT);
+    o_.erase(key);
+  }
+
  private:
   void destroy() noexcept {
     switch (type_) {
@@ -223,6 +285,32 @@ class Value {
     OBJECT,
     STRING
   } type_;
+
+  void assert_type(Type expected) const {
+    if (type_ != expected) {
+      throw BadAccessException("expected type " + type(expected) + ", got " +
+                               type(type_));
+    }
+  }
+
+  std::string type(Type type) const {
+    switch (type) {
+      case ARRAY:
+        return "array";
+      case BOOLEAN:
+        return "boolean";
+      case JSON_NULL:
+        return "null";
+      case INTEGRAL:
+        return "integer";
+      case DOUBLE:
+        return "double";
+      case OBJECT:
+        return "object";
+      case STRING:
+        return "string";
+    }
+  }
 };
 
 }  // namespace json
