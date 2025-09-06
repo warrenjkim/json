@@ -78,7 +78,7 @@ void resolve_unicode_sequences(const std::string& s, std::string& res) {
       // Section 3.8 Surrogates
       // https://www.unicode.org/versions/Unicode15.0.0/ch03.pdf
       // 0xD800 <= high-surrogate code point <= 0xDBFF
-      uint16_t high_surrogate_cp = code_point;
+      uint32_t high_surrogate_cp = code_point;
       if (0xD800 <= high_surrogate_cp && high_surrogate_cp <= 0xDBFF) {
         j += 6;
         if (j + 1 >= s.length() || s[j] != '\\' || s[j + 1] != 'u') {
@@ -88,7 +88,7 @@ void resolve_unicode_sequences(const std::string& s, std::string& res) {
         }
 
         // 0xDC00 <= low-surrogate code point <= 0xDFFF
-        uint16_t low_surrogate_cp =
+        uint32_t low_surrogate_cp =
             to_code_point(s[j - 4], s[j - 3], s[j - 2], s[j - 1]);
         if (!(0xDC00 <= low_surrogate_cp && low_surrogate_cp <= 0xDFFF)) {
           throw json::ParseException(
