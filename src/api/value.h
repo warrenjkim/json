@@ -213,7 +213,7 @@ class Value {
 
   void erase(size_t i) {
     assert_type(Type::ARRAY);
-    a_.erase(a_.begin() + i);
+    a_.erase(a_.begin() + array_t::difference_type(i));
   }
 
   // object
