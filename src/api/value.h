@@ -7,7 +7,27 @@
 #include <string>
 #include <vector>
 
-#include "utils/exception.h"
+#include "warren/json/utils/exception.h"
+
+namespace {
+#define PRIMITIVE_TYPE_CTOR(type, v_, expected) \
+  Value(type v) noexcept : v_(v), type_(expected) {}
+
+#define IMPLICIT_MUTABLE_CONVERSION(expected, type, member) \
+  operator type() {                                         \
+    assert_type(expected);                                  \
+    return member;                                          \
+  }
+
+#define IMPLICIT_CONVERSION(expected, type, member) \
+  operator type() const {                           \
+    assert_type(expected);                          \
+    return member;                                  \
+  }
+
+#define PRIMITIVE_EQUALITY(expected, type, v_) \
+  bool operator==(type v) const { return type_ == expected && v == v_; }
+}  // namespace
 
 namespace json {
 
@@ -72,6 +92,34 @@ class Value {
     other.type_ = Type::JSON_NULL;
   }
 
+  Value(nullptr_t) noexcept : type_(Type::JSON_NULL) {}
+
+  PRIMITIVE_TYPE_CTOR(bool, b_, Type::BOOLEAN);
+
+  PRIMITIVE_TYPE_CTOR(int32_t, n_, Type::INTEGRAL);
+
+  PRIMITIVE_TYPE_CTOR(double, n_, Type::DOUBLE);
+
+  Value(array_t a) {
+    ::new ((void*)(&a_)) array_t(std::move(a));
+    type_ = Type::ARRAY;
+  }
+
+  Value(object_t o) {
+    ::new ((void*)(&o_)) object_t(std::move(o));
+    type_ = Type::OBJECT;
+  }
+
+  Value(const char* s) {
+    ::new ((void*)(&s_)) std::string(s);
+    type_ = Type::STRING;
+  }
+
+  Value(std::string s) noexcept {
+    ::new ((void*)(&s_)) std::string(std::move(s));
+    type_ = Type::STRING;
+  }
+
   Value& operator=(const Value& other) {
     if (this != &other) {
       destroy();
@@ -83,7 +131,6 @@ class Value {
           b_ = other.b_;
           break;
         case Type::JSON_NULL:
-          // Nothing to copy
           break;
         case Type::INTEGRAL:
         case Type::DOUBLE:
@@ -114,7 +161,6 @@ class Value {
           b_ = other.b_;
           break;
         case Type::JSON_NULL:
-          // Nothing to move
           break;
         case Type::INTEGRAL:
         case Type::DOUBLE:
@@ -135,69 +181,94 @@ class Value {
     return *this;
   }
 
-  Value(bool b) noexcept : b_(b), type_(Type::BOOLEAN) {}
+  IMPLICIT_CONVERSION(Type::ARRAY, const array_t&, a_);
+  IMPLICIT_MUTABLE_CONVERSION(Type::ARRAY, array_t&, a_);
 
-  Value(double n) noexcept : n_(n), type_(Type::DOUBLE) {}
+  IMPLICIT_CONVERSION(Type::BOOLEAN, bool, b_);
 
-  Value(int64_t n) noexcept : n_((double)n), type_(Type::INTEGRAL) {}
+  IMPLICIT_CONVERSION(Type::DOUBLE, double, n_);
+  IMPLICIT_CONVERSION(Type::DOUBLE, float, float(n_));
 
-  Value(nullptr_t) noexcept : type_(Type::JSON_NULL) {}
+  IMPLICIT_CONVERSION(Type::INTEGRAL, int32_t, int32_t(n_));
 
-  Value(const char* s) {
-    ::new ((void*)(&s_)) std::string(s);
-    type_ = Type::STRING;
+  IMPLICIT_CONVERSION(Type::OBJECT, const object_t&, o_);
+  IMPLICIT_MUTABLE_CONVERSION(Type::OBJECT, object_t&, o_);
+
+  IMPLICIT_CONVERSION(Type::STRING, std::string, s_);
+  IMPLICIT_CONVERSION(Type::STRING, const std::string&, s_);
+  IMPLICIT_CONVERSION(Type::STRING, const char*, s_.c_str());
+
+  bool operator==(const Value& other) const {
+    if (type_ != other.type_) {
+      return false;
+    }
+
+    switch (type_) {
+      case Type::ARRAY:
+        return a_ == other.a_;
+      case Type::BOOLEAN:
+        return b_ == other.b_;
+      case Type::JSON_NULL:
+        return true;
+      case Type::INTEGRAL:
+      case Type::DOUBLE:
+        return n_ == other.n_;
+      case Type::OBJECT:
+        return o_ == other.o_;
+      case Type::STRING:
+        return s_ == other.s_;
+    }
   }
 
-  Value(std::string s) noexcept {
-    ::new ((void*)(&s_)) std::string(std::move(s));
-    type_ = Type::STRING;
+  bool operator==(nullptr_t) const { return type_ == Type::JSON_NULL; }
+
+  PRIMITIVE_EQUALITY(Type::BOOLEAN, bool, b_);
+
+  PRIMITIVE_EQUALITY(Type::DOUBLE, double, n_);
+
+  PRIMITIVE_EQUALITY(Type::INTEGRAL, int32_t, int32_t(n_));
+
+  PRIMITIVE_EQUALITY(Type::STRING, std::string, s_);
+
+  PRIMITIVE_EQUALITY(Type::STRING, const char*, s_);
+
+  // containers
+  size_t size() const {
+    switch (type_) {
+      case Type::ARRAY:
+        return a_.size();
+      case Type::OBJECT:
+        return o_.size();
+      default:
+        throw BadAccessException(
+            "expected container type (array, object), got " + type(type_));
+    }
   }
 
-  Value& operator=(const char* s) { return *this = std::string(s); }
-
-  Value& operator=(std::string s) noexcept {
-    destroy();
-    ::new ((void*)(&s_)) std::string(std::move(s));
-    type_ = Type::STRING;
-
-    return *this;
-  }
-
-  Value(array_t a) {
-    ::new ((void*)(&a_)) array_t(std::move(a));
-    type_ = Type::ARRAY;
-  }
-
-  Value& operator=(array_t a) {
-    destroy();
-    ::new ((void*)(&a_)) array_t(std::move(a));
-    type_ = Type::ARRAY;
-
-    return *this;
-  }
-
-  Value(object_t o) {
-    ::new ((void*)(&o_)) object_t(std::move(o));
-    type_ = Type::OBJECT;
-  }
-
-  Value& operator=(object_t o) {
-    destroy();
-    ::new ((void*)(&o_)) object_t(std::move(o));
-    type_ = Type::OBJECT;
-
-    return *this;
+  bool empty() const {
+    switch (type_) {
+      case Type::ARRAY:
+        return a_.empty();
+      case Type::OBJECT:
+        return o_.empty();
+      default:
+        throw BadAccessException(
+            "expected container type (array, object), got " + type(type_));
+    }
   }
 
   // array
-  Value& operator[](size_t i) {
+  template <typename T>
+  typename std::enable_if_t<std::is_integral_v<T>, Value&> operator[](T i) {
     assert_type(Type::ARRAY);
-    return a_[i];
+    return a_[array_t::size_type(i)];
   }
 
-  const Value& operator[](size_t i) const {
+  template <typename T>
+  typename std::enable_if_t<std::is_integral_v<T>, const Value&> operator[](
+      T i) const {
     assert_type(Type::ARRAY);
-    return a_[i];
+    return a_[array_t::size_type(i)];
   }
 
   void push_back(const Value& value) {
@@ -211,13 +282,16 @@ class Value {
     a_.push_back(value);
   }
 
-  void erase(size_t i) {
+  template <typename T>
+  typename std::enable_if_t<std::is_integral_v<T>, void> erase(T i) {
     assert_type(Type::ARRAY);
     a_.erase(a_.begin() + array_t::difference_type(i));
   }
 
   // object
-  Value& operator[](const std::string& key) {
+  template <typename T>
+  typename std::enable_if_t<std::is_convertible_v<T, std::string>, Value&>
+  operator[](const T& key) {
     if (type_ == Type::JSON_NULL) {
       destroy();
       ::new ((void*)(&o_)) object_t();
@@ -228,7 +302,9 @@ class Value {
     return o_[key];
   }
 
-  const Value& at(const std::string& key) const {
+  template <typename T>
+  typename std::enable_if_t<std::is_convertible_v<T, std::string>, const Value&>
+  at(const T& key) const {
     assert_type(Type::OBJECT);
     return o_.at(key);
   }
@@ -244,9 +320,27 @@ class Value {
     o_.insert({key, value});
   }
 
-  void erase(const std::string& key) {
+  template <typename T>
+  typename std::enable_if_t<std::is_convertible_v<T, std::string>, void> erase(
+      const T& key) {
     assert_type(Type::OBJECT);
     o_.erase(key);
+  }
+
+  const Value& at(const char* key) const {
+    assert_type(Type::OBJECT);
+    return o_.at(key);
+  }
+
+  void insert(const char* key, const Value& value) {
+    if (type_ == Type::JSON_NULL) {
+      destroy();
+      ::new ((void*)(&o_)) object_t();
+      type_ = Type::OBJECT;
+    }
+
+    assert_type(Type::OBJECT);
+    o_.insert({key, value});
   }
 
  private:
@@ -302,9 +396,8 @@ class Value {
       case JSON_NULL:
         return "null";
       case INTEGRAL:
-        return "integer";
       case DOUBLE:
-        return "double";
+        return "number";
       case OBJECT:
         return "object";
       case STRING:
