@@ -238,21 +238,25 @@ class Value {
     }
   }
 
-  bool operator==(nullptr_t) const { return type_ == Type::JSON_NULL; }
+  bool operator==(nullptr_t) const noexcept { return type_ == Type::JSON_NULL; }
 
-  bool operator==(bool b) const { return type_ == Type::BOOLEAN && b == b_; }
+  bool operator==(bool b) const noexcept {
+    return type_ == Type::BOOLEAN && b == b_;
+  }
 
-  bool operator==(double n) const { return type_ == Type::DOUBLE && n == n_; }
+  bool operator==(double n) const noexcept {
+    return type_ == Type::DOUBLE && n == n_;
+  }
 
-  bool operator==(int32_t n) const {
+  bool operator==(int32_t n) const noexcept {
     return type_ == Type::INTEGRAL && n == int32_t(n_);
   }
 
-  bool operator==(const std::string& s) const {
+  bool operator==(const std::string& s) const noexcept {
     return type_ == Type::STRING && s == s_;
   }
 
-  bool operator==(const char* s) const {
+  bool operator==(const char* s) const noexcept {
     return type_ == Type::STRING && s == s_;
   }
 
@@ -306,10 +310,9 @@ class Value {
     a_.push_back(value);
   }
 
-  template <typename T>
-  typename std::enable_if_t<std::is_integral_v<T>, void> erase(T i) {
+  void erase(array_t::const_iterator cit) {
     assert_type(Type::ARRAY);
-    a_.erase(a_.begin() + array_t::difference_type(i));
+    a_.erase(cit);
   }
 
   // object
@@ -344,9 +347,7 @@ class Value {
     o_.insert({key, value});
   }
 
-  template <typename T>
-  typename std::enable_if_t<std::is_convertible_v<T, std::string>, void> erase(
-      const T& key) {
+  void erase(const std::string& key) {
     assert_type(Type::OBJECT);
     o_.erase(key);
   }
