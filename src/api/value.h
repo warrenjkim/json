@@ -11,11 +11,11 @@
 
 namespace json {
 
-class Value {
- private:
-  using array_t = std::vector<json::Value>;
-  using object_t = std::map<std::string, json::Value>;
+class Value;
+using array_t = std::vector<json::Value>;
+using object_t = std::map<std::string, json::Value>;
 
+class Value {
  public:
   Value() noexcept : type_(Type::JSON_NULL) {}
 
