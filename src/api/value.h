@@ -9,26 +9,6 @@
 
 #include "warren/json/utils/exception.h"
 
-namespace {
-#define PRIMITIVE_TYPE_CTOR(type, v_, expected) \
-  Value(type v) noexcept : v_(v), type_(expected) {}
-
-#define IMPLICIT_MUTABLE_CONVERSION(expected, type, member) \
-  operator type() {                                         \
-    assert_type(expected);                                  \
-    return member;                                          \
-  }
-
-#define IMPLICIT_CONVERSION(expected, type, member) \
-  operator type() const {                           \
-    assert_type(expected);                          \
-    return member;                                  \
-  }
-
-#define PRIMITIVE_EQUALITY(expected, type, v_) \
-  bool operator==(type v) const { return type_ == expected && v == v_; }
-}  // namespace
-
 namespace json {
 
 class Value {
@@ -94,11 +74,11 @@ class Value {
 
   Value(nullptr_t) noexcept : type_(Type::JSON_NULL) {}
 
-  PRIMITIVE_TYPE_CTOR(bool, b_, Type::BOOLEAN);
+  Value(bool b) noexcept : b_(b), type_(Type::BOOLEAN) {}
 
-  PRIMITIVE_TYPE_CTOR(int32_t, n_, Type::INTEGRAL);
+  Value(int32_t n) noexcept : n_(n), type_(Type::INTEGRAL) {}
 
-  PRIMITIVE_TYPE_CTOR(double, n_, Type::DOUBLE);
+  Value(double n) noexcept : n_(n), type_(Type::DOUBLE) {}
 
   Value(array_t a) {
     ::new ((void*)(&a_)) array_t(std::move(a));
@@ -181,22 +161,60 @@ class Value {
     return *this;
   }
 
-  IMPLICIT_CONVERSION(Type::ARRAY, const array_t&, a_);
-  IMPLICIT_MUTABLE_CONVERSION(Type::ARRAY, array_t&, a_);
+  operator const array_t&() const {
+    assert_type(Type::ARRAY);
+    return a_;
+  }
 
-  IMPLICIT_CONVERSION(Type::BOOLEAN, bool, b_);
+  operator array_t&() {
+    assert_type(Type::ARRAY);
+    return a_;
+  }
 
-  IMPLICIT_CONVERSION(Type::DOUBLE, double, n_);
-  IMPLICIT_CONVERSION(Type::DOUBLE, float, float(n_));
+  operator bool() const {
+    assert_type(Type::BOOLEAN);
+    return b_;
+  }
 
-  IMPLICIT_CONVERSION(Type::INTEGRAL, int32_t, int32_t(n_));
+  operator double() const {
+    assert_type(Type::DOUBLE);
+    return n_;
+  }
 
-  IMPLICIT_CONVERSION(Type::OBJECT, const object_t&, o_);
-  IMPLICIT_MUTABLE_CONVERSION(Type::OBJECT, object_t&, o_);
+  operator float() const {
+    assert_type(Type::DOUBLE);
+    return float(n_);
+  }
 
-  IMPLICIT_CONVERSION(Type::STRING, std::string, s_);
-  IMPLICIT_CONVERSION(Type::STRING, const std::string&, s_);
-  IMPLICIT_CONVERSION(Type::STRING, const char*, s_.c_str());
+  operator int32_t() const {
+    assert_type(Type::INTEGRAL);
+    return int32_t(n_);
+  }
+
+  operator const object_t&() const {
+    assert_type(Type::OBJECT);
+    return o_;
+  }
+
+  operator object_t&() {
+    assert_type(Type::OBJECT);
+    return o_;
+  }
+
+  operator std::string() const {
+    assert_type(Type::STRING);
+    return s_;
+  }
+
+  operator const std::string&() const {
+    assert_type(Type::STRING);
+    return s_;
+  }
+
+  operator const char*() const {
+    assert_type(Type::STRING);
+    return s_.c_str();
+  }
 
   bool operator==(const Value& other) const {
     if (type_ != other.type_) {
@@ -222,15 +240,21 @@ class Value {
 
   bool operator==(nullptr_t) const { return type_ == Type::JSON_NULL; }
 
-  PRIMITIVE_EQUALITY(Type::BOOLEAN, bool, b_);
+  bool operator==(bool b) const { return type_ == Type::BOOLEAN && b == b_; }
 
-  PRIMITIVE_EQUALITY(Type::DOUBLE, double, n_);
+  bool operator==(double n) const { return type_ == Type::DOUBLE && n == n_; }
 
-  PRIMITIVE_EQUALITY(Type::INTEGRAL, int32_t, int32_t(n_));
+  bool operator==(int32_t n) const {
+    return type_ == Type::INTEGRAL && n == int32_t(n_);
+  }
 
-  PRIMITIVE_EQUALITY(Type::STRING, std::string, s_);
+  bool operator==(const std::string& s) const {
+    return type_ == Type::STRING && s == s_;
+  }
 
-  PRIMITIVE_EQUALITY(Type::STRING, const char*, s_);
+  bool operator==(const char* s) const {
+    return type_ == Type::STRING && s == s_;
+  }
 
   // containers
   size_t size() const {
