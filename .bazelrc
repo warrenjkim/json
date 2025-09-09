@@ -4,6 +4,9 @@ common --curses=yes
 
 common --check_direct_dependencies=warning
 
+build --action_env=CC=gcc
+build --action_env=CXX=g++
+
 build --cxxopt=-std=gnu++23
 build --cxxopt=-Wall
 build --cxxopt=-Wextra
