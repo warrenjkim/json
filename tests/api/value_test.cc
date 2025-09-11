@@ -7,9 +7,7 @@
 #include "gtest/gtest.h"
 
 TEST(JsonValueTest, DefaultConstructor) {
-  {
-    EXPECT_EQ(json::Value(), nullptr);
-  }
+  { EXPECT_EQ(json::Value(), nullptr); }
   {
     json::Value v;
     EXPECT_EQ(v, nullptr);
@@ -17,9 +15,7 @@ TEST(JsonValueTest, DefaultConstructor) {
 }
 
 TEST(JsonValueTest, NullConstructor) {
-  {
-    EXPECT_EQ(json::Value(nullptr), nullptr);
-  }
+  { EXPECT_EQ(json::Value(nullptr), nullptr); }
   {
     json::Value v = nullptr;
     EXPECT_EQ(v, nullptr);
@@ -27,9 +23,7 @@ TEST(JsonValueTest, NullConstructor) {
 }
 
 TEST(JsonValueTest, BoolConstructor) {
-  {
-    EXPECT_EQ(json::Value(true), true);
-  }
+  { EXPECT_EQ(json::Value(true), true); }
   {
     json::Value v = true;
     EXPECT_EQ(v, true);
@@ -37,9 +31,7 @@ TEST(JsonValueTest, BoolConstructor) {
 }
 
 TEST(JsonValueTest, IntConstructor) {
-  {
-    EXPECT_EQ(json::Value(42), 42);
-  }
+  { EXPECT_EQ(json::Value(42), 42); }
   {
     json::Value v = 42;
     EXPECT_EQ(v, 42);
@@ -47,9 +39,7 @@ TEST(JsonValueTest, IntConstructor) {
 }
 
 TEST(JsonValueTest, DoubleConstructor) {
-  {
-    EXPECT_DOUBLE_EQ(json::Value(1.23), 1.23);
-  }
+  { EXPECT_DOUBLE_EQ(json::Value(1.23), 1.23); }
   {
     json::Value v = 1.23;
     EXPECT_DOUBLE_EQ(v, 1.23);
