@@ -9,7 +9,7 @@ namespace json {
 namespace ast {
 
 struct Null : public Node {
-  void accept(Visitor& visitor) override { visitor.visit(this); }
+  void accept(Visitor& visitor) const override { visitor.visit(*this); }
 
   explicit Null() : value(nullptr) {}
 

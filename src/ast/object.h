@@ -11,7 +11,7 @@ namespace json {
 namespace ast {
 
 struct Object : public Node {
-  void accept(Visitor& visitor) override { visitor.visit(this); }
+  void accept(Visitor& visitor) const override { visitor.visit(*this); }
 
   explicit Object(std::map<std::string, Node*> value)
       : value(std::move(value)) {}

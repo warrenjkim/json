@@ -7,7 +7,7 @@ namespace json {
 namespace ast {
 
 struct Number : public Node {
-  void accept(Visitor& visitor) override { visitor.visit(this); }
+  void accept(Visitor& visitor) const override { visitor.visit(*this); }
 
   explicit Number(double value) : value(value) {}
 
