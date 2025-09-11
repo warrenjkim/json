@@ -6,12 +6,12 @@
 #include "gtest/gtest.h"
 #include "warren/json/internal/ast/array.h"
 #include "warren/json/internal/ast/boolean.h"
+#include "warren/json/internal/ast/node.h"
 #include "warren/json/internal/ast/null.h"
 #include "warren/json/internal/ast/number.h"
 #include "warren/json/internal/ast/object.h"
 #include "warren/json/internal/ast/string.h"
 #include "warren/json/internal/parse/lexer.h"
-#include "warren/json/node.h"
 
 TEST(ParserTest, EmptyObject) {
   // arrange

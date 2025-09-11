@@ -3,10 +3,12 @@ cc_library(
     hdrs = [
         "array.h",
         "boolean.h",
+        "node.h",
         "null.h",
         "number.h",
         "object.h",
         "string.h",
+        "visitor.h",
     ],
     include_prefix = "warren/json/internal/ast",
     strip_include_prefix = ".",
@@ -15,7 +17,6 @@ cc_library(
         "//tests:__subpackages__",
     ],
     deps = [
-        "//src/api",
         "//src/utils",
     ],
 )

@@ -8,8 +8,8 @@
 
 #include "lexer.h"
 #include "token.h"
+#include "warren/json/internal/ast/node.h"
 #include "warren/json/internal/ast/object.h"
-#include "warren/json/node.h"
 #include "warren/json/utils/exception.h"
 
 namespace {

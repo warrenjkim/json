@@ -2,8 +2,8 @@
 
 #include <cstddef>
 
-#include "warren/json/node.h"
-#include "warren/json/visitor.h"
+#include "node.h"
+#include "visitor.h"
 
 namespace json {
 namespace ast {
