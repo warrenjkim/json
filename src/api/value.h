@@ -236,6 +236,8 @@ class Value {
       case Type::STRING:
         return s_ == other.s_;
     }
+
+    __builtin_unreachable();
   }
 
   bool operator==(nullptr_t) const noexcept { return type_ == Type::JSON_NULL; }
@@ -271,6 +273,8 @@ class Value {
         throw BadAccessException(
             "expected container type (array, object), got " + type(type_));
     }
+
+    __builtin_unreachable();
   }
 
   bool empty() const {
@@ -283,6 +287,8 @@ class Value {
         throw BadAccessException(
             "expected container type (array, object), got " + type(type_));
     }
+
+    __builtin_unreachable();
   }
 
   // array
@@ -428,6 +434,8 @@ class Value {
       case STRING:
         return "string";
     }
+
+    __builtin_unreachable();
   }
 };
 

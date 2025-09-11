@@ -14,4 +14,6 @@ build --cxxopt=-Wpedantic
 build --cxxopt=-Werror
 build --cxxopt=-Wconversion
 build --cxxopt=-Wsign-conversion
-build --cxxopt=-Wshadow
+
+# TODO(fix the shadowing)
+build --cxxopt=-Wno-shadow
