@@ -6,8 +6,7 @@
 namespace json {
 namespace convert {
 
-// TODO(consider using a ref instead of a ptr here)
-Value lower(ast::Node* root);
+Value lower(const ast::Node& root);
 
 }  // namespace convert
 }  // namespace json

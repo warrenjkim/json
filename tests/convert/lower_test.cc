@@ -19,7 +19,7 @@ TEST(LowerTest, Array) {
   root.value.push_back(new json::ast::Number(1));
   root.value.push_back(new json::ast::Boolean(true));
   root.value.push_back(new json::ast::String("string"));
-  json::Value value = json::convert::lower(&root);
+  json::Value value = json::convert::lower(root);
 
   std::vector<json::Value> expected = {nullptr, 1, true, "string"};
   EXPECT_EQ(value, json::Value(std::move(expected)));
@@ -31,7 +31,7 @@ TEST(LowerTest, Object) {
   root.value["number"] = new json::ast::Number(1);
   root.value["boolean"] = new json::ast::Boolean(true);
   root.value["string"] = new json::ast::String("string");
-  json::Value value = json::convert::lower(&root);
+  json::Value value = json::convert::lower(root);
 
   std::map<std::string, json::Value> expected = {{"null", nullptr},
                                                  {"number", 1},

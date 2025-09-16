@@ -66,9 +66,9 @@ class LowerVisitor : public json::ast::Visitor {
 namespace json {
 namespace convert {
 
-Value lower(ast::Node* node) {
+Value lower(const ast::Node& node) {
   LowerVisitor visitor;
-  node->accept(visitor);
+  node.accept(visitor);
 
   return visitor.value();
 }
