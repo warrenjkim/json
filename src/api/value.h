@@ -417,8 +417,8 @@ class Value {
 
   void assert_type(Type expected) const {
     if (type_ != expected) {
-      throw BadAccessException("expected type " + type(expected) +
-                               ", got " + type(type_));
+      throw BadAccessException("expected type " + type(expected) + ", got " +
+                               type(type_));
     }
   }
 
