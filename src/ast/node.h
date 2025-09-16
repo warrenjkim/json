@@ -1,6 +1,6 @@
 #pragma once
 
-#include "visitor.h"
+#include "warren/json/internal/ast/visitor.h"
 
 namespace json {
 namespace ast {

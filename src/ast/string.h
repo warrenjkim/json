@@ -3,8 +3,8 @@
 #include <string>
 #include <utility>
 
-#include "node.h"
-#include "visitor.h"
+#include "warren/json/internal/ast/node.h"
+#include "warren/json/internal/ast/visitor.h"
 
 namespace json {
 namespace ast {

@@ -3,7 +3,7 @@
 #include <cctype>    // isdigit, isspace, isxdigit, tolower
 #include <optional>  // nullopt, optional
 
-#include "token.h"
+#include "warren/json/internal/parse/token.h"
 
 namespace json {
 namespace syntax {

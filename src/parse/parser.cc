@@ -6,10 +6,10 @@
 #include <string>
 #include <vector>
 
-#include "lexer.h"
-#include "token.h"
 #include "warren/json/internal/ast/node.h"
 #include "warren/json/internal/ast/object.h"
+#include "warren/json/internal/parse/lexer.h"
+#include "warren/json/internal/parse/token.h"
 #include "warren/json/utils/exception.h"
 
 namespace {
