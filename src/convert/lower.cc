@@ -1,5 +1,7 @@
 #include "lower.h"
 
+#include <utility>
+
 #include "warren/json/internal/ast/array.h"
 #include "warren/json/internal/ast/boolean.h"
 #include "warren/json/internal/ast/node.h"
