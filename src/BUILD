@@ -4,6 +4,7 @@ cc_library(
     deps = [
         "//src/api",
         "//src/ast",
+        "//src/convert",
         "//src/parse",
         "//src/utils",
     ],
