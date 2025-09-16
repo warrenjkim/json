@@ -69,7 +69,7 @@ class Value {
     }
 
     type_ = other.type_;
-    other.type_ = Type::JSON_NULL;
+    other.destroy();
   }
 
   Value(nullptr_t) noexcept : type_(Type::JSON_NULL) {}
@@ -155,7 +155,7 @@ class Value {
       }
 
       type_ = other.type_;
-      other.type_ = Type::JSON_NULL;
+      other.destroy();
     }
 
     return *this;
@@ -217,7 +217,10 @@ class Value {
   }
 
   bool operator==(const Value& other) const {
-    if (type_ != other.type_) {
+    bool is_number =
+        ((type_ == Type::INTEGRAL && other.type_ == Type::DOUBLE) ||
+         (type_ == Type::DOUBLE && other.type_ == Type::INTEGRAL));
+    if (type_ != other.type_ && !is_number) {
       return false;
     }
 
@@ -401,6 +404,7 @@ class Value {
     std::string s_;
   };
 
+ private:
   enum Type {
     ARRAY,
     BOOLEAN,
@@ -413,8 +417,8 @@ class Value {
 
   void assert_type(Type expected) const {
     if (type_ != expected) {
-      throw BadAccessException("expected type " + type(expected) + ", got " +
-                               type(type_));
+      throw BadAccessException("expected type " + type(expected) +
+                               ", got " + type(type_));
     }
   }
 
