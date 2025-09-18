@@ -1,6 +1,8 @@
 #include "lower.h"
 
+#include <map>
 #include <utility>
+#include <vector>
 
 #include "warren/json/internal/ast/array.h"
 #include "warren/json/internal/ast/boolean.h"
