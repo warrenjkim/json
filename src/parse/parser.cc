@@ -63,7 +63,8 @@ void emit_utf8(uint32_t code_point, std::string& res) {
   }
 }
 
-void resolve_unicode_sequences(const std::string& s, std::string& res) {
+std::string resolve_unicode_sequences(const std::string& s) {
+  std::string res;
   res.reserve(s.length());
   size_t i = 0;
   size_t j = 0;
@@ -110,6 +111,8 @@ void resolve_unicode_sequences(const std::string& s, std::string& res) {
   if (i < s.length()) {
     res.append(s, i, s.length() - i);
   }
+
+  return res;
 }
 
 }  // namespace
@@ -175,8 +178,7 @@ ast::String* Parser::parse_string() {
     throw ParseException("Unexpected token: " + lexer_->value);
   }
 
-  std::string value = "";
-  resolve_unicode_sequences(lexer_->value, value);
+  std::string value = resolve_unicode_sequences(lexer_->value);
   ++lexer_;
 
   return new ast::String(std::move(value));
