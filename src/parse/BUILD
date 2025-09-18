@@ -52,7 +52,6 @@ cc_library(
     deps = [
         ":token",
         "//src/ast:nodes",
-        "//src/utils:exception",
     ],
 )
 

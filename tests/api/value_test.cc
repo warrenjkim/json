@@ -48,12 +48,7 @@ TEST(JsonValueTest, DoubleConstructor) {
 }
 
 TEST(JsonValueTest, ArrayConstructor) {
-  std::vector<json::Value> arr{nullptr,
-                               true,
-                               42,
-                               1.23,
-                               std::vector<json::Value>{},
-                               std::map<std::string, json::Value>{}};
+  json::array_t arr{nullptr, true, 42, 1.23, json::array_t{}, json::object_t{}};
   {
     json::Value v(arr);
     EXPECT_EQ(v, arr);
@@ -65,13 +60,12 @@ TEST(JsonValueTest, ArrayConstructor) {
 }
 
 TEST(JsonValueTest, ObjectConstructor) {
-  std::map<std::string, json::Value> map{
-      {"null", nullptr},
-      {"bool", true},
-      {"int32_t", 42},
-      {"double", 1.23},
-      {"array", std::vector<json::Value>{}},
-      {"map", std::map<std::string, json::Value>{}}};
+  json::object_t map{{"null", nullptr},
+                     {"bool", true},
+                     {"int32_t", 42},
+                     {"double", 1.23},
+                     {"array", json::array_t{}},
+                     {"map", json::object_t{}}};
   {
     json::Value v(map);
     EXPECT_EQ(v, map);

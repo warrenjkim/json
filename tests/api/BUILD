@@ -1,3 +1,10 @@
+test_suite(
+    name = "api_tests",
+    tests = [
+        ":value_test",
+    ],
+)
+
 cc_test(
     name = "value_test",
     srcs = ["value_test.cc"],
@@ -6,12 +13,5 @@ cc_test(
         "//src/utils:exception",
         "//src/utils:types",
         "@googletest//:gtest_main",
-    ],
-)
-
-test_suite(
-    name = "api_tests",
-    tests = [
-        ":value_test",
     ],
 )

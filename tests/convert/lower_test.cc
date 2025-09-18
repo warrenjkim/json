@@ -19,10 +19,24 @@ TEST(LowerTest, Array) {
   root.value.push_back(new json::ast::Number(1));
   root.value.push_back(new json::ast::Boolean(true));
   root.value.push_back(new json::ast::String("string"));
+  root.value.push_back(new json::ast::Array(
+      {new json::ast::Null(), new json::ast::Number(1),
+       new json::ast::Boolean(true), new json::ast::String("string")}));
+  root.value.push_back(
+      new json::ast::Object({{"null", new json::ast::Null()},
+                             {"number", new json::ast::Number(1)},
+                             {"boolean", new json::ast::Boolean(true)},
+                             {"string", new json::ast::String("string")}}));
+
   json::Value value = json::convert::lower(root);
 
-  std::vector<json::Value> expected = {nullptr, 1, true, "string"};
-  EXPECT_EQ(value, json::Value(std::move(expected)));
+  EXPECT_EQ(value,
+            json::Value(json::array_t{nullptr, 1, true, "string",
+                                      json::array_t{nullptr, 1, true, "string"},
+                                      json::object_t{{"null", nullptr},
+                                                     {"number", 1},
+                                                     {"boolean", true},
+                                                     {"string", "string"}}}));
 }
 
 TEST(LowerTest, Object) {
@@ -31,11 +45,26 @@ TEST(LowerTest, Object) {
   root.value["number"] = new json::ast::Number(1);
   root.value["boolean"] = new json::ast::Boolean(true);
   root.value["string"] = new json::ast::String("string");
+  root.value["array"] = new json::ast::Array(
+      {new json::ast::Null(), new json::ast::Number(1),
+       new json::ast::Boolean(true), new json::ast::String("string")});
+  root.value["object"] =
+      new json::ast::Object({{"null", new json::ast::Null()},
+                             {"number", new json::ast::Number(1)},
+                             {"boolean", new json::ast::Boolean(true)},
+                             {"string", new json::ast::String("string")}});
+
   json::Value value = json::convert::lower(root);
 
-  std::map<std::string, json::Value> expected = {{"null", nullptr},
+  EXPECT_EQ(value, json::Value({
+                       {"null", nullptr},
+                       {"number", 1},
+                       {"boolean", true},
+                       {"string", "string"},
+                       {"array", json::array_t{nullptr, 1, true, "string"}},
+                       {"object", json::object_t{{"null", nullptr},
                                                  {"number", 1},
                                                  {"boolean", true},
-                                                 {"string", "string"}};
-  EXPECT_EQ(value, json::Value(std::move(expected)));
+                                                 {"string", "string"}}},
+                   }));
 }
