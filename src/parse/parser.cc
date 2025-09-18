@@ -137,7 +137,8 @@ ast::Node* Parser::parse_value() {
       return parse_null();
     case TokenType::STRING:
       return parse_string();
-    case TokenType::NUMBER:
+    case TokenType::DOUBLE:
+    case TokenType::INTEGRAL:
       return parse_number();
     case TokenType::ARRAY_START:
       return parse_array();
@@ -182,14 +183,24 @@ ast::String* Parser::parse_string() {
 }
 
 ast::Number* Parser::parse_number() {
-  if (lexer_->type != TokenType::NUMBER) {
-    throw ParseException("Unexpected token: " + lexer_->value);
+  switch (lexer_->type) {
+    case TokenType::DOUBLE: {
+      double value = std::stod(lexer_->value);
+      ++lexer_;
+
+      return new ast::Number(value);
+    }
+    case TokenType::INTEGRAL: {
+      int32_t value = std::stoi(lexer_->value);
+      ++lexer_;
+
+      return new ast::Number(value);
+    }
+    default:
+      throw ParseException("Unexpected token: " + lexer_->value);
   }
 
-  double value = std::stod(lexer_->value);
-  ++lexer_;
-
-  return new ast::Number(value);
+  __builtin_unreachable();
 }
 
 ast::Array* Parser::parse_array() {

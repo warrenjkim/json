@@ -205,8 +205,7 @@ Token Lexer::lex_number() {
     return exponent;
   }
 
-  return Token(integer.value + fraction.value + exponent.value,
-               TokenType::NUMBER);
+  return Token(integer.value + fraction.value + exponent.value, fraction.type);
 }
 
 Token Lexer::lex_integer() {
@@ -232,13 +231,13 @@ Token Lexer::lex_integer() {
     return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
   }
 
-  return Token(json_.substr(start, pos_ - start), TokenType::NUMBER);
+  return Token(json_.substr(start, pos_ - start), TokenType::INTEGRAL);
 }
 
 Token Lexer::lex_fraction() {
   size_t start = pos_;
   if (json_[pos_] != '.') {
-    return Token("", TokenType::NUMBER);
+    return Token("", TokenType::INTEGRAL);
   }
 
   if (++pos_ >= json_.length() || !isdigit(json_[pos_])) {
@@ -249,13 +248,13 @@ Token Lexer::lex_fraction() {
     pos_++;
   }
 
-  return Token(json_.substr(start, pos_ - start), TokenType::NUMBER);
+  return Token(json_.substr(start, pos_ - start), TokenType::DOUBLE);
 }
 
 Token Lexer::lex_exponent() {
   size_t start = pos_;
   if (pos_ >= json_.length() || tolower(json_[pos_]) != 'e') {
-    return Token("", TokenType::NUMBER);
+    return Token("", TokenType::INTEGRAL);
   }
 
   if (++pos_ < json_.length() && (json_[pos_] == '+' || json_[pos_] == '-')) {
@@ -270,7 +269,7 @@ Token Lexer::lex_exponent() {
     pos_++;
   }
 
-  return Token(json_.substr(start, pos_ - start), TokenType::NUMBER);
+  return Token(json_.substr(start, pos_ - start), TokenType::INTEGRAL);
 }
 
 void Lexer::strip_whitespace() {
