@@ -1,7 +1,7 @@
 #include "lower.h"
 
 #include <map>
-#include <utility>
+#include <utility>  // move, swap
 #include <vector>
 
 #include "warren/json/internal/ast/array.h"
@@ -16,10 +16,11 @@
 
 namespace {
 
-class LowerVisitor : public json::ast::Visitor {
+class LowerVisitor final : public json::ast::Visitor {
  public:
   void visit(const json::ast::Array& node) override {
     std::vector<json::Value> values;
+    values.reserve(node.value.size());
     for (const json::ast::Node* value : node.value) {
       json::Value v = std::move(value_);
       value->accept(*this);
