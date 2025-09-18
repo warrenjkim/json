@@ -29,6 +29,6 @@ cc_library(
         "//src/api:value",
         "//src/ast:nodes",
         "//src/ast:visitor",
-        "//src/utils:exception",
+        "//src/utils:types",
     ],
 )

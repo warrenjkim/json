@@ -1,9 +1,8 @@
 #pragma once
 
-#include <cstddef>
-#include <cstdint>
+#include <cstddef>  // nullptr_t, size_t
+#include <cstdint>  // int32_t
 #include <map>
-#include <new>
 #include <string>
 #include <vector>
 
