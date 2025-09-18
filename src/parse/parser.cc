@@ -199,8 +199,6 @@ ast::Number* Parser::parse_number() {
     default:
       throw ParseException("Unexpected token: " + lexer_->value);
   }
-
-  __builtin_unreachable();
 }
 
 ast::Array* Parser::parse_array() {
