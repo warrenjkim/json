@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "gtest/gtest.h"
+#include "warren/json/utils/types.h"
 
 TEST(JsonValueTest, DefaultConstructor) {
   { EXPECT_EQ(json::Value(), nullptr); }

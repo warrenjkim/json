@@ -2,8 +2,9 @@ cc_test(
     name = "value_test",
     srcs = ["value_test.cc"],
     deps = [
-        "//src/api",
-        "//src/utils",
+        "//src/api:value",
+        "//src/utils:exception",
+        "//src/utils:types",
         "@googletest//:gtest_main",
     ],
 )
