@@ -1,5 +1,18 @@
 cc_library(
     name = "convert",
+    include_prefix = "warren/json/internal/convert",
+    strip_include_prefix = ".",
+    visibility = [
+        "//src:__subpackages__",
+        "//tests:__subpackages__",
+    ],
+    deps = [
+        ":lower",
+    ],
+)
+
+cc_library(
+    name = "lower",
     srcs = [
         "lower.cc",
     ],
