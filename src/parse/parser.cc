@@ -1,7 +1,7 @@
 #include "parser.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <cstddef>  // size_t
+#include <cstdint>  // int32_t, uint32_t
 #include <map>
 #include <string>
 #include <vector>

@@ -10,8 +10,6 @@ cc_library(
         ":lexer",
         ":parser",
         ":token",
-        "//src/ast:nodes",
-        "//src/utils:exception",
     ],
 )
 

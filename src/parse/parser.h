@@ -15,22 +15,17 @@ namespace syntax {
 class Parser {
  public:
   Parser(Lexer lexer);
-
- public:
-  Parser() = delete;
   ~Parser() = default;
-  Parser(Parser&&) = default;
+
+  Parser() = delete;
   Parser(const Parser&) = delete;
-  Parser& operator=(Parser&&) = delete;
   Parser& operator=(const Parser&) = delete;
 
- public:
   ast::Node* parse();
 
  private:
   ast::Node* parse_value();
 
- private:
   ast::Null* parse_null();
   ast::Boolean* parse_boolean();
   ast::String* parse_string();
