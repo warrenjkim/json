@@ -375,6 +375,8 @@ class Value {
   }
 
  private:
+  enum Type { ARRAY, BOOLEAN, JSON_NULL, INTEGRAL, DOUBLE, OBJECT, STRING };
+
   void destroy() noexcept {
     switch (type_) {
       case Type::ARRAY:
@@ -392,25 +394,6 @@ class Value {
 
     type_ = Type::JSON_NULL;
   }
-
-  union {
-    array_t a_;
-    bool b_;
-    double n_;
-    object_t o_;
-    std::string s_;
-  };
-
- private:
-  enum Type {
-    ARRAY,
-    BOOLEAN,
-    JSON_NULL,
-    INTEGRAL,
-    DOUBLE,
-    OBJECT,
-    STRING
-  } type_;
 
   void assert_type(Type expected) const {
     if (type_ != expected) {
@@ -438,6 +421,16 @@ class Value {
 
     __builtin_unreachable();
   }
+
+  union {
+    array_t a_;
+    bool b_;
+    double n_;
+    object_t o_;
+    std::string s_;
+  };
+
+  Type type_;
 };
 
 }  // namespace json
