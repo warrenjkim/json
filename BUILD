@@ -2,7 +2,7 @@ cc_library(
     name = "json",
     visibility = ["//visibility:public"],
     deps = [
-        "//src/api",
+        "//src:impl",
     ],
 )
 

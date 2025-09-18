@@ -1,6 +1,6 @@
 cc_library(
     name = "impl",
-    visibility = ["//src:__subpackages__"],
+    visibility = ["//:__subpackages__"],
     deps = [
         "//src/api",
         "//src/ast",
