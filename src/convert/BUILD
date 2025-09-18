@@ -13,8 +13,9 @@ cc_library(
         "//tests:__subpackages__",
     ],
     deps = [
-        "//src/api",
-        "//src/ast",
-        "//src/utils",
+        "//src/api:value",
+        "//src/ast:nodes",
+        "//src/ast:visitor",
+        "//src/utils:exception",
     ],
 )
