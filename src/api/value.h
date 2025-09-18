@@ -8,12 +8,9 @@
 #include <vector>
 
 #include "warren/json/utils/exception.h"
+#include "warren/json/utils/types.h"
 
 namespace json {
-
-class Value;
-using array_t = std::vector<json::Value>;
-using object_t = std::map<std::string, json::Value>;
 
 class Value {
  public:
