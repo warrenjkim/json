@@ -54,12 +54,16 @@ TEST(ParserTest, SimpleObject) {
   std::map<std::string, json::ast::Node*> res = node->value;
 
   // assert
-  EXPECT_EQ(((json::ast::Number*)obj["int"])->value,
-            ((json::ast::Number*)res["int"])->value);
+  EXPECT_EQ(((json::ast::Number*)obj["int"])->type,
+            ((json::ast::Number*)res["int"])->type);
+  EXPECT_EQ(((json::ast::Number*)obj["int"])->intgr,
+            ((json::ast::Number*)res["int"])->intgr);
   EXPECT_EQ(((json::ast::String*)obj["str"])->value,
             ((json::ast::String*)res["str"])->value);
-  EXPECT_EQ(((json::ast::Number*)obj["float"])->value,
-            ((json::ast::Number*)res["float"])->value);
+  EXPECT_EQ(((json::ast::Number*)obj["float"])->type,
+            ((json::ast::Number*)res["float"])->type);
+  EXPECT_EQ(((json::ast::Number*)obj["float"])->dbl,
+            ((json::ast::Number*)res["float"])->dbl);
   EXPECT_EQ(((json::ast::Null*)obj["null"])->value,
             ((json::ast::Null*)res["null"])->value);
   EXPECT_EQ(((json::ast::Boolean*)obj["bool"])->value,
@@ -109,12 +113,16 @@ TEST(ParserTest, SimpleArray) {
   std::vector<json::ast::Node*> res = node->value;
 
   // assert
-  EXPECT_EQ(((json::ast::Number*)arr[0])->value,
-            ((json::ast::Number*)res[0])->value);
+  EXPECT_EQ(((json::ast::Number*)arr[0])->type,
+            ((json::ast::Number*)res[0])->type);
+  EXPECT_EQ(((json::ast::Number*)arr[0])->intgr,
+            ((json::ast::Number*)res[0])->intgr);
   EXPECT_EQ(((json::ast::String*)arr[1])->value,
             ((json::ast::String*)res[1])->value);
-  EXPECT_EQ(((json::ast::Number*)arr[2])->value,
-            ((json::ast::Number*)res[2])->value);
+  EXPECT_EQ(((json::ast::Number*)arr[2])->type,
+            ((json::ast::Number*)res[2])->type);
+  EXPECT_EQ(((json::ast::Number*)arr[2])->dbl,
+            ((json::ast::Number*)res[2])->dbl);
   EXPECT_EQ(((json::ast::Null*)arr[3])->value,
             ((json::ast::Null*)res[3])->value);
   EXPECT_EQ(((json::ast::Boolean*)arr[4])->value,
