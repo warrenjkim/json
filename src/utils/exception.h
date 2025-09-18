@@ -15,23 +15,16 @@ class JsonException : public std::exception {
   std::string message_;
 };
 
-class ParseException : public JsonException {
+class ParseException final : public JsonException {
   using JsonException::JsonException;
 };
 
-class BadCastException : public JsonException {
+class BadAccessException final : public JsonException {
   using JsonException::JsonException;
 };
 
-class BadAccessException : public JsonException {
-  using JsonException::JsonException;
-};
-
-class UnexpectedParentException : public JsonException {
-  using JsonException::JsonException;
-};
-
-class NonIterableTypeException : public JsonException {
+// TODO(implement iterators)
+class NonIterableTypeException final : public JsonException {
   using JsonException::JsonException;
 };
 
