@@ -1,13 +1,8 @@
 #pragma once
 
-#include "warren/json/internal/ast/array.h"
-#include "warren/json/internal/ast/boolean.h"
-#include "warren/json/internal/ast/node.h"
-#include "warren/json/internal/ast/null.h"
-#include "warren/json/internal/ast/number.h"
-#include "warren/json/internal/ast/object.h"
-#include "warren/json/internal/ast/string.h"
 #include "warren/json/internal/parse/lexer.h"
+#include "warren/json/utils/types.h"
+#include "warren/json/value.h"
 
 namespace json {
 namespace syntax {
@@ -21,17 +16,17 @@ class Parser {
   Parser(const Parser&) = delete;
   Parser& operator=(const Parser&) = delete;
 
-  ast::Node* parse();
+  Value parse();
 
  private:
-  ast::Node* parse_value();
+  Value parse_value();
 
-  ast::Null* parse_null();
-  ast::Boolean* parse_boolean();
-  ast::String* parse_string();
-  ast::Number* parse_number();
-  ast::Array* parse_array();
-  ast::Object* parse_object();
+  nullptr_t parse_null();
+  bool parse_boolean();
+  std::string parse_string();
+  Value parse_number();
+  array_t parse_array();
+  object_t parse_object();
 
  private:
   Lexer lexer_;

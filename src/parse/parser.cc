@@ -122,9 +122,9 @@ namespace syntax {
 
 Parser::Parser(Lexer lexer) : lexer_(std::move(lexer)) {}
 
-ast::Node* Parser::parse() {
+Value Parser::parse() {
   ++lexer_;
-  ast::Node* json = parse_value();
+  Value json = parse_value();
   if (lexer_->type != TokenType::END_OF_JSON) {
     throw ParseException("Unexpected token: " + lexer_->value);
   }
@@ -132,7 +132,7 @@ ast::Node* Parser::parse() {
   return json;
 }
 
-ast::Node* Parser::parse_value() {
+Value Parser::parse_value() {
   switch (lexer_->type) {
     case TokenType::BOOLEAN:
       return parse_boolean();
@@ -152,17 +152,17 @@ ast::Node* Parser::parse_value() {
   }
 }
 
-ast::Null* Parser::parse_null() {
+nullptr_t Parser::parse_null() {
   if (lexer_->type != TokenType::JSON_NULL) {
     throw ParseException("Unexpected token: " + lexer_->value);
   }
 
   ++lexer_;
 
-  return new ast::Null();
+  return nullptr;
 }
 
-ast::Boolean* Parser::parse_boolean() {
+bool Parser::parse_boolean() {
   if (lexer_->type != TokenType::BOOLEAN) {
     throw ParseException("Unexpected token: " + lexer_->value);
   }
@@ -170,10 +170,10 @@ ast::Boolean* Parser::parse_boolean() {
   bool value = lexer_->value == "true";
   ++lexer_;
 
-  return new ast::Boolean(value);
+  return value;
 }
 
-ast::String* Parser::parse_string() {
+std::string Parser::parse_string() {
   if (lexer_->type != TokenType::STRING) {
     throw ParseException("Unexpected token: " + lexer_->value);
   }
@@ -181,39 +181,38 @@ ast::String* Parser::parse_string() {
   std::string value = resolve_unicode_sequences(lexer_->value);
   ++lexer_;
 
-  return new ast::String(std::move(value));
+  return value;
 }
 
-ast::Number* Parser::parse_number() {
+Value Parser::parse_number() {
+  Value value;
   switch (lexer_->type) {
-    case TokenType::DOUBLE: {
-      double value = std::stod(lexer_->value);
-      ++lexer_;
-
-      return new ast::Number(value);
-    }
-    case TokenType::INTEGRAL: {
-      int32_t value = std::stoi(lexer_->value);
-      ++lexer_;
-
-      return new ast::Number(value);
-    }
+    case TokenType::DOUBLE:
+      value = std::stod(lexer_->value);
+      break;
+    case TokenType::INTEGRAL:
+      value = std::stoi(lexer_->value);
+      break;
     default:
       throw ParseException("Unexpected token: " + lexer_->value);
   }
+
+  ++lexer_;
+
+  return value;
 }
 
-ast::Array* Parser::parse_array() {
+array_t Parser::parse_array() {
   if (lexer_->type != TokenType::ARRAY_START) {
     throw ParseException("Unexpected token: " + lexer_->value);
   }
 
   ++lexer_;
 
-  std::vector<ast::Node*> value;
+  array_t value;
   if (lexer_->type == TokenType::ARRAY_END) {
     ++lexer_;
-    return new ast::Array(std::move(value));
+    return value;
   }
 
   while (true) {
@@ -235,31 +234,30 @@ ast::Array* Parser::parse_array() {
 
   ++lexer_;
 
-  return new ast::Array(std::move(value));
+  return value;
 }
 
-ast::Object* Parser::parse_object() {
+object_t Parser::parse_object() {
   if (lexer_->type != TokenType::OBJECT_START) {
     throw ParseException("Unexpected token: " + lexer_->value);
   }
 
   ++lexer_;
 
-  std::map<std::string, ast::Node*> value;
+  object_t value;
   if (lexer_->type == TokenType::OBJECT_END) {
     ++lexer_;
-    return new ast::Object(std::move(value));
+    return value;
   }
 
   while (true) {
-    ast::String* key = parse_string();
+    std::string key = parse_string();
     if (lexer_->type != TokenType::COLON) {
       throw ParseException("Unexpected token: " + lexer_->value);
     }
 
     ++lexer_;
-    value[key->value] = parse_value();
-    delete key;
+    value[key] = parse_value();
     if (lexer_->type == TokenType::OBJECT_END) {
       break;
     }
@@ -277,7 +275,7 @@ ast::Object* Parser::parse_object() {
 
   ++lexer_;
 
-  return new ast::Object(std::move(value));
+  return value;
 }
 
 }  // namespace syntax
