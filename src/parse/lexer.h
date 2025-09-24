@@ -38,9 +38,7 @@ class Lexer {
   bool has_error() const;
 
  private:
-  Token lex_null();
-  Token lex_true();
-  Token lex_false();
+  Token lex_literal(const std::string& literal, TokenType type);
 
   Token lex_string();
   std::optional<std::string> lex_ctrl();

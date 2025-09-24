@@ -18,11 +18,11 @@ Token Lexer::next_token() {
 
   switch (json_[pos_]) {
     case 'n':
-      return lex_null();
+      return lex_literal("null", TokenType::JSON_NULL);
     case 't':
-      return lex_true();
+      return lex_literal("true", TokenType::BOOLEAN);
     case 'f':
-      return lex_false();
+      return lex_literal("false", TokenType::BOOLEAN);
     case '"':
       return lex_string();
     case '-':
@@ -76,48 +76,29 @@ bool Lexer::eof() const { return curr_.type == TokenType::END_OF_JSON; }
 
 bool Lexer::has_error() const { return error_.has_value(); }
 
-Token Lexer::lex_null() {
+Token Lexer::lex_literal(const std::string& literal, TokenType type) {
   size_t start = pos_;
-  if (pos_ + 3 >= json_.length()) {
-    return Token(json_.substr(start), TokenType::UNKNOWN);
+  if (pos_ + literal.length() > json_.length()) {
+    std::string token = json_.substr(start);
+    error_ = Error(type, start,
+                   "incomplete '" + literal + "' literal: got '" + token +
+                       "', expected '" + literal + "'");
+
+    return Token(token, TokenType::UNKNOWN);
   }
 
-  if (json_[pos_++] != 'n' || json_[pos_++] != 'u' || json_[pos_++] != 'l' ||
-      json_[pos_++] != 'l') {
-    return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
+  for (char c : literal) {
+    if (json_[pos_++] != c) {
+      std::string token = json_.substr(start, pos_ - start);
+      error_ = Error(type, start,
+                     "incomplete '" + literal + "' literal: got '" + token +
+                         "', expected '" + literal + "'");
+
+      return Token(token, TokenType::UNKNOWN);
+    }
   }
 
-  return Token("null", TokenType::JSON_NULL);
-}
-
-Token Lexer::lex_true() {
-  size_t start = pos_;
-  if (pos_ + 3 >= json_.length()) {
-    pos_ = json_.length();
-    return Token(json_.substr(start), TokenType::UNKNOWN);
-  }
-
-  if (json_[pos_++] != 't' || json_[pos_++] != 'r' || json_[pos_++] != 'u' ||
-      json_[pos_++] != 'e') {
-    return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
-  }
-
-  return Token("true", TokenType::BOOLEAN);
-}
-
-Token Lexer::lex_false() {
-  size_t start = pos_;
-  if (pos_ + 4 >= json_.length()) {
-    pos_ = json_.length();
-    return Token(json_.substr(start), TokenType::UNKNOWN);
-  }
-
-  if (json_[pos_++] != 'f' || json_[pos_++] != 'a' || json_[pos_++] != 'l' ||
-      json_[pos_++] != 's' || json_[pos_++] != 'e') {
-    return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
-  }
-
-  return Token("false", TokenType::BOOLEAN);
+  return Token(literal, type);
 }
 
 Token Lexer::lex_string() {
