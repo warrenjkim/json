@@ -223,12 +223,14 @@ Token Lexer::lex_integer() {
     return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
   }
 
+  if (json_[pos_] < '0' || json_[pos_] > '9') {
+    return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
+  }
+
   if (json_[pos_] == '0' && ++pos_ < json_.length() && isdigit(json_[pos_])) {
     return Token(json_.substr(start, pos_ - start + 1), TokenType::UNKNOWN);
   } else if (json_[pos_] >= '1' && json_[pos_] <= '9') {
     while (++pos_ < json_.length() && isdigit(json_[pos_]));
-  } else {
-    return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
   }
 
   return Token(json_.substr(start, pos_ - start), TokenType::INTEGRAL);
