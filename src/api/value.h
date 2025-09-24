@@ -197,7 +197,7 @@ class Value {
     return o_;
   }
 
-  operator std::string() const {
+  operator std::string&() {
     assert_type(Type::STRING);
     return s_;
   }
