@@ -10,6 +10,15 @@ namespace syntax {
 
 class Lexer {
  public:
+  struct Error {
+    TokenType expected;
+    size_t pos;
+    std::string message;
+
+    explicit Error(TokenType expected, size_t pos, std::string message)
+        : expected(expected), pos(pos), message(std::move(message)) {}
+  };
+
   explicit Lexer(const std::string& json);
   Lexer(Lexer&&) = default;
   Lexer& operator=(Lexer&&) = default;
@@ -43,6 +52,7 @@ class Lexer {
   size_t pos_;
   std::string json_;
   Token curr_;
+  std::optional<Error> err_;
 };
 
 }  // namespace syntax
