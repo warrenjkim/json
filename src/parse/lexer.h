@@ -10,7 +10,7 @@ namespace syntax {
 
 class Lexer {
  public:
-  Lexer(const std::string& json);
+  explicit Lexer(const std::string& json);
   Lexer(Lexer&&) = default;
   Lexer& operator=(Lexer&&) = default;
 

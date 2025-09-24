@@ -9,7 +9,7 @@ namespace syntax {
 
 class Parser {
  public:
-  Parser(Lexer lexer);
+  explicit Parser(Lexer lexer);
   ~Parser() = default;
 
   Parser() = delete;
