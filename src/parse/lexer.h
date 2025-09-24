@@ -32,7 +32,10 @@ class Lexer {
   Lexer& operator++();
   const Token& operator*() const;
   const Token* operator->() const;
+  operator bool() const;
+
   bool eof() const;
+  bool has_error() const;
 
  private:
   Token lex_null();
@@ -52,7 +55,7 @@ class Lexer {
   size_t pos_;
   std::string json_;
   Token curr_;
-  std::optional<Error> err_;
+  std::optional<Error> error_;
 };
 
 }  // namespace syntax
