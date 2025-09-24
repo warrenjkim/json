@@ -4,6 +4,7 @@ cc_library(
     strip_include_prefix = ".",
     visibility = ["//visibility:public"],
     deps = [
+        ":parse",
         ":value",
     ],
 )
