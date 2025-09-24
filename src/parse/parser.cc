@@ -4,10 +4,7 @@
 #include <cstdint>  // int32_t, uint32_t
 #include <map>
 #include <string>
-#include <vector>
 
-#include "warren/json/internal/ast/node.h"
-#include "warren/json/internal/ast/object.h"
 #include "warren/json/internal/parse/lexer.h"
 #include "warren/json/internal/parse/token.h"
 #include "warren/json/utils/exception.h"

@@ -10,7 +10,6 @@ cc_test(
     name = "lexer_test",
     srcs = ["lexer_test.cc"],
     deps = [
-        "//src/ast:nodes",
         "//src/parse:lexer",
         "//src/parse:token",
         "@googletest//:gtest_main",
@@ -21,11 +20,12 @@ cc_test(
     name = "parser_test",
     srcs = ["parser_test.cc"],
     deps = [
-        "//src/ast:nodes",
+        "//src/api:value",
         "//src/parse:lexer",
         "//src/parse:parser",
         "//src/parse:token",
         "//src/utils:exception",
+        "//src/utils:types",
         "@googletest//:gtest_main",
     ],
 )

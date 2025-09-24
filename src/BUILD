@@ -3,8 +3,6 @@ cc_library(
     visibility = ["//:__subpackages__"],
     deps = [
         "//src/api",
-        "//src/ast",
-        "//src/convert",
         "//src/parse",
         "//src/utils",
     ],
