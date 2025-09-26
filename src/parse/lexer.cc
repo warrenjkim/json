@@ -80,9 +80,9 @@ Token Lexer::lex_literal(const std::string& literal, TokenType type) {
   size_t start = pos_;
   if (pos_ + literal.length() > json_.length()) {
     std::string token = json_.substr(start);
-    error_ = Error(type, start,
-                   "incomplete '" + literal + "' literal: got '" + token +
-                       "', expected '" + literal + "'");
+    error_ = Error(
+        type, start,
+        "incomplete literal: got '" + token + "', expected '" + literal + "'");
 
     return Token(token, TokenType::UNKNOWN);
   }
@@ -91,8 +91,8 @@ Token Lexer::lex_literal(const std::string& literal, TokenType type) {
     if (json_[pos_++] != c) {
       std::string token = json_.substr(start, pos_ - start);
       error_ = Error(type, start,
-                     "incomplete '" + literal + "' literal: got '" + token +
-                         "', expected '" + literal + "'");
+                     "unexpected literal: got '" + token + "', expected '" +
+                         literal + "'");
 
       return Token(token, TokenType::UNKNOWN);
     }
