@@ -3,180 +3,184 @@
 #include "gtest/gtest.h"
 #include "warren/json/internal/parse/token.h"
 
-TEST(LexerTest, LexInvalidLogicalValues) {
-  {  // incomplete null
-    json::syntax::Lexer lexer("nul");
-    json::syntax::Token token = lexer.next_token();
-    EXPECT_EQ(token.type, json::syntax::TokenType::UNKNOWN);
-    EXPECT_EQ(token.value, "nul");
-  }
-  {  // incomplete true
-    json::syntax::Lexer lexer("tru");
-    json::syntax::Token token = lexer.next_token();
-    EXPECT_EQ(token.type, json::syntax::TokenType::UNKNOWN);
-    EXPECT_EQ(token.value, "tru");
-  }
-  {  // incomplete false
-    json::syntax::Lexer lexer("fals");
-    json::syntax::Token token = lexer.next_token();
-    EXPECT_EQ(token.type, json::syntax::TokenType::UNKNOWN);
-    EXPECT_EQ(token.value, "fals");
-  }
+namespace json {
+namespace syntax {
+namespace {
+
+TEST(LexerTest, LexInvalidNull) {
+  Lexer lexer("nul");
+  ++lexer;
+  EXPECT_FALSE(lexer);
+  EXPECT_TRUE(lexer.has_error());
+  Lexer::Error error = lexer.error();
+  EXPECT_EQ(error.expected, TokenType::JSON_NULL);
+  EXPECT_EQ(error.pos, 0);
+  EXPECT_EQ(*lexer, Token("nul", TokenType::UNKNOWN));
+}
+
+TEST(LexerTest, LexInvalidTrue) {
+  Lexer lexer("tru");
+  Token token = lexer.next_token();
+  EXPECT_EQ(token.type, TokenType::UNKNOWN);
+  EXPECT_EQ(token.value, "tru");
+}
+
+TEST(LexerTest, LexInvalidFalse) {
+  Lexer lexer("fals");
+  Token token = lexer.next_token();
+  EXPECT_EQ(token.type, TokenType::UNKNOWN);
+  EXPECT_EQ(token.value, "fals");
 }
 
 TEST(LexerTest, LexNull) {
-  json::syntax::Lexer lexer("null");
-  json::syntax::Token token = lexer.next_token();
-  EXPECT_EQ(token,
-            json::syntax::Token("null", json::syntax::TokenType::JSON_NULL));
+  Lexer lexer("null");
+  Token token = lexer.next_token();
+  EXPECT_EQ(token, Token("null", TokenType::JSON_NULL));
 }
 
 TEST(LexerTest, LexBoolean) {
   {  // true
-    json::syntax::Lexer lexer("true");
-    json::syntax::Token token = lexer.next_token();
-    EXPECT_EQ(token.type, json::syntax::TokenType::BOOLEAN);
+    Lexer lexer("true");
+    Token token = lexer.next_token();
+    EXPECT_EQ(token.type, TokenType::BOOLEAN);
     EXPECT_EQ(token.value, "true");
   }
   {  // false
-    json::syntax::Lexer lexer("false");
-    json::syntax::Token token = lexer.next_token();
-    EXPECT_EQ(token.type, json::syntax::TokenType::BOOLEAN);
+    Lexer lexer("false");
+    Token token = lexer.next_token();
+    EXPECT_EQ(token.type, TokenType::BOOLEAN);
     EXPECT_EQ(token.value, "false");
   }
 }
 
 TEST(LexerTest, LexInvalidStrings) {
   {  // unterminated string
-    json::syntax::Lexer lexer("\"hello");
-    json::syntax::Token token = lexer.next_token();
-    EXPECT_EQ(token.type, json::syntax::TokenType::UNKNOWN);
+    Lexer lexer("\"hello");
+    Token token = lexer.next_token();
+    EXPECT_EQ(token.type, TokenType::UNKNOWN);
     EXPECT_EQ(token.value, "hello");
   }
   {  // bad escape char
-    json::syntax::Lexer lexer("\"hello\\z\"");
-    json::syntax::Token token = lexer.next_token();
-    EXPECT_EQ(token.type, json::syntax::TokenType::UNKNOWN);
+    Lexer lexer("\"hello\\z\"");
+    Token token = lexer.next_token();
+    EXPECT_EQ(token.type, TokenType::UNKNOWN);
     EXPECT_EQ(token.value, "hello\\z");
   }
   {  // bad unicode
-    json::syntax::Lexer lexer("\"\\u12\"");
-    json::syntax::Token token = lexer.next_token();
-    EXPECT_EQ(token.type, json::syntax::TokenType::UNKNOWN);
+    Lexer lexer("\"\\u12\"");
+    Token token = lexer.next_token();
+    EXPECT_EQ(token.type, TokenType::UNKNOWN);
     EXPECT_EQ(token.value, "\\u12");
   }
 }
 
 TEST(LexerTest, LexString) {
   {  // simple
-    json::syntax::Lexer lexer("\"hello\"");
-    json::syntax::Token token = lexer.next_token();
-    EXPECT_EQ(token.type, json::syntax::TokenType::STRING);
+    Lexer lexer("\"hello\"");
+    Token token = lexer.next_token();
+    EXPECT_EQ(token.type, TokenType::STRING);
     EXPECT_EQ(token.value, "hello");
   }
   {  // escape chars
-    json::syntax::Lexer lexer("\"hello\\nworld\"");
-    json::syntax::Token token = lexer.next_token();
+    Lexer lexer("\"hello\\nworld\"");
+    Token token = lexer.next_token();
     EXPECT_EQ(token.value, "hello\nworld");
   }
   {  // unicode
-    json::syntax::Lexer lexer("\"\\u0041\"");
-    json::syntax::Token token = lexer.next_token();
+    Lexer lexer("\"\\u0041\"");
+    Token token = lexer.next_token();
     EXPECT_EQ(token.value, "\\u0041");
   }
 }
 
 TEST(LexerTest, LexInvalidNumbers) {
   {  // -
-    json::syntax::Lexer lexer("-");
-    json::syntax::Token token = lexer.next_token();
-    EXPECT_EQ(token.type, json::syntax::TokenType::UNKNOWN);
+    Lexer lexer("-");
+    Token token = lexer.next_token();
+    EXPECT_EQ(token.type, TokenType::UNKNOWN);
     EXPECT_EQ(token.value, "-");
   }
   {  // 01
-    json::syntax::Lexer lexer("01");
-    json::syntax::Token token = lexer.next_token();
-    EXPECT_EQ(token.type, json::syntax::TokenType::UNKNOWN);
+    Lexer lexer("01");
+    Token token = lexer.next_token();
+    EXPECT_EQ(token.type, TokenType::UNKNOWN);
     EXPECT_EQ(token.value, "01");
   }
   {  // 1.
-    json::syntax::Lexer lexer("1.");
-    json::syntax::Token token = lexer.next_token();
-    EXPECT_EQ(token.type, json::syntax::TokenType::UNKNOWN);
+    Lexer lexer("1.");
+    Token token = lexer.next_token();
+    EXPECT_EQ(token.type, TokenType::UNKNOWN);
     EXPECT_EQ(token.value, "1.");
   }
   {  // 1e
-    json::syntax::Lexer lexer("1e");
-    json::syntax::Token token = lexer.next_token();
-    EXPECT_EQ(token.type, json::syntax::TokenType::UNKNOWN);
+    Lexer lexer("1e");
+    Token token = lexer.next_token();
+    EXPECT_EQ(token.type, TokenType::UNKNOWN);
     EXPECT_EQ(token.value, "1e");
   }
   {  // 1e+
-    json::syntax::Lexer lexer("1e+");
-    json::syntax::Token token = lexer.next_token();
-    EXPECT_EQ(token.type, json::syntax::TokenType::UNKNOWN);
+    Lexer lexer("1e+");
+    Token token = lexer.next_token();
+    EXPECT_EQ(token.type, TokenType::UNKNOWN);
     EXPECT_EQ(token.value, "1e+");
   }
 }
 
 TEST(LexerTest, LexNumber) {
   {  // 123
-    json::syntax::Lexer lexer("123");
-    json::syntax::Token token = lexer.next_token();
-    EXPECT_EQ(token.type, json::syntax::TokenType::INTEGRAL);
+    Lexer lexer("123");
+    Token token = lexer.next_token();
+    EXPECT_EQ(token.type, TokenType::INTEGRAL);
     EXPECT_EQ(token.value, "123");
   }
   {  // 12.34
-    json::syntax::Lexer lexer("12.34");
-    json::syntax::Token token = lexer.next_token();
-    EXPECT_EQ(token.type, json::syntax::TokenType::DOUBLE);
+    Lexer lexer("12.34");
+    Token token = lexer.next_token();
+    EXPECT_EQ(token.type, TokenType::DOUBLE);
     EXPECT_EQ(token.value, "12.34");
   }
 }
 
 TEST(LexerTest, LexPunctuation) {
-  std::vector<json::syntax::Token> expected = {
-      json::syntax::Token("{", json::syntax::TokenType::OBJECT_START),
-      json::syntax::Token("}", json::syntax::TokenType::OBJECT_END),
-      json::syntax::Token("[", json::syntax::TokenType::ARRAY_START),
-      json::syntax::Token("]", json::syntax::TokenType::ARRAY_END),
-      json::syntax::Token(",", json::syntax::TokenType::COMMA),
-      json::syntax::Token(":", json::syntax::TokenType::COLON),
+  std::vector<Token> expected = {
+      Token("{", TokenType::OBJECT_START), Token("}", TokenType::OBJECT_END),
+      Token("[", TokenType::ARRAY_START),  Token("]", TokenType::ARRAY_END),
+      Token(",", TokenType::COMMA),        Token(":", TokenType::COLON),
   };
 
   std::vector<std::string> inputs = {"{", "}", "[", "]", ",", ":"};
-  json::syntax::Lexer lexer("{}[],:");
+  Lexer lexer("{}[],:");
   for (size_t i = 0; i < inputs.size(); i++) {
-    json::syntax::Token token = *(++lexer);
+    Token token = *(++lexer);
     EXPECT_EQ(token, expected[i]);
   }
 }
 
 TEST(LexerTest, LexWhitespace) {
-  json::syntax::Lexer lexer("   \n\t 123");
-  json::syntax::Token token = lexer.next_token();
-  EXPECT_EQ(token.type, json::syntax::TokenType::INTEGRAL);
+  Lexer lexer("   \n\t 123");
+  Token token = lexer.next_token();
+  EXPECT_EQ(token.type, TokenType::INTEGRAL);
   EXPECT_EQ(token.value, "123");
 }
 
 TEST(LexerTest, LexUnknown) {
-  json::syntax::Lexer lexer("@");
-  json::syntax::Token token = lexer.next_token();
-  EXPECT_EQ(token.type, json::syntax::TokenType::UNKNOWN);
+  Lexer lexer("@");
+  Token token = lexer.next_token();
+  EXPECT_EQ(token.type, TokenType::UNKNOWN);
   EXPECT_EQ(token.value, "@");
 }
 
 TEST(LexerTest, IncrementOperator) {
-  json::syntax::Lexer lexer("true false");
+  Lexer lexer("true false");
 
   ++lexer;
   EXPECT_FALSE(lexer.eof());
-  EXPECT_EQ((*lexer).type, json::syntax::TokenType::BOOLEAN);
+  EXPECT_EQ((*lexer).type, TokenType::BOOLEAN);
   EXPECT_EQ((*lexer).value, "true");
 
   ++lexer;
   EXPECT_FALSE(lexer.eof());
-  EXPECT_EQ((*lexer).type, json::syntax::TokenType::BOOLEAN);
+  EXPECT_EQ((*lexer).type, TokenType::BOOLEAN);
   EXPECT_EQ((*lexer).value, "false");
 
   ++lexer;
@@ -184,7 +188,11 @@ TEST(LexerTest, IncrementOperator) {
 }
 
 TEST(LexerTest, EofOnEmptyInput) {
-  json::syntax::Lexer lexer("");
+  Lexer lexer("");
   ++lexer;
   EXPECT_TRUE(lexer.eof());
 }
+
+}  // namespace
+}  // namespace syntax
+}  // namespace json
