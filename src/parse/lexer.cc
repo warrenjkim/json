@@ -256,7 +256,9 @@ Token Lexer::lex_exponent() {
   }
 
   if (pos_ >= json_.length() || !isdigit(json_[pos_])) {
-    return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
+    std::string token = json_.substr(start, pos_ - start);
+    error_ = Error(TokenType::INTEGRAL, start, "invalid exponent: " + token);
+    return Token(token, TokenType::UNKNOWN);
   }
 
   while (pos_ < json_.length() && isdigit(json_[pos_])) {
