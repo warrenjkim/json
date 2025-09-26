@@ -199,25 +199,26 @@ Token Lexer::lex_number() {
 
 Token Lexer::lex_integer() {
   size_t start = pos_;
-
-  if (pos_ >= json_.length()) {
-    return Token("", TokenType::UNKNOWN);
-  }
-
   if (json_[pos_] == '-') {
     pos_++;
   }
 
   if (pos_ >= json_.length()) {
-    return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
+    std::string token = json_.substr(start, pos_ - start);
+    error_ = Error(TokenType::INTEGRAL, start, "invalid integer: " + token);
+    return Token(token, TokenType::UNKNOWN);
   }
 
   if (json_[pos_] < '0' || json_[pos_] > '9') {
-    return Token(json_.substr(start, pos_ - start), TokenType::UNKNOWN);
+    std::string token = json_.substr(start, pos_ - start);
+    error_ = Error(TokenType::INTEGRAL, start, "invalid integer: " + token);
+    return Token(token, TokenType::UNKNOWN);
   }
 
   if (json_[pos_] == '0' && ++pos_ < json_.length() && isdigit(json_[pos_])) {
-    return Token(json_.substr(start, pos_ - start + 1), TokenType::UNKNOWN);
+    std::string token = json_.substr(start, pos_ - start + 1);
+    error_ = Error(TokenType::INTEGRAL, start, "invalid integer: " + token);
+    return Token(token, TokenType::UNKNOWN);
   } else if (json_[pos_] >= '1' && json_[pos_] <= '9') {
     while (++pos_ < json_.length() && isdigit(json_[pos_]));
   }
