@@ -103,6 +103,7 @@ Token Lexer::lex_literal(const std::string& literal, TokenType type) {
 
 Token Lexer::lex_string() {
   if (++pos_ >= json_.length()) {
+    error_ = Error(TokenType::QUOTE, pos_ - 1, "unterminated string");
     return Token("", TokenType::UNKNOWN);
   }
 
@@ -111,25 +112,28 @@ Token Lexer::lex_string() {
     char c = json_[pos_];
     if (c == '"') {
       pos_++;
-      return Token(res, TokenType::STRING);
+      return Token(std::move(res), TokenType::STRING);
     }
 
     if (c == '\\') {
       size_t start = pos_;
       std::optional<std::string> ctrl = lex_ctrl();
       if (!ctrl) {
-        return Token(res + json_.substr(start, pos_ - start),
-                     TokenType::UNKNOWN);
+        std::string token = res + json_.substr(start, pos_ - start);
+        error_ = Error(TokenType::STRING, start,
+                       "invalid control character: " + token);
+        return Token(token, TokenType::UNKNOWN);
       }
 
       res += *ctrl;
-    } else {
-      res += c;
-      pos_++;
+      continue;
     }
+
+    res += c;
+    pos_++;
   }
 
-  return Token(res, TokenType::UNKNOWN);
+  return Token(std::move(res), TokenType::UNKNOWN);
 }
 
 std::optional<std::string> Lexer::lex_ctrl() {
