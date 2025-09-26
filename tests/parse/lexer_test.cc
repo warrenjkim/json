@@ -12,6 +12,7 @@ TEST(LexerTest, LexInvalidNull) {
   ++lexer;
   EXPECT_FALSE(lexer);
   EXPECT_TRUE(lexer.has_error());
+
   Lexer::Error error = lexer.error();
   EXPECT_EQ(error.expected, TokenType::JSON_NULL);
   EXPECT_EQ(error.pos, 0);
@@ -20,37 +21,50 @@ TEST(LexerTest, LexInvalidNull) {
 
 TEST(LexerTest, LexInvalidTrue) {
   Lexer lexer("tru");
-  Token token = lexer.next_token();
-  EXPECT_EQ(token.type, TokenType::UNKNOWN);
-  EXPECT_EQ(token.value, "tru");
+  ++lexer;
+  EXPECT_FALSE(lexer);
+  EXPECT_TRUE(lexer.has_error());
+
+  Lexer::Error error = lexer.error();
+  EXPECT_EQ(error.expected, TokenType::BOOLEAN);
+  EXPECT_EQ(error.pos, 0);
+  EXPECT_EQ(*lexer, Token("tru", TokenType::UNKNOWN));
 }
 
 TEST(LexerTest, LexInvalidFalse) {
   Lexer lexer("fals");
-  Token token = lexer.next_token();
-  EXPECT_EQ(token.type, TokenType::UNKNOWN);
-  EXPECT_EQ(token.value, "fals");
+  ++lexer;
+  EXPECT_FALSE(lexer);
+  EXPECT_TRUE(lexer.has_error());
+
+  Lexer::Error error = lexer.error();
+  EXPECT_EQ(error.expected, TokenType::BOOLEAN);
+  EXPECT_EQ(error.pos, 0);
+  EXPECT_EQ(*lexer, Token("fals", TokenType::UNKNOWN));
 }
 
 TEST(LexerTest, LexNull) {
   Lexer lexer("null");
-  Token token = lexer.next_token();
-  EXPECT_EQ(token, Token("null", TokenType::JSON_NULL));
+  ++lexer;
+  EXPECT_TRUE(lexer);
+  EXPECT_FALSE(lexer.has_error());
+  EXPECT_EQ(*lexer, Token("null", TokenType::JSON_NULL));
 }
 
-TEST(LexerTest, LexBoolean) {
-  {  // true
-    Lexer lexer("true");
-    Token token = lexer.next_token();
-    EXPECT_EQ(token.type, TokenType::BOOLEAN);
-    EXPECT_EQ(token.value, "true");
-  }
-  {  // false
-    Lexer lexer("false");
-    Token token = lexer.next_token();
-    EXPECT_EQ(token.type, TokenType::BOOLEAN);
-    EXPECT_EQ(token.value, "false");
-  }
+TEST(LexerTest, LexTrue) {
+  Lexer lexer("true");
+  ++lexer;
+  EXPECT_TRUE(lexer);
+  EXPECT_FALSE(lexer.has_error());
+  EXPECT_EQ(*lexer, Token("true", TokenType::BOOLEAN));
+}
+
+TEST(LexerTest, LexFalse) {
+  Lexer lexer("false");
+  ++lexer;
+  EXPECT_TRUE(lexer);
+  EXPECT_FALSE(lexer.has_error());
+  EXPECT_EQ(*lexer, Token("false", TokenType::BOOLEAN));
 }
 
 TEST(LexerTest, LexInvalidStrings) {
