@@ -34,6 +34,8 @@ class Lexer {
   const Token* operator->() const;
   operator bool() const;
 
+  Error error() const;
+
   bool eof() const;
   bool has_error() const;
 

@@ -72,6 +72,8 @@ const Token* Lexer::operator->() const { return &curr_; }
 
 Lexer::operator bool() const { return !eof() && !has_error(); }
 
+Lexer::Error Lexer::error() const { return *error_; }
+
 bool Lexer::eof() const { return curr_.type == TokenType::END_OF_JSON; }
 
 bool Lexer::has_error() const { return error_.has_value(); }
