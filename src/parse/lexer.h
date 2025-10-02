@@ -17,6 +17,11 @@ class Lexer {
 
     explicit Error(TokenType expected, size_t pos, std::string message)
         : expected(expected), pos(pos), message(std::move(message)) {}
+
+    bool operator==(const Error& other) const {
+      return expected == other.expected && pos == other.pos &&
+             message == other.message;
+    }
   };
 
   explicit Lexer(const std::string& json);
@@ -37,7 +42,7 @@ class Lexer {
   Error error() const;
 
   bool eof() const;
-  bool has_error() const;
+  bool ok() const;
 
  private:
   Token lex_literal(const std::string& literal, TokenType type);

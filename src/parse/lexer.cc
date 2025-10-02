@@ -70,13 +70,13 @@ const Token& Lexer::operator*() const { return curr_; }
 
 const Token* Lexer::operator->() const { return &curr_; }
 
-Lexer::operator bool() const { return !eof() && !has_error(); }
+Lexer::operator bool() const { return !eof() && ok(); }
 
 Lexer::Error Lexer::error() const { return *error_; }
 
 bool Lexer::eof() const { return curr_.type == TokenType::END_OF_JSON; }
 
-bool Lexer::has_error() const { return error_.has_value(); }
+bool Lexer::ok() const { return !error_; }
 
 Token Lexer::lex_literal(const std::string& literal, TokenType type) {
   size_t start = pos_;
@@ -104,6 +104,7 @@ Token Lexer::lex_literal(const std::string& literal, TokenType type) {
 }
 
 Token Lexer::lex_string() {
+  size_t start = pos_;
   if (++pos_ >= json_.length()) {
     error_ = Error(TokenType::QUOTE, pos_ - 1, "unterminated string");
     return Token("", TokenType::UNKNOWN);
@@ -135,6 +136,7 @@ Token Lexer::lex_string() {
     pos_++;
   }
 
+  error_ = Error(TokenType::QUOTE, start, "unterminated string");
   return Token(std::move(res), TokenType::UNKNOWN);
 }
 
