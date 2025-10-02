@@ -129,6 +129,8 @@ TEST(LexerTest, LexInvalidNumberDash) {
   ++lexer;
   EXPECT_FALSE(lexer);
   EXPECT_FALSE(lexer.ok());
+  EXPECT_EQ(lexer.error(), Lexer::Error(TokenType::INTEGRAL,
+                                        /*pos=*/0, "invalid integer: -"));
   EXPECT_EQ(*lexer, Token("-", TokenType::UNKNOWN));
 }
 
@@ -137,6 +139,8 @@ TEST(LexerTest, LexInvalidNumberLeadingZero) {
   ++lexer;
   EXPECT_FALSE(lexer);
   EXPECT_FALSE(lexer.ok());
+  EXPECT_EQ(lexer.error(), Lexer::Error(TokenType::INTEGRAL,
+                                        /*pos=*/0, "invalid integer: 01"));
   EXPECT_EQ(*lexer, Token("01", TokenType::UNKNOWN));
 }
 
@@ -145,6 +149,8 @@ TEST(LexerTest, LexInvalidNumberTrailingDecimal) {
   ++lexer;
   EXPECT_FALSE(lexer);
   EXPECT_FALSE(lexer.ok());
+  EXPECT_EQ(lexer.error(), Lexer::Error(TokenType::DOUBLE,
+                                        /*pos=*/1, "invalid fraction: ."));
   EXPECT_EQ(*lexer, Token("1.", TokenType::UNKNOWN));
 }
 
@@ -153,6 +159,8 @@ TEST(LexerTest, LexInvalidNumberExponentOnly) {
   ++lexer;
   EXPECT_FALSE(lexer);
   EXPECT_FALSE(lexer.ok());
+  EXPECT_EQ(lexer.error(), Lexer::Error(TokenType::INTEGRAL,
+                                        /*pos=*/1, "invalid exponent: e"));
   EXPECT_EQ(*lexer, Token("1e", TokenType::UNKNOWN));
 }
 
@@ -161,6 +169,8 @@ TEST(LexerTest, LexInvalidNumberExponentSign) {
   ++lexer;
   EXPECT_FALSE(lexer);
   EXPECT_FALSE(lexer.ok());
+  EXPECT_EQ(lexer.error(), Lexer::Error(TokenType::INTEGRAL,
+                                        /*pos=*/1, "invalid exponent: e+"));
   EXPECT_EQ(*lexer, Token("1e+", TokenType::UNKNOWN));
 }
 
@@ -227,6 +237,8 @@ TEST(LexerTest, LexUnknown) {
   ++lexer;
   EXPECT_FALSE(lexer);
   EXPECT_FALSE(lexer.ok());
+  EXPECT_EQ(lexer.error(), Lexer::Error(TokenType::UNKNOWN,
+                                        /*pos=*/0, "unknown token: @"));
   EXPECT_EQ(*lexer, Token("@", TokenType::UNKNOWN));
 }
 

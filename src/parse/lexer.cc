@@ -56,6 +56,8 @@ Token Lexer::next_token() {
       pos_++;
       return Token(",", TokenType::COMMA);
     default:
+      error_ = Error(TokenType::UNKNOWN, pos_,
+                     "unknown token: " + json_.substr(pos_));
       return Token(std::string(1, json_[pos_++]), TokenType::UNKNOWN);
   }
 }
