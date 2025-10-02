@@ -29,7 +29,7 @@ struct Token {
   explicit Token(std::string value = "", TokenType type = TokenType::UNKNOWN)
       : type(type), value(std::move(value)) {}
 
-  bool operator==(const Token& other) const {
+  bool operator==(const Token& other) const noexcept {
     return value == other.value && type == other.type;
   }
 };

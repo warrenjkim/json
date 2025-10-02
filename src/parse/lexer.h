@@ -18,7 +18,7 @@ class Lexer {
     explicit Error(TokenType expected, size_t pos, std::string message)
         : expected(expected), pos(pos), message(std::move(message)) {}
 
-    bool operator==(const Error& other) const {
+    bool operator==(const Error& other) const noexcept {
       return expected == other.expected && pos == other.pos &&
              message == other.message;
     }
