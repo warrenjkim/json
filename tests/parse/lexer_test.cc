@@ -5,17 +5,18 @@
 
 namespace json {
 namespace syntax {
+
 namespace {
 
 TEST(LexerTest, LexInvalidNull) {
   Lexer lexer("nul");
   ++lexer;
   EXPECT_FALSE(lexer);
-  EXPECT_TRUE(lexer.has_error());
-
-  Lexer::Error error = lexer.error();
-  EXPECT_EQ(error.expected, TokenType::JSON_NULL);
-  EXPECT_EQ(error.pos, 0);
+  EXPECT_FALSE(lexer.ok());
+  EXPECT_EQ(lexer.error(),
+            Lexer::Error(TokenType::JSON_NULL,
+                         /*pos=*/0,
+                         "incomplete literal: got 'nul', expected 'null'"));
   EXPECT_EQ(*lexer, Token("nul", TokenType::UNKNOWN));
 }
 
@@ -23,11 +24,11 @@ TEST(LexerTest, LexInvalidTrue) {
   Lexer lexer("tru");
   ++lexer;
   EXPECT_FALSE(lexer);
-  EXPECT_TRUE(lexer.has_error());
-
-  Lexer::Error error = lexer.error();
-  EXPECT_EQ(error.expected, TokenType::BOOLEAN);
-  EXPECT_EQ(error.pos, 0);
+  EXPECT_FALSE(lexer.ok());
+  EXPECT_EQ(lexer.error(),
+            Lexer::Error(TokenType::BOOLEAN,
+                         /*pos=*/0,
+                         "incomplete literal: got 'tru', expected 'true'"));
   EXPECT_EQ(*lexer, Token("tru", TokenType::UNKNOWN));
 }
 
@@ -35,11 +36,11 @@ TEST(LexerTest, LexInvalidFalse) {
   Lexer lexer("fals");
   ++lexer;
   EXPECT_FALSE(lexer);
-  EXPECT_TRUE(lexer.has_error());
-
-  Lexer::Error error = lexer.error();
-  EXPECT_EQ(error.expected, TokenType::BOOLEAN);
-  EXPECT_EQ(error.pos, 0);
+  EXPECT_FALSE(lexer.ok());
+  EXPECT_EQ(lexer.error(),
+            Lexer::Error(TokenType::BOOLEAN,
+                         /*pos=*/0,
+                         "incomplete literal: got 'fals', expected 'false'"));
   EXPECT_EQ(*lexer, Token("fals", TokenType::UNKNOWN));
 }
 
@@ -47,7 +48,7 @@ TEST(LexerTest, LexNull) {
   Lexer lexer("null");
   ++lexer;
   EXPECT_TRUE(lexer);
-  EXPECT_FALSE(lexer.has_error());
+  EXPECT_TRUE(lexer.ok());
   EXPECT_EQ(*lexer, Token("null", TokenType::JSON_NULL));
 }
 
@@ -55,7 +56,7 @@ TEST(LexerTest, LexTrue) {
   Lexer lexer("true");
   ++lexer;
   EXPECT_TRUE(lexer);
-  EXPECT_FALSE(lexer.has_error());
+  EXPECT_TRUE(lexer.ok());
   EXPECT_EQ(*lexer, Token("true", TokenType::BOOLEAN));
 }
 
@@ -63,141 +64,189 @@ TEST(LexerTest, LexFalse) {
   Lexer lexer("false");
   ++lexer;
   EXPECT_TRUE(lexer);
-  EXPECT_FALSE(lexer.has_error());
+  EXPECT_TRUE(lexer.ok());
   EXPECT_EQ(*lexer, Token("false", TokenType::BOOLEAN));
 }
 
-TEST(LexerTest, LexInvalidStrings) {
-  {  // unterminated string
-    Lexer lexer("\"hello");
-    Token token = lexer.next_token();
-    EXPECT_EQ(token.type, TokenType::UNKNOWN);
-    EXPECT_EQ(token.value, "hello");
-  }
-  {  // bad escape char
-    Lexer lexer("\"hello\\z\"");
-    Token token = lexer.next_token();
-    EXPECT_EQ(token.type, TokenType::UNKNOWN);
-    EXPECT_EQ(token.value, "hello\\z");
-  }
-  {  // bad unicode
-    Lexer lexer("\"\\u12\"");
-    Token token = lexer.next_token();
-    EXPECT_EQ(token.type, TokenType::UNKNOWN);
-    EXPECT_EQ(token.value, "\\u12");
-  }
+TEST(LexerTest, LexInvalidUnterminatedString) {
+  Lexer lexer("\"hello");
+  ++lexer;
+  EXPECT_FALSE(lexer);
+  EXPECT_FALSE(lexer.ok());
+  EXPECT_EQ(lexer.error(), Lexer::Error(TokenType::QUOTE,
+                                        /*pos=*/0, "unterminated string"));
+  EXPECT_EQ(*lexer, Token("hello", TokenType::UNKNOWN));
 }
 
-TEST(LexerTest, LexString) {
-  {  // simple
-    Lexer lexer("\"hello\"");
-    Token token = lexer.next_token();
-    EXPECT_EQ(token.type, TokenType::STRING);
-    EXPECT_EQ(token.value, "hello");
-  }
-  {  // escape chars
-    Lexer lexer("\"hello\\nworld\"");
-    Token token = lexer.next_token();
-    EXPECT_EQ(token.value, "hello\nworld");
-  }
-  {  // unicode
-    Lexer lexer("\"\\u0041\"");
-    Token token = lexer.next_token();
-    EXPECT_EQ(token.value, "\\u0041");
-  }
+TEST(LexerTest, LexInvalidBadEscapeChar) {
+  Lexer lexer("\"hello\\z\"");
+  ++lexer;
+  EXPECT_FALSE(lexer);
+  EXPECT_FALSE(lexer.ok());
+  EXPECT_EQ(lexer.error(),
+            Lexer::Error(TokenType::STRING,
+                         /*pos=*/6, "invalid control character: hello\\z"));
+  EXPECT_EQ(*lexer, Token("hello\\z", TokenType::UNKNOWN));
 }
 
-TEST(LexerTest, LexInvalidNumbers) {
-  {  // -
-    Lexer lexer("-");
-    Token token = lexer.next_token();
-    EXPECT_EQ(token.type, TokenType::UNKNOWN);
-    EXPECT_EQ(token.value, "-");
-  }
-  {  // 01
-    Lexer lexer("01");
-    Token token = lexer.next_token();
-    EXPECT_EQ(token.type, TokenType::UNKNOWN);
-    EXPECT_EQ(token.value, "01");
-  }
-  {  // 1.
-    Lexer lexer("1.");
-    Token token = lexer.next_token();
-    EXPECT_EQ(token.type, TokenType::UNKNOWN);
-    EXPECT_EQ(token.value, "1.");
-  }
-  {  // 1e
-    Lexer lexer("1e");
-    Token token = lexer.next_token();
-    EXPECT_EQ(token.type, TokenType::UNKNOWN);
-    EXPECT_EQ(token.value, "1e");
-  }
-  {  // 1e+
-    Lexer lexer("1e+");
-    Token token = lexer.next_token();
-    EXPECT_EQ(token.type, TokenType::UNKNOWN);
-    EXPECT_EQ(token.value, "1e+");
-  }
+TEST(LexerTest, LexInvalidBadUnicode) {
+  Lexer lexer("\"\\u12\"");
+  ++lexer;
+  EXPECT_FALSE(lexer);
+  EXPECT_FALSE(lexer.ok());
+  EXPECT_EQ(lexer.error(),
+            Lexer::Error(TokenType::STRING,
+                         /*pos=*/1, "invalid control character: \\u12"));
+  EXPECT_EQ(*lexer, Token("\\u12", TokenType::UNKNOWN));
 }
 
-TEST(LexerTest, LexNumber) {
-  {  // 123
-    Lexer lexer("123");
-    Token token = lexer.next_token();
-    EXPECT_EQ(token.type, TokenType::INTEGRAL);
-    EXPECT_EQ(token.value, "123");
-  }
-  {  // 12.34
-    Lexer lexer("12.34");
-    Token token = lexer.next_token();
-    EXPECT_EQ(token.type, TokenType::DOUBLE);
-    EXPECT_EQ(token.value, "12.34");
-  }
+TEST(LexerTest, LexStringSimple) {
+  Lexer lexer("\"hello\"");
+  ++lexer;
+  EXPECT_TRUE(lexer);
+  EXPECT_TRUE(lexer.ok());
+  EXPECT_EQ(*lexer, Token("hello", TokenType::STRING));
+}
+
+TEST(LexerTest, LexStringEscapeChars) {
+  Lexer lexer("\"hello\\nworld\"");
+  ++lexer;
+  EXPECT_TRUE(lexer);
+  EXPECT_TRUE(lexer.ok());
+  EXPECT_EQ(*lexer, Token("hello\nworld", TokenType::STRING));
+}
+
+TEST(LexerTest, LexStringUnicode) {
+  Lexer lexer("\"\\u0041\"");
+  ++lexer;
+  EXPECT_TRUE(lexer);
+  EXPECT_TRUE(lexer.ok());
+  EXPECT_EQ(*lexer, Token("\\u0041", TokenType::STRING));
+}
+
+TEST(LexerTest, LexInvalidNumberDash) {
+  Lexer lexer("-");
+  ++lexer;
+  EXPECT_FALSE(lexer);
+  EXPECT_FALSE(lexer.ok());
+  EXPECT_EQ(*lexer, Token("-", TokenType::UNKNOWN));
+}
+
+TEST(LexerTest, LexInvalidNumberLeadingZero) {
+  Lexer lexer("01");
+  ++lexer;
+  EXPECT_FALSE(lexer);
+  EXPECT_FALSE(lexer.ok());
+  EXPECT_EQ(*lexer, Token("01", TokenType::UNKNOWN));
+}
+
+TEST(LexerTest, LexInvalidNumberTrailingDecimal) {
+  Lexer lexer("1.");
+  ++lexer;
+  EXPECT_FALSE(lexer);
+  EXPECT_FALSE(lexer.ok());
+  EXPECT_EQ(*lexer, Token("1.", TokenType::UNKNOWN));
+}
+
+TEST(LexerTest, LexInvalidNumberExponentOnly) {
+  Lexer lexer("1e");
+  ++lexer;
+  EXPECT_FALSE(lexer);
+  EXPECT_FALSE(lexer.ok());
+  EXPECT_EQ(*lexer, Token("1e", TokenType::UNKNOWN));
+}
+
+TEST(LexerTest, LexInvalidNumberExponentSign) {
+  Lexer lexer("1e+");
+  ++lexer;
+  EXPECT_FALSE(lexer);
+  EXPECT_FALSE(lexer.ok());
+  EXPECT_EQ(*lexer, Token("1e+", TokenType::UNKNOWN));
+}
+
+TEST(LexerTest, LexNumberIntegral) {
+  Lexer lexer("123");
+  ++lexer;
+  EXPECT_TRUE(lexer);
+  EXPECT_TRUE(lexer.ok());
+  EXPECT_EQ(*lexer, Token("123", TokenType::INTEGRAL));
+}
+
+TEST(LexerTest, LexNumberDouble) {
+  Lexer lexer("12.34");
+  ++lexer;
+  EXPECT_TRUE(lexer);
+  EXPECT_TRUE(lexer.ok());
+  EXPECT_EQ(*lexer, Token("12.34", TokenType::DOUBLE));
 }
 
 TEST(LexerTest, LexPunctuation) {
-  std::vector<Token> expected = {
-      Token("{", TokenType::OBJECT_START), Token("}", TokenType::OBJECT_END),
-      Token("[", TokenType::ARRAY_START),  Token("]", TokenType::ARRAY_END),
-      Token(",", TokenType::COMMA),        Token(":", TokenType::COLON),
-  };
-
-  std::vector<std::string> inputs = {"{", "}", "[", "]", ",", ":"};
   Lexer lexer("{}[],:");
-  for (size_t i = 0; i < inputs.size(); i++) {
-    Token token = *(++lexer);
-    EXPECT_EQ(token, expected[i]);
-  }
+
+  ++lexer;
+  EXPECT_TRUE(lexer);
+  EXPECT_TRUE(lexer.ok());
+  EXPECT_EQ(*lexer, Token("{", TokenType::OBJECT_START));
+
+  ++lexer;
+  EXPECT_TRUE(lexer);
+  EXPECT_TRUE(lexer.ok());
+  EXPECT_EQ(*lexer, Token("}", TokenType::OBJECT_END));
+
+  ++lexer;
+  EXPECT_TRUE(lexer);
+  EXPECT_TRUE(lexer.ok());
+  EXPECT_EQ(*lexer, Token("[", TokenType::ARRAY_START));
+
+  ++lexer;
+  EXPECT_TRUE(lexer);
+  EXPECT_TRUE(lexer.ok());
+  EXPECT_EQ(*lexer, Token("]", TokenType::ARRAY_END));
+
+  ++lexer;
+  EXPECT_TRUE(lexer);
+  EXPECT_TRUE(lexer.ok());
+  EXPECT_EQ(*lexer, Token(",", TokenType::COMMA));
+
+  ++lexer;
+  EXPECT_TRUE(lexer);
+  EXPECT_TRUE(lexer.ok());
+  EXPECT_EQ(*lexer, Token(":", TokenType::COLON));
 }
 
 TEST(LexerTest, LexWhitespace) {
   Lexer lexer("   \n\t 123");
-  Token token = lexer.next_token();
-  EXPECT_EQ(token.type, TokenType::INTEGRAL);
-  EXPECT_EQ(token.value, "123");
+  ++lexer;
+  EXPECT_TRUE(lexer);
+  EXPECT_TRUE(lexer.ok());
+  EXPECT_EQ(*lexer, Token("123", TokenType::INTEGRAL));
 }
 
 TEST(LexerTest, LexUnknown) {
   Lexer lexer("@");
-  Token token = lexer.next_token();
-  EXPECT_EQ(token.type, TokenType::UNKNOWN);
-  EXPECT_EQ(token.value, "@");
+  ++lexer;
+  EXPECT_FALSE(lexer);
+  EXPECT_FALSE(lexer.ok());
+  EXPECT_EQ(*lexer, Token("@", TokenType::UNKNOWN));
 }
 
 TEST(LexerTest, IncrementOperator) {
   Lexer lexer("true false");
 
   ++lexer;
+  EXPECT_TRUE(lexer);
   EXPECT_FALSE(lexer.eof());
-  EXPECT_EQ((*lexer).type, TokenType::BOOLEAN);
-  EXPECT_EQ((*lexer).value, "true");
+  EXPECT_TRUE(lexer.ok());
+  EXPECT_EQ(*lexer, Token("true", TokenType::BOOLEAN));
 
   ++lexer;
+  EXPECT_TRUE(lexer);
   EXPECT_FALSE(lexer.eof());
-  EXPECT_EQ((*lexer).type, TokenType::BOOLEAN);
-  EXPECT_EQ((*lexer).value, "false");
+  EXPECT_TRUE(lexer.ok());
+  EXPECT_EQ(*lexer, Token("false", TokenType::BOOLEAN));
 
   ++lexer;
+  EXPECT_FALSE(lexer);
   EXPECT_TRUE(lexer.eof());
 }
 
@@ -208,5 +257,6 @@ TEST(LexerTest, EofOnEmptyInput) {
 }
 
 }  // namespace
+
 }  // namespace syntax
 }  // namespace json
