@@ -5,6 +5,7 @@
 
 #include "warren/json/internal/parse/token.h"
 
+namespace warren {
 namespace json {
 namespace syntax {
 
@@ -282,3 +283,4 @@ void Lexer::strip_whitespace() {
 
 }  // namespace syntax
 }  // namespace json
+}  // namespace warren

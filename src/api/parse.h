@@ -6,6 +6,7 @@
 #include "warren/json/internal/parse/parser.h"
 #include "warren/json/value.h"
 
+namespace warren {
 namespace json {
 
 inline Value operator""_json(const char* json, size_t len) {
@@ -17,3 +18,4 @@ inline Value parse(std::string json) {
 }
 
 }  // namespace json
+}  // namespace warren

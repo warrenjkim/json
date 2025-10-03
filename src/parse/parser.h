@@ -4,6 +4,7 @@
 #include "warren/json/utils/types.h"
 #include "warren/json/value.h"
 
+namespace warren {
 namespace json {
 namespace syntax {
 
@@ -34,3 +35,4 @@ class Parser {
 
 }  // namespace syntax
 }  // namespace json
+}  // namespace warren

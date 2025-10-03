@@ -4,6 +4,7 @@
 #include "gtest/gtest.h"
 #include "warren/json/utils/types.h"
 
+namespace warren {
 namespace json {
 
 namespace {
@@ -228,3 +229,4 @@ TEST(ValueTest, TypeErrorsThrow) {
 }  // namespace
 
 }  // namespace json
+}  // namespace warren

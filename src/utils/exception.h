@@ -3,6 +3,7 @@
 #include <exception>
 #include <string>
 
+namespace warren {
 namespace json {
 
 class JsonException : public std::exception {
@@ -29,3 +30,4 @@ class NonIterableTypeException final : public JsonException {
 };
 
 }  // namespace json
+}  // namespace warren

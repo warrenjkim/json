@@ -5,6 +5,7 @@
 
 #include "warren/json/internal/parse/token.h"
 
+namespace warren {
 namespace json {
 namespace syntax {
 
@@ -105,3 +106,4 @@ class Lexer {
 
 }  // namespace syntax
 }  // namespace json
+}  // namespace warren

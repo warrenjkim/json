@@ -9,6 +9,7 @@
 #include "warren/json/utils/exception.h"
 #include "warren/json/utils/types.h"
 
+namespace warren {
 namespace json {
 
 class Value {
@@ -433,3 +434,4 @@ class Value {
 };
 
 }  // namespace json
+}  // namespace warren

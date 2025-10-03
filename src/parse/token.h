@@ -2,6 +2,7 @@
 
 #include <string>
 
+namespace warren {
 namespace json {
 namespace syntax {
 
@@ -36,3 +37,4 @@ struct Token {
 
 }  // namespace syntax
 }  // namespace json
+}  // namespace warren

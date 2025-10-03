@@ -3,6 +3,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
+namespace warren {
 namespace json {
 
 namespace {
@@ -22,3 +23,4 @@ TEST(ParseTest, Parse) {
 }  // namespace
 
 }  // namespace json
+}  // namespace warren
