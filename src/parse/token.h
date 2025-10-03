@@ -4,7 +4,6 @@
 
 namespace warren {
 namespace json {
-namespace syntax {
 
 enum class TokenType {
   OBJECT_START,
@@ -35,6 +34,5 @@ struct Token {
   }
 };
 
-}  // namespace syntax
 }  // namespace json
 }  // namespace warren

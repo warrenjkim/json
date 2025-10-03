@@ -117,7 +117,6 @@ std::string resolve_unicode_sequences(const std::string& s) {
 
 namespace warren {
 namespace json {
-namespace syntax {
 
 Parser::Parser(Lexer lexer) : lexer_(std::move(lexer)) {}
 
@@ -263,6 +262,5 @@ object_t Parser::parse_object() {
                                    : std::string(lexer_.error()));
 }
 
-}  // namespace syntax
 }  // namespace json
 }  // namespace warren

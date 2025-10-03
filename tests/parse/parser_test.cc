@@ -7,7 +7,6 @@
 
 namespace warren {
 namespace json {
-namespace syntax {
 
 namespace {
 
@@ -110,6 +109,5 @@ TEST(ParserTest, SimpleArray) {
 
 }  // namespace
 
-}  // namespace syntax
 }  // namespace json
 }  // namespace warren

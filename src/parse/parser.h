@@ -6,7 +6,6 @@
 
 namespace warren {
 namespace json {
-namespace syntax {
 
 class Parser {
  public:
@@ -33,6 +32,5 @@ class Parser {
   Lexer lexer_;
 };
 
-}  // namespace syntax
 }  // namespace json
 }  // namespace warren

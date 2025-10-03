@@ -6,7 +6,6 @@
 
 namespace warren {
 namespace json {
-namespace syntax {
 
 namespace {
 
@@ -280,6 +279,5 @@ TEST(LexerTest, EofOnEmptyInput) {
 
 }  // namespace
 
-}  // namespace syntax
 }  // namespace json
 }  // namespace warren

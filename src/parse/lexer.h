@@ -7,7 +7,6 @@
 
 namespace warren {
 namespace json {
-namespace syntax {
 
 class Lexer {
  public:
@@ -104,6 +103,5 @@ class Lexer {
   std::optional<Error> error_;
 };
 
-}  // namespace syntax
 }  // namespace json
 }  // namespace warren
