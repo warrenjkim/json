@@ -112,7 +112,7 @@ Token Lexer::lex_string() {
     return Token("", TokenType::UNKNOWN);
   }
 
-  std::string res = "";
+  std::string res;
   while (pos_ < json_.length()) {
     char c = json_[pos_];
     if (c == '"') {
