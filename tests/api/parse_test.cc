@@ -3,6 +3,8 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
+namespace json {
+
 namespace {
 
 using ::testing::Eq;
@@ -14,7 +16,9 @@ TEST(ParseTest, Parse) {
     "other": 10
   }
       )"_json,
-              Eq(json::parse("{\"key\": \"value\", \"other\": 10}")));
+              Eq(parse("{\"key\": \"value\", \"other\": 10}")));
 }
 
 }  // namespace
+
+}  // namespace json
