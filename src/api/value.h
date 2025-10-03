@@ -374,6 +374,33 @@ class Value {
     o_.insert({key, value});
   }
 
+  template <class NullHandler, class BooleanHandler, class IntegralHandler,
+            class DoubleHandler, class StringHandler, class ArrayHandler,
+            class ObjectHandler>
+  decltype(auto) visit(NullHandler&& null_fn, BooleanHandler&& boolean_fn,
+                       IntegralHandler&& integral_fn, DoubleHandler&& double_fn,
+                       StringHandler&& string_fn, ArrayHandler&& array_fn,
+                       ObjectHandler&& object_fn) const {
+    switch (type_) {
+      case Type::JSON_NULL:
+        return std::forward<NullHandler>(null_fn)();
+      case Type::BOOLEAN:
+        return std::forward<BooleanHandler>(boolean_fn)(b_);
+      case Type::INTEGRAL:
+        return std::forward<IntegralHandler>(integral_fn)(int32_t(n_));
+      case Type::DOUBLE:
+        return std::forward<DoubleHandler>(double_fn)(double(n_));
+      case Type::STRING:
+        return std::forward<StringHandler>(string_fn)(s_);
+      case Type::ARRAY:
+        return std::forward<ArrayHandler>(array_fn)(a_);
+      case Type::OBJECT:
+        return std::forward<ObjectHandler>(object_fn)(o_);
+    }
+
+    __builtin_unreachable();
+  }
+
  private:
   enum Type { ARRAY, BOOLEAN, JSON_NULL, INTEGRAL, DOUBLE, OBJECT, STRING };
 
