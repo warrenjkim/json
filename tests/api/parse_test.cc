@@ -1,14 +1,20 @@
 #include "warren/json/parse.h"
 
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "warren/json/value.h"
+
+namespace {
+
+using ::testing::Eq;
 
 TEST(ParseTest, Parse) {
-  EXPECT_EQ(R"(
+  EXPECT_THAT(R"(
   {
     "key": "value",
     "other": 10
   }
       )"_json,
-            json::Value(json::parse("{\"key\": \"value\", \"other\": 10}")));
+              Eq(json::parse("{\"key\": \"value\", \"other\": 10}")));
 }
+
+}  // namespace

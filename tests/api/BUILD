@@ -1,8 +1,8 @@
 test_suite(
     name = "api_tests",
     tests = [
-        ":value_test",
         ":parse_test",
+        ":value_test",
     ],
 )
 
@@ -23,7 +23,6 @@ cc_test(
     srcs = ["parse_test.cc"],
     deps = [
         "//src/api:parse",
-        "//src/api:value",
         "@googletest//:gtest_main",
     ],
 )

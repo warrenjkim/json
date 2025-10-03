@@ -20,7 +20,6 @@ cc_test(
     name = "parser_test",
     srcs = ["parser_test.cc"],
     deps = [
-        "//src/api:value",
         "//src/parse:lexer",
         "//src/parse:parser",
         "//src/parse:token",

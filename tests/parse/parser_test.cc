@@ -1,29 +1,23 @@
 #include "warren/json/internal/parse/parser.h"
 
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "warren/json/internal/parse/lexer.h"
 #include "warren/json/utils/types.h"
-#include "warren/json/value.h"
+
+namespace json {
+namespace syntax {
+
+namespace {
+
+using ::testing::Eq;
 
 TEST(ParserTest, EmptyObject) {
-  EXPECT_EQ(json::syntax::Parser(json::syntax::Lexer("{}")).parse(),
-            json::object_t{});
+  EXPECT_THAT(Parser(Lexer("{}")).parse(), Eq(object_t{}));
 }
 
 TEST(ParserTest, SimpleObject) {
-  // arrange
-  json::object_t obj{
-      {"int", 1},
-      {"str", "two"},
-      {"float", 3.4},
-      {"null", nullptr},
-      {"bool", true},
-      {"obj", json::object_t{}},
-      {"arr", json::array_t{}},
-  };
-
-  // act
-  json::Value res = json::syntax::Parser(json::syntax::Lexer(R"({
+  EXPECT_THAT(Parser(Lexer(R"({
     "int": 1,
     "str": "two",
     "float": 3.4,
@@ -32,28 +26,28 @@ TEST(ParserTest, SimpleObject) {
     "obj": {},
     "arr": []
   })"))
-                        .parse();
-
-  // assert
-  EXPECT_EQ(obj, res);
+                  .parse(),
+              Eq(object_t{
+                  {"int", 1},
+                  {"str", "two"},
+                  {"float", 3.4},
+                  {"null", nullptr},
+                  {"bool", true},
+                  {"obj", object_t{}},
+                  {"arr", array_t{}},
+              }));
 }
 
 TEST(ParserTest, EmptyArray) {
-  EXPECT_EQ(json::syntax::Parser(json::syntax::Lexer("[]")).parse(),
-            json::array_t{});
+  EXPECT_THAT(Parser(Lexer("[]")).parse(), Eq(array_t{}));
 }
 
 TEST(ParserTest, SimpleArray) {
-  // arrange
-  json::array_t arr{
-      1, "two", 3.4, nullptr, true, json::object_t{}, json::array_t{}};
-
-  // act
-  json::Value res =
-      json::syntax::Parser(
-          json::syntax::Lexer("[1, \"two\", 3.4, null, true, {}, []]"))
-          .parse();
-
-  // assert
-  EXPECT_EQ(arr, res);
+  EXPECT_THAT(Parser(Lexer("[1, \"two\", 3.4, null, true, {}, []]")).parse(),
+              Eq(array_t{1, "two", 3.4, nullptr, true, object_t{}, array_t{}}));
 }
+
+}  // namespace
+
+}  // namespace syntax
+}  // namespace json

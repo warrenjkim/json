@@ -150,20 +150,12 @@ Value Parser::parse_value() {
 }
 
 nullptr_t Parser::parse_null() {
-  if (lexer_->type != TokenType::JSON_NULL) {
-    throw ParseException("Unexpected token: " + lexer_->value);
-  }
-
   ++lexer_;
 
   return nullptr;
 }
 
 bool Parser::parse_boolean() {
-  if (lexer_->type != TokenType::BOOLEAN) {
-    throw ParseException("Unexpected token: " + lexer_->value);
-  }
-
   bool value = lexer_->value == "true";
   ++lexer_;
 
@@ -171,10 +163,6 @@ bool Parser::parse_boolean() {
 }
 
 std::string Parser::parse_string() {
-  if (lexer_->type != TokenType::STRING) {
-    throw ParseException("Unexpected token: " + lexer_->value);
-  }
-
   std::string value = resolve_unicode_sequences(lexer_->value);
   ++lexer_;
 
@@ -191,7 +179,7 @@ Value Parser::parse_number() {
       value = std::stoi(lexer_->value);
       break;
     default:
-      throw ParseException("Unexpected token: " + lexer_->value);
+      __builtin_unreachable();
   }
 
   ++lexer_;
@@ -200,10 +188,6 @@ Value Parser::parse_number() {
 }
 
 array_t Parser::parse_array() {
-  if (lexer_->type != TokenType::ARRAY_START) {
-    throw ParseException("Unexpected token: " + lexer_->value);
-  }
-
   ++lexer_;
 
   array_t value;
@@ -235,10 +219,6 @@ array_t Parser::parse_array() {
 }
 
 object_t Parser::parse_object() {
-  if (lexer_->type != TokenType::OBJECT_START) {
-    throw ParseException("Unexpected token: " + lexer_->value);
-  }
-
   ++lexer_;
 
   object_t value;
