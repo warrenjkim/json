@@ -1,222 +1,230 @@
 #include "warren/json/value.h"
 
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "warren/json/parse.h"
 #include "warren/json/utils/types.h"
 
-TEST(JsonValueTest, DefaultConstructor) {
-  { EXPECT_EQ(json::Value(), nullptr); }
+namespace json {
+
+namespace {
+
+using ::testing::DoubleEq;
+using ::testing::Eq;
+using ::testing::Throws;
+
+TEST(ValueTest, DefaultConstructor) {
+  { EXPECT_THAT(Value(), Eq(nullptr)); }
   {
-    json::Value v;
-    EXPECT_EQ(v, nullptr);
+    Value v;
+    EXPECT_THAT(v, Eq(nullptr));
   }
 }
 
-TEST(JsonValueTest, NullConstructor) {
-  { EXPECT_EQ(json::Value(nullptr), nullptr); }
+TEST(ValueTest, NullConstructor) {
+  { EXPECT_THAT(Value(nullptr), Eq(nullptr)); }
   {
-    json::Value v = nullptr;
-    EXPECT_EQ(v, nullptr);
+    Value v = nullptr;
+    EXPECT_THAT(v, Eq(nullptr));
   }
 }
 
-TEST(JsonValueTest, BoolConstructor) {
-  { EXPECT_EQ(json::Value(true), true); }
+TEST(ValueTest, BoolConstructor) {
+  { EXPECT_THAT(Value(true), Eq(true)); }
   {
-    json::Value v = true;
-    EXPECT_EQ(v, true);
+    Value v = true;
+    EXPECT_THAT(v, Eq(true));
   }
 }
 
-TEST(JsonValueTest, IntConstructor) {
-  { EXPECT_EQ(json::Value(42), 42); }
+TEST(ValueTest, IntConstructor) {
+  { EXPECT_THAT(Value(42), Eq(42)); }
   {
-    json::Value v = 42;
-    EXPECT_EQ(v, 42);
+    Value v = 42;
+    EXPECT_THAT(v, Eq(42));
   }
 }
 
-TEST(JsonValueTest, DoubleConstructor) {
-  { EXPECT_DOUBLE_EQ(json::Value(1.23), 1.23); }
+TEST(ValueTest, DoubleConstructor) {
+  { EXPECT_THAT((double)Value(1.23), DoubleEq(1.23)); }
   {
-    json::Value v = 1.23;
-    EXPECT_DOUBLE_EQ(v, 1.23);
+    Value v = 1.23;
+    EXPECT_THAT((double)v, DoubleEq(1.23));
   }
 }
 
-TEST(JsonValueTest, ArrayConstructor) {
-  json::array_t arr{nullptr, true, 42, 1.23, json::array_t{}, json::object_t{}};
+TEST(ValueTest, ArrayConstructor) {
+  array_t arr{nullptr, true, 42, 1.23, array_t{}, object_t{}};
   {
-    json::Value v(arr);
-    EXPECT_EQ(v, arr);
+    Value v(arr);
+    EXPECT_THAT(v, Eq(arr));
   }
   {
-    json::Value v = arr;
-    EXPECT_EQ(v, arr);
-  }
-}
-
-TEST(JsonValueTest, ObjectConstructor) {
-  json::object_t map{{"null", nullptr},
-                     {"bool", true},
-                     {"int32_t", 42},
-                     {"double", 1.23},
-                     {"array", json::array_t{}},
-                     {"map", json::object_t{}}};
-  {
-    json::Value v(map);
-    EXPECT_EQ(v, map);
-  }
-  {
-    json::Value v = map;
-    EXPECT_EQ(v, map);
+    Value v = arr;
+    EXPECT_THAT(v, Eq(arr));
   }
 }
 
-TEST(JsonValueTest, CopyConstructor) {
-  json::Value original = "test";
-  json::Value copy(original);
-
-  EXPECT_EQ(copy, "test");
-  EXPECT_EQ(original, "test");
+TEST(ValueTest, ObjectConstructor) {
+  object_t map{{"null", nullptr}, {"bool", true},       {"int32_t", 42},
+               {"double", 1.23},  {"array", array_t{}}, {"map", object_t{}}};
+  {
+    Value v(map);
+    EXPECT_THAT(v, Eq(map));
+  }
+  {
+    Value v = map;
+    EXPECT_THAT(v, Eq(map));
+  }
 }
 
-TEST(JsonValueTest, CopyAssignment) {
-  json::Value original = "test";
-  json::Value copy;
+TEST(ValueTest, CopyConstructor) {
+  Value original = "test";
+  Value copy(original);
+
+  EXPECT_THAT(copy, Eq("test"));
+  EXPECT_THAT(original, Eq("test"));
+}
+
+TEST(ValueTest, CopyAssignment) {
+  Value original = "test";
+  Value copy;
   copy = original;
 
-  EXPECT_EQ(copy, "test");
-  EXPECT_EQ(original, "test");
+  EXPECT_THAT(copy, Eq("test"));
+  EXPECT_THAT(original, Eq("test"));
 }
 
-TEST(JsonValueTest, MoveConstructor) {
-  json::Value original = "test";
-  json::Value moved(std::move(original));
+TEST(ValueTest, MoveConstructor) {
+  Value original = "test";
+  Value moved(std::move(original));
 
-  EXPECT_EQ(moved, "test");
+  EXPECT_THAT(moved, Eq("test"));
 }
 
-TEST(JsonValueTest, MoveAssignment) {
-  json::Value original = "test";
-  json::Value moved;
+TEST(ValueTest, MoveAssignment) {
+  Value original = "test";
+  Value moved;
   moved = std::move(original);
 
-  EXPECT_EQ(moved, "test");
+  EXPECT_THAT(moved, Eq("test"));
 }
 
-TEST(JsonValueTest, ArrayPushBack) {
-  json::Value v;
+TEST(ValueTest, ArrayPushBack) {
+  Value v;
   v.push_back(1);
   v.push_back(2);
   v.push_back(3);
 
-  EXPECT_EQ(v.size(), 3);
-  EXPECT_EQ(v[0], 1);
-  EXPECT_EQ(v[1], 2);
-  EXPECT_EQ(v[2], 3);
+  EXPECT_THAT(v.size(), Eq(3));
+  EXPECT_THAT(v[0], Eq(1));
+  EXPECT_THAT(v[1], Eq(2));
+  EXPECT_THAT(v[2], Eq(3));
 }
 
-TEST(JsonValueTest, ObjectInsert) {
-  json::Value v;
+TEST(ValueTest, ObjectInsert) {
+  Value v;
   v["name"] = "name";
   v.insert("age", 42);
 
-  EXPECT_EQ(v.size(), 2);
-  EXPECT_EQ(v["name"], "name");
-  EXPECT_EQ(v["age"], 42);
+  EXPECT_THAT(v.size(), Eq(2));
+  EXPECT_THAT(v["name"], Eq("name"));
+  EXPECT_THAT(v["age"], Eq(42));
 }
 
-TEST(JsonValueTest, TypeReassignment) {
-  json::Value v = "string";
-  EXPECT_EQ(v, "string");
+TEST(ValueTest, TypeReassignment) {
+  Value v = "string";
+  EXPECT_THAT(v, Eq("string"));
 
   v = 42;
-  EXPECT_EQ(v, 42);
+  EXPECT_THAT(v, Eq(42));
 
   v = true;
-  EXPECT_EQ(v, true);
+  EXPECT_THAT(v, Eq(true));
 
   v = 3.14;
-  EXPECT_DOUBLE_EQ(v, 3.14);
+  EXPECT_THAT((double)v, DoubleEq(3.14));
 
   v = nullptr;
-  EXPECT_EQ(v, nullptr);
+  EXPECT_THAT(v, Eq(nullptr));
 
   v.push_back(1);
-  EXPECT_EQ(v, json::array_t{1});
+  EXPECT_THAT(v, Eq(array_t{1}));
 
   v = nullptr;
-  EXPECT_EQ(v, nullptr);
+  EXPECT_THAT(v, Eq(nullptr));
 
-  v["key"] = json::array_t{1};
-  json::object_t map = json::object_t{{"key", json::array_t{1}}};
-  EXPECT_EQ(v, map);
+  v["key"] = array_t{1};
+  object_t map = object_t{{"key", array_t{1}}};
+  EXPECT_THAT(v, Eq(map));
 }
 
-TEST(JsonValueTest, ArrayErase) {
-  json::Value v;
+TEST(ValueTest, ArrayErase) {
+  Value v;
   v.push_back(1);
   v.push_back(2);
   v.push_back(3);
 
-  v.erase(((json::array_t&)v).begin() + 1);
+  v.erase(((array_t&)v).begin() + 1);
 
-  EXPECT_EQ(v.size(), 2);
-  EXPECT_EQ(v[0], 1);
-  EXPECT_EQ(v[1], 3);
+  EXPECT_THAT(v.size(), Eq(2));
+  EXPECT_THAT(v[0], Eq(1));
+  EXPECT_THAT(v[1], Eq(3));
 }
 
-TEST(JsonValueTest, ObjectErase) {
-  json::Value v;
+TEST(ValueTest, ObjectErase) {
+  Value v;
   v.insert("key1", "value1");
   v.insert("key2", "value2");
 
-  EXPECT_EQ(v.size(), 2);
-  EXPECT_EQ(v["key1"], "value1");
+  EXPECT_THAT(v.size(), Eq(2));
+  EXPECT_THAT(v["key1"], Eq("value1"));
 
   v.erase("key1");
-  EXPECT_EQ(v.size(), 1);
-  EXPECT_EQ(v["key2"], "value2");
+  EXPECT_THAT(v.size(), Eq(1));
+  EXPECT_THAT(v["key2"], Eq("value2"));
 }
 
-TEST(JsonValueTest, ArrayIteration) {
-  json::Value v;
+TEST(ValueTest, ArrayIteration) {
+  Value v;
   v.push_back(1);
   v.push_back(2);
   v.push_back(3);
 
   int32_t sum = 0;
-  for (const json::Value& item : (const json::array_t&)v) {
+  for (const Value& item : (const array_t&)v) {
     sum += (int32_t)item;
   }
 
-  EXPECT_EQ(sum, 6);
+  EXPECT_THAT(sum, Eq(6));
 }
 
-TEST(JsonValueTest, ObjectIteration) {
-  json::Value v;
+TEST(ValueTest, ObjectIteration) {
+  Value v;
   v["a"] = 1;
   v["b"] = 2;
   v["c"] = 3;
 
   int32_t sum = 0;
-  for (const auto& [_, value] : (const json::object_t&)v) {
+  for (const auto& [_, value] : (const object_t&)v) {
     sum += (int32_t)value;
   }
 
-  EXPECT_EQ(sum, 6);
+  EXPECT_THAT(sum, Eq(6));
 }
 
-TEST(JsonValueTest, TypeErrorsThrow) {
-  json::Value v = "string";
-  EXPECT_THROW(v[0], json::BadAccessException);
-  EXPECT_THROW(v["key"], json::BadAccessException);
-  EXPECT_THROW(v.size(), json::BadAccessException);
-  EXPECT_THROW(v.empty(), json::BadAccessException);
-  EXPECT_THROW((void)(bool)v, json::BadAccessException);
-  EXPECT_THROW(v.push_back(1), json::BadAccessException);
-  EXPECT_THROW((void)(double)v, json::BadAccessException);
-  EXPECT_THROW((void)(int32_t)v, json::BadAccessException);
-  EXPECT_THROW(v.insert("key", 1), json::BadAccessException);
+TEST(ValueTest, TypeErrorsThrow) {
+  Value v = "string";
+  EXPECT_THAT([&v]() { (void)v[0]; }, Throws<BadAccessException>());
+  EXPECT_THAT([&v]() { (void)v["key"]; }, Throws<BadAccessException>());
+  EXPECT_THAT([&v]() { (void)v.size(); }, Throws<BadAccessException>());
+  EXPECT_THAT([&v]() { (void)v.empty(); }, Throws<BadAccessException>());
+  EXPECT_THAT([&v]() { (void)(bool)v; }, Throws<BadAccessException>());
+  EXPECT_THAT([&v]() { v.push_back(1); }, Throws<BadAccessException>());
+  EXPECT_THAT([&v]() { (void)(double)v; }, Throws<BadAccessException>());
+  EXPECT_THAT([&v]() { (void)(int32_t)v; }, Throws<BadAccessException>());
+  EXPECT_THAT([&v]() { v.insert("key", 1); }, Throws<BadAccessException>());
 }
+
+}  // namespace
+
+}  // namespace json

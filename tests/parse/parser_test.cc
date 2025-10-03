@@ -14,64 +14,61 @@ using ::testing::Eq;
 using ::testing::Throws;
 
 TEST(ParserTest, UnexpectedTokenAfterParsing) {
-  EXPECT_THAT([&] { Parser(Lexer("{} x")).parse(); }, Throws<ParseException>());
+  EXPECT_THAT([] { Parser(Lexer("{} x")).parse(); }, Throws<ParseException>());
 }
 
 TEST(ParserTest, UnexpectedFirstToken) {
-  EXPECT_THAT([&] { Parser(Lexer("}")).parse(); }, Throws<ParseException>());
+  EXPECT_THAT([] { Parser(Lexer("}")).parse(); }, Throws<ParseException>());
 }
 
 TEST(ParserTest, ArrayMissingComma) {
-  EXPECT_THAT([&] { Parser(Lexer("[1 2]")).parse(); },
-              Throws<ParseException>());
+  EXPECT_THAT([] { Parser(Lexer("[1 2]")).parse(); }, Throws<ParseException>());
 }
 
 TEST(ParserTest, ArrayUnterminated) {
-  EXPECT_THAT([&] { Parser(Lexer("[1, 2")).parse(); },
-              Throws<ParseException>());
+  EXPECT_THAT([] { Parser(Lexer("[1, 2")).parse(); }, Throws<ParseException>());
 }
 
 TEST(ParserTest, ArrayUnexpectedTokenAfterValue) {
-  EXPECT_THAT([&] { Parser(Lexer("[1:2]")).parse(); },
-              Throws<ParseException>());
+  EXPECT_THAT([] { Parser(Lexer("[1:2]")).parse(); }, Throws<ParseException>());
 }
 
 TEST(ParserTest, ArrayTrailingComma) {
-  EXPECT_THAT([&] { Parser(Lexer("[1,]")).parse(); }, Throws<ParseException>());
+  EXPECT_THAT([] { Parser(Lexer("[1,]")).parse(); }, Throws<ParseException>());
 }
 
 TEST(ParserTest, ObjectMissingColon) {
-  EXPECT_THAT([&] { Parser(Lexer(R"({"a" 1})")).parse(); },
+  EXPECT_THAT([] { Parser(Lexer(R"({"a" 1})")).parse(); },
               Throws<ParseException>());
 }
 
 TEST(ParserTest, ObjectMissingCommaBetweenPairs) {
-  EXPECT_THAT([&] { Parser(Lexer(R"({"a":1 "b":2})")).parse(); },
+  EXPECT_THAT([] { Parser(Lexer(R"({"a":1 "b":2})")).parse(); },
               Throws<ParseException>());
 }
 
 TEST(ParserTest, ObjectUnterminated) {
-  EXPECT_THAT([&] { Parser(Lexer(R"({"a":1)")).parse(); },
+  EXPECT_THAT([] { Parser(Lexer(R"({"a":1)")).parse(); },
               Throws<ParseException>());
 }
 
 TEST(ParserTest, StringUnicodeHighSurrogateWithoutLowSurrogate) {
-  EXPECT_THAT([&] { Parser(Lexer(R"("\uD83D")")).parse(); },
+  EXPECT_THAT([] { Parser(Lexer(R"("\uD83D")")).parse(); },
               Throws<ParseException>());
 }
 
 TEST(ParserTest, StringUnicodeHighSurrogateFollowedByNonLowSurrogate) {
-  EXPECT_THAT([&] { Parser(Lexer(R"("\uD83D\u1234")")).parse(); },
+  EXPECT_THAT([] { Parser(Lexer(R"("\uD83D\u1234")")).parse(); },
               Throws<ParseException>());
 }
 
 TEST(ParserTest, UnicodeLoneLowSurrogate) {
-  EXPECT_THAT([&] { Parser(Lexer(R"("\uDC00")")).parse(); },
+  EXPECT_THAT([] { Parser(Lexer(R"("\uDC00")")).parse(); },
               Throws<ParseException>());
 }
 
 TEST(ParserTest, ObjectTrailingComma) {
-  EXPECT_THAT([&] { Parser(Lexer(R"({"a":1,})")).parse(); },
+  EXPECT_THAT([] { Parser(Lexer(R"({"a":1,})")).parse(); },
               Throws<ParseException>());
 }
 

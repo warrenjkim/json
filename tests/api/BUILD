@@ -10,7 +10,6 @@ cc_test(
     name = "value_test",
     srcs = ["value_test.cc"],
     deps = [
-        "//src/api:parse",
         "//src/api:value",
         "//src/utils:exception",
         "//src/utils:types",
