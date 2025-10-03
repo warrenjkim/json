@@ -4,7 +4,7 @@ cc_library(
     strip_include_prefix = ".",
     visibility = ["//visibility:public"],
     deps = [
-        ":parse",
+        ":utils",
         ":value",
     ],
 )
@@ -24,9 +24,9 @@ cc_library(
 )
 
 cc_library(
-    name = "parse",
+    name = "utils",
     hdrs = [
-        "parse.h",
+        "utils.h",
     ],
     include_prefix = "warren/json",
     strip_include_prefix = ".",
