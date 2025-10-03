@@ -22,6 +22,46 @@ class Lexer {
       return expected == other.expected && pos == other.pos &&
              message == other.message;
     }
+
+    operator std::string() {
+      auto type = [this]() -> std::string {
+        switch (expected) {
+          case TokenType::OBJECT_START:
+            return "TokenType::ObjectStart";
+          case TokenType::OBJECT_END:
+            return "TokenType::ObjectEnd";
+          case TokenType::ARRAY_START:
+            return "TokenType::ArrayStart";
+          case TokenType::ARRAY_END:
+            return "TokenType::ArrayEnd";
+          case TokenType::QUOTE:
+            return "TokenType::Quote";
+          case TokenType::COMMA:
+            return "TokenType::Comma";
+          case TokenType::COLON:
+            return "TokenType::Colon";
+          case TokenType::STRING:
+            return "TokenType::String";
+          case TokenType::DOUBLE:
+            return "TokenType::Double";
+          case TokenType::INTEGRAL:
+            return "TokenType::Integral";
+          case TokenType::BOOLEAN:
+            return "TokenType::Boolean";
+          case TokenType::JSON_NULL:
+            return "TokenType::Null";
+          case TokenType::UNKNOWN:
+            return "TokenType::Unknown";
+          case TokenType::END_OF_JSON:
+            return "TokenType::EndOfJson";
+        }
+
+        __builtin_unreachable();
+      };
+
+      return "Error at position " + std::to_string(pos) + ". Expected " +
+             type() + ": " + message;
+    }
   };
 
   explicit Lexer(const std::string& json);

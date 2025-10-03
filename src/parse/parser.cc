@@ -121,8 +121,12 @@ Parser::Parser(Lexer lexer) : lexer_(std::move(lexer)) {}
 
 Value Parser::parse() {
   ++lexer_;
+  if (!lexer_.ok()) {
+    throw ParseException(lexer_.error());
+  }
+
   Value json = parse_value();
-  if (lexer_->type != TokenType::END_OF_JSON) {
+  if (!lexer_.eof()) {
     throw ParseException("Unexpected token: " + lexer_->value);
   }
 
@@ -189,6 +193,9 @@ Value Parser::parse_number() {
 
 array_t Parser::parse_array() {
   ++lexer_;
+  if (!lexer_.ok()) {
+    throw ParseException(lexer_.error());
+  }
 
   array_t value;
   if (lexer_->type == TokenType::ARRAY_END) {
@@ -196,10 +203,11 @@ array_t Parser::parse_array() {
     return value;
   }
 
-  while (true) {
+  while (lexer_) {
     value.push_back(parse_value());
     if (lexer_->type == TokenType::ARRAY_END) {
-      break;
+      ++lexer_;
+      return value;
     }
 
     if (lexer_->type != TokenType::COMMA) {
@@ -209,17 +217,15 @@ array_t Parser::parse_array() {
     ++lexer_;
   }
 
-  if (lexer_->type != TokenType::ARRAY_END) {
-    throw ParseException("Unexpected token: " + lexer_->value);
-  }
-
-  ++lexer_;
-
-  return value;
+  throw ParseException(lexer_.ok() ? "Unterminated array"
+                                   : std::string(lexer_.error()));
 }
 
 object_t Parser::parse_object() {
   ++lexer_;
+  if (!lexer_.ok()) {
+    throw ParseException(lexer_.error());
+  }
 
   object_t value;
   if (lexer_->type == TokenType::OBJECT_END) {
@@ -227,16 +233,21 @@ object_t Parser::parse_object() {
     return value;
   }
 
-  while (true) {
+  while (lexer_) {
     std::string key = parse_string();
     if (lexer_->type != TokenType::COLON) {
       throw ParseException("Unexpected token: " + lexer_->value);
     }
 
     ++lexer_;
+    if (!lexer_.ok()) {
+      throw ParseException(lexer_.error());
+    }
+
     value[key] = parse_value();
     if (lexer_->type == TokenType::OBJECT_END) {
-      break;
+      ++lexer_;
+      return value;
     }
 
     if (lexer_->type != TokenType::COMMA) {
@@ -246,13 +257,8 @@ object_t Parser::parse_object() {
     ++lexer_;
   }
 
-  if (lexer_->type != TokenType::OBJECT_END) {
-    throw ParseException("Unexpected token: " + lexer_->value);
-  }
-
-  ++lexer_;
-
-  return value;
+  throw ParseException(lexer_.ok() ? "Unterminated object"
+                                   : std::string(lexer_.error()));
 }
 
 }  // namespace syntax
