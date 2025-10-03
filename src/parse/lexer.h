@@ -32,8 +32,6 @@ class Lexer {
   Lexer(const Lexer&) = delete;
   Lexer& operator=(const Lexer&) = delete;
 
-  Token next_token();
-
   Lexer& operator++();
   const Token& operator*() const;
   const Token* operator->() const;
@@ -45,6 +43,8 @@ class Lexer {
   bool ok() const;
 
  private:
+  Token next_token();
+
   Token lex_literal(const std::string& literal, TokenType type);
 
   Token lex_string();
