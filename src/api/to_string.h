@@ -15,5 +15,10 @@ struct PrintOptions {
 
 std::string to_string(const Value& value, const PrintOptions& opts = {});
 
+inline std::ostream& operator<<(std::ostream& os, const Value& v) {
+  os << to_string(v);
+  return os;
+}
+
 }  // namespace json
 }  // namespace warren
