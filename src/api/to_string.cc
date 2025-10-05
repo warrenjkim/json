@@ -37,8 +37,9 @@ struct Printer {
           array += "[\n";
           level++;
           for (size_t i = 0; i < a.size(); i++) {
-            array +=
-                indent() + print(a[i]) + (i < a.size() - 1 ? "," : "") + "\n";
+            array += indent() + print(a[i]) +
+                     (i < a.size() - 1 || opts.trailing_commas ? "," : "") +
+                     "\n";
           }
 
           level--;
@@ -57,7 +58,8 @@ struct Printer {
           size_t i = 0;
           for (const auto& [k, v] : o) {
             object += indent() + "\"" + k + "\": " + print(v) +
-                      (i++ < o.size() - 1 ? "," : "") + "\n";
+                      (i++ < o.size() - 1 || opts.trailing_commas ? "," : "") +
+                      "\n";
           }
 
           level--;
