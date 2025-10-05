@@ -2,7 +2,6 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "warren/json/utils/types.h"
 
 namespace warren {
 namespace json {

@@ -4,8 +4,6 @@
 #include <sstream>
 #include <string>
 
-#include "warren/json/utils/types.h"
-
 namespace {
 
 struct Printer {

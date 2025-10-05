@@ -18,6 +18,5 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         "//src/utils:exception",
-        "//src/utils:types",
     ],
 )

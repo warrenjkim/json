@@ -1,7 +1,6 @@
 #pragma once
 
 #include "warren/json/internal/parse/lexer.h"
-#include "warren/json/utils/types.h"
 #include "warren/json/value.h"
 
 namespace warren {

@@ -24,7 +24,6 @@ cc_test(
         "//src/parse:parser",
         "//src/parse:token",
         "//src/utils:exception",
-        "//src/utils:types",
         "@googletest//:gtest_main",
     ],
 )

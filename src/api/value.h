@@ -7,10 +7,13 @@
 #include <vector>
 
 #include "warren/json/utils/exception.h"
-#include "warren/json/utils/types.h"
 
 namespace warren {
 namespace json {
+
+class Value;
+using array_t = std::vector<Value>;
+using object_t = std::map<std::string, Value>;
 
 class Value {
  public:

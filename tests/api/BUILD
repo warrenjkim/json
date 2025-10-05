@@ -11,7 +11,6 @@ cc_test(
     deps = [
         "//src/api:value",
         "//src/utils:exception",
-        "//src/utils:types",
         "@googletest//:gtest_main",
     ],
 )
