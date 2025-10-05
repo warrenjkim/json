@@ -1,0 +1,17 @@
+#pragma once
+
+#include <string>
+
+#include "warren/json/value.h"
+
+namespace warren {
+namespace json {
+
+struct PrintOptions {
+  size_t tab_width = 2;
+};
+
+std::string to_string(const Value& value, const PrintOptions& opts = {});
+
+}  // namespace json
+}  // namespace warren
