@@ -12,7 +12,9 @@ struct Printer {
   size_t level = 0;
   const warren::json::PrintOptions& opts;
 
-  std::string indent() { return std::string(level * opts.tab_width, ' '); }
+  std::string indent() {
+    return opts.compact ? "" : std::string(level * opts.tab_width, ' ');
+  }
 
   std::string format(double d) {
     std::ostringstream oss;
@@ -34,12 +36,13 @@ struct Printer {
           }
 
           std::string array;
-          array += "[\n";
+          array += "[";
+          array += (opts.compact ? "" : "\n");
           level++;
           for (size_t i = 0; i < a.size(); i++) {
             array += indent() + print(a[i]) +
                      (i < a.size() - 1 || opts.trailing_commas ? "," : "") +
-                     "\n";
+                     (opts.compact ? "" : "\n");
           }
 
           level--;
@@ -53,13 +56,15 @@ struct Printer {
           }
 
           std::string object;
-          object += "{\n";
+          object += "{";
+          object += (opts.compact ? "" : "\n");
           level++;
           size_t i = 0;
           for (const auto& [k, v] : o) {
-            object += indent() + "\"" + k + "\": " + print(v) +
+            object += indent() + "\"" + k + "\":" + (opts.compact ? "" : " ") +
+                      print(v) +
                       (i++ < o.size() - 1 || opts.trailing_commas ? "," : "") +
-                      "\n";
+                      (opts.compact ? "" : "\n");
           }
 
           level--;
