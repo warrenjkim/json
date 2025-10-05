@@ -1,9 +1,10 @@
+#include "warren/json/utils/to_string.h"
+
 #include <sstream>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "warren/json/parse.h"
-#include "warren/json/to_string.h"
+#include "warren/json/utils/parse.h"
 
 namespace warren {
 namespace json {
@@ -11,16 +12,6 @@ namespace json {
 namespace {
 
 using ::testing::Eq;
-
-TEST(UtilsTest, Parse) {
-  EXPECT_THAT(R"(
-  {
-    "key": "value",
-    "other": 10
-  }
-      )"_json,
-              Eq(parse("{\"key\": \"value\", \"other\": 10}")));
-}
 
 TEST(UtilsTest, PrettyPrint) {
   EXPECT_THAT(to_string(
