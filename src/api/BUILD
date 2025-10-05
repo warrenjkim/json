@@ -10,6 +10,17 @@ cc_library(
 )
 
 cc_library(
+    name = "utils",
+    include_prefix = "warren/json",
+    strip_include_prefix = ".",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":parse",
+        ":to_string",
+    ],
+)
+
+cc_library(
     name = "value",
     hdrs = [
         "value.h",
@@ -24,15 +35,14 @@ cc_library(
 )
 
 cc_library(
-    name = "utils",
+    name = "parse",
     hdrs = [
-        "utils.h",
+        "parse.h",
     ],
     include_prefix = "warren/json",
     strip_include_prefix = ".",
     visibility = ["//visibility:public"],
     deps = [
-        ":to_string",
         ":value",
         "//src/parse:lexer",
         "//src/parse:parser",
