@@ -22,7 +22,8 @@ TEST(UtilsTest, Parse) {
 }
 
 TEST(UtilsTest, PrettyPrint) {
-  Value value = R"json({
+  EXPECT_THAT(to_string(
+                  R"json({
     "meta": null,
     "active": true,
     "count": 42,
@@ -40,9 +41,8 @@ TEST(UtilsTest, PrettyPrint) {
       { "level": "info", "text": "startup complete" },
       { "level": "warn", "text": "low memory" }
     ]
-  })json"_json;
-
-  EXPECT_THAT(to_string(value), Eq(std::string(R"({
+  })json"_json),
+              Eq(std::string(R"({
   "active": true,
   "count": 42,
   "data": {
@@ -79,7 +79,8 @@ TEST(UtilsTest, PrettyPrint) {
 }
 
 TEST(UtilsTest, PrettyPrintFourSpaceTabs) {
-  Value value = R"json({
+  EXPECT_THAT(to_string(
+                  R"json({
     "meta": null,
     "active": true,
     "count": 42,
@@ -97,9 +98,8 @@ TEST(UtilsTest, PrettyPrintFourSpaceTabs) {
       { "level": "info", "text": "startup complete" },
       { "level": "warn", "text": "low memory" }
     ]
-  })json"_json;
-
-  EXPECT_THAT(to_string(value, PrintOptions{.tab_width = 4}),
+  })json"_json,
+                  PrintOptions{.tab_width = 4}),
               Eq(std::string(R"({
     "active": true,
     "count": 42,
@@ -133,6 +133,15 @@ TEST(UtilsTest, PrettyPrintFourSpaceTabs) {
     "message": "All systems nominal",
     "meta": null,
     "ratio": 0.125
+})")));
+}
+
+TEST(UtilsTest, PrettyPrintTrailingCommas) {
+  EXPECT_THAT(to_string("{ \"meta\": null, \"active\": true }"_json,
+                        PrintOptions{.trailing_commas = true}),
+              Eq(std::string(R"({
+  "active": true,
+  "meta": null,
 })")));
 }
 
