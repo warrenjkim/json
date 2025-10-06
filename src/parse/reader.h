@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <optional>
 #include <string>
 
 namespace warren {
@@ -18,12 +19,15 @@ struct Reader {
 
   inline char get() { return json_[pos_++]; }
 
-  inline bool expect(char c) {
-    return json_[pos_] == c && pos_++;
-  }
+  inline bool expect(char c) { return json_[pos_] == c && pos_++; }
 
-  inline std::string substr(size_t start, size_t length) {
-    return json_.substr(start, length);
+  inline std::string substr(size_t start,
+                            std::optional<size_t> length = std::nullopt) {
+    if (length) {
+      return json_.substr(start, *length);
+    }
+
+    return json_.substr(start);
   }
 
  private:
