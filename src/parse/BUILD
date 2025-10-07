@@ -50,7 +50,21 @@ cc_library(
         "//tests:__subpackages__",
     ],
     deps = [
+        ":reader",
         ":token",
+    ],
+)
+
+cc_library(
+    name = "reader",
+    hdrs = [
+        "reader.h",
+    ],
+    include_prefix = "warren/json/internal/parse",
+    strip_include_prefix = ".",
+    visibility = [
+        "//src:__subpackages__",
+        "//tests:__subpackages__",
     ],
 )
 
