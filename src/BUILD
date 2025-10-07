@@ -4,6 +4,7 @@ cc_library(
     deps = [
         "//src/api",
         "//src/parse",
+        "//src/trace",
         "//src/utils",
     ],
 )
