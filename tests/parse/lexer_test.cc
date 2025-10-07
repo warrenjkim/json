@@ -1,11 +1,21 @@
 #include "warren/json/internal/parse/lexer.h"
 
+#include <ostream>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "warren/json/internal/parse/token.h"
 
 namespace warren {
 namespace json {
+
+inline void PrintTo(const Token& token, std::ostream* os) {
+  *os << to_string(token);
+}
+
+inline void PrintTo(const Lexer::Error& error, std::ostream* os) {
+  *os << to_string(error);
+}
 
 namespace {
 
