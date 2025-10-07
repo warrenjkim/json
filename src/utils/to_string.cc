@@ -4,6 +4,10 @@
 #include <sstream>
 #include <string>
 
+#include "warren/json/internal/parse/lexer.h"
+#include "warren/json/internal/parse/token.h"
+#include "warren/json/value.h"
+
 namespace {
 
 struct Printer {
@@ -77,6 +81,56 @@ struct Printer {
 
 namespace warren {
 namespace json {
+
+std::string to_string(TokenType type) {
+  switch (type) {
+    case TokenType::OBJECT_START:
+      return "TokenType::ObjectStart";
+    case TokenType::OBJECT_END:
+      return "TokenType::ObjectEnd";
+    case TokenType::ARRAY_START:
+      return "TokenType::ArrayStart";
+    case TokenType::ARRAY_END:
+      return "TokenType::ArrayEnd";
+    case TokenType::QUOTE:
+      return "TokenType::Quote";
+    case TokenType::COMMA:
+      return "TokenType::Comma";
+    case TokenType::COLON:
+      return "TokenType::Colon";
+    case TokenType::STRING:
+      return "TokenType::String";
+    case TokenType::DOUBLE:
+      return "TokenType::Double";
+    case TokenType::INTEGRAL:
+      return "TokenType::Integral";
+    case TokenType::BOOLEAN:
+      return "TokenType::Boolean";
+    case TokenType::JSON_NULL:
+      return "TokenType::Null";
+    case TokenType::UNKNOWN:
+      return "TokenType::Unknown";
+    case TokenType::END_OF_JSON:
+      return "TokenType::EndOfJson";
+  }
+
+  __builtin_unreachable();
+}
+
+std::string to_string(const Token& token) {
+  return "(" + to_string(token.type) + ", " + token.value + ")";
+}
+
+std::string to_string(const Lexer::Error& error) {
+  std::string msg = "Error at position " + std::to_string(error.pos) + ". ";
+  if (error.expected != TokenType::UNKNOWN) {
+    msg += "Expected " + to_string(error.expected) + ": ";
+  }
+
+  msg += error.message;
+
+  return msg;
+}
 
 std::string to_string(const Value& value, const PrintOptions& opts) {
   return Printer{.opts = opts}.print(value);

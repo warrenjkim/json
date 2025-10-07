@@ -8,8 +8,8 @@
 namespace warren {
 namespace json {
 
-Lexer::Lexer(const std::string& json)
-    : reader_(json), curr_(TokenType::UNKNOWN, "") {}
+Lexer::Lexer(std::string json)
+    : reader_(std::move(json)), curr_(TokenType::UNKNOWN, "") {}
 
 Lexer& Lexer::operator++() {
   curr_ = next_token();
@@ -17,17 +17,19 @@ Lexer& Lexer::operator++() {
   return *this;
 }
 
-const Token& Lexer::operator*() const { return curr_; }
+const Token& Lexer::operator*() const noexcept { return curr_; }
 
-const Token* Lexer::operator->() const { return &curr_; }
+const Token* Lexer::operator->() const noexcept { return &curr_; }
 
-Lexer::operator bool() const { return !eof() && ok(); }
+Lexer::operator bool() const noexcept { return !eof() && ok(); }
+
+bool Lexer::ok() const noexcept { return !error_; }
 
 Lexer::Error Lexer::error() const { return *error_; }
 
-bool Lexer::eof() const { return curr_.type == TokenType::END_OF_JSON; }
-
-bool Lexer::ok() const { return !error_; }
+bool Lexer::eof() const noexcept {
+  return curr_.type == TokenType::END_OF_JSON;
+}
 
 Token Lexer::next_token() {
   strip_whitespace();

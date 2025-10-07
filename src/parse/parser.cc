@@ -8,6 +8,7 @@
 #include "warren/json/internal/parse/lexer.h"
 #include "warren/json/internal/parse/token.h"
 #include "warren/json/utils/exception.h"
+#include "warren/json/utils/to_string.h"
 
 namespace {
 

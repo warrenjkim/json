@@ -32,6 +32,7 @@ cc_library(
         ":token",
         "//src/api:value",
         "//src/utils:exception",
+        "//src/utils:to_string",
     ],
 )
 

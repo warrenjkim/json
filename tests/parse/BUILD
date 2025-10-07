@@ -12,6 +12,7 @@ cc_test(
     deps = [
         "//src/parse:lexer",
         "//src/parse:token",
+        "//src/utils:to_string",
         "@googletest//:gtest_main",
     ],
 )

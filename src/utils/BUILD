@@ -37,6 +37,7 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         "//src/api:value",
+        "//src/parse:lexer",
     ],
 )
 

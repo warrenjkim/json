@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstddef>
+
 #include "warren/json/internal/parse/lexer.h"
 #include "warren/json/value.h"
 
@@ -9,9 +11,10 @@ namespace json {
 class Parser {
  public:
   explicit Parser(Lexer lexer);
-  ~Parser() = default;
 
-  Parser() = delete;
+  Parser(Parser&&) noexcept = default;
+  Parser& operator=(Parser&&) noexcept = default;
+
   Parser(const Parser&) = delete;
   Parser& operator=(const Parser&) = delete;
 

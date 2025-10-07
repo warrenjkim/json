@@ -25,23 +25,23 @@ class Lexer {
     }
   };
 
-  explicit Lexer(const std::string& json);
-  Lexer(Lexer&&) = default;
-  Lexer& operator=(Lexer&&) = default;
+  explicit Lexer(std::string json);
 
-  Lexer() = delete;
+  Lexer(Lexer&&) noexcept = default;
+  Lexer& operator=(Lexer&&) noexcept = default;
+
   Lexer(const Lexer&) = delete;
   Lexer& operator=(const Lexer&) = delete;
 
   Lexer& operator++();
-  const Token& operator*() const;
-  const Token* operator->() const;
-  operator bool() const;
+  const Token& operator*() const noexcept;
+  const Token* operator->() const noexcept;
+  operator bool() const noexcept;
 
+  bool ok() const noexcept;
   Error error() const;
 
-  bool eof() const;
-  bool ok() const;
+  bool eof() const noexcept;
 
  private:
   Token next_token();
@@ -62,17 +62,6 @@ class Lexer {
   Token curr_;
   std::optional<Error> error_;
 };
-
-inline std::string to_string(const Lexer::Error& error) {
-  std::string msg = "Error at position " + std::to_string(error.pos) + ". ";
-  if (error.expected != TokenType::UNKNOWN) {
-    msg += "Expected " + to_string(error.expected) + ": ";
-  }
-
-  msg += error.message;
-
-  return msg;
-}
 
 }  // namespace json
 }  // namespace warren
