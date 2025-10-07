@@ -8,7 +8,8 @@
 namespace warren {
 namespace json {
 
-Lexer::Lexer(const std::string& json) : reader_(json), curr_() {}
+Lexer::Lexer(const std::string& json)
+    : reader_(json), curr_(TokenType::UNKNOWN, "") {}
 
 Lexer& Lexer::operator++() {
   curr_ = next_token();
@@ -31,7 +32,7 @@ bool Lexer::ok() const { return !error_; }
 Token Lexer::next_token() {
   strip_whitespace();
   if (reader_.eof()) {
-    return Token("", TokenType::END_OF_JSON);
+    return Token(TokenType::END_OF_JSON, "");
   }
 
   switch (reader_.peek()) {
@@ -56,21 +57,21 @@ Token Lexer::next_token() {
     case '9':
       return lex_number();
     case '[':
-      return Token(reader_.get(), TokenType::ARRAY_START);
+      return Token(TokenType::ARRAY_START, reader_.get());
     case ']':
-      return Token(reader_.get(), TokenType::ARRAY_END);
+      return Token(TokenType::ARRAY_END, reader_.get());
     case '{':
-      return Token(reader_.get(), TokenType::OBJECT_START);
+      return Token(TokenType::OBJECT_START, reader_.get());
     case ':':
-      return Token(reader_.get(), TokenType::COLON);
+      return Token(TokenType::COLON, reader_.get());
     case '}':
-      return Token(reader_.get(), TokenType::OBJECT_END);
+      return Token(TokenType::OBJECT_END, reader_.get());
     case ',':
-      return Token(reader_.get(), TokenType::COMMA);
+      return Token(TokenType::COMMA, reader_.get());
     default:
       error_ = Error(TokenType::UNKNOWN, reader_.tell(),
                      "unknown token: " + reader_.substr(reader_.tell()));
-      return Token(reader_.get(), TokenType::UNKNOWN);
+      return Token(TokenType::UNKNOWN, reader_.get());
   }
 }
 
@@ -82,33 +83,33 @@ Token Lexer::lex_literal(const std::string& literal, TokenType type) {
       error_ = Error(
           type, start,
           "incomplete literal: got '" + res + "', expected '" + literal + "'");
-      return Token(res, TokenType::UNKNOWN);
+      return Token(TokenType::UNKNOWN, res);
     }
 
     if (reader_.peek() != c) {
       error_ = Error(
           type, start,
           "unexpected literal: got '" + res + "', expected '" + literal + "'");
-      return Token(res, TokenType::UNKNOWN);
+      return Token(TokenType::UNKNOWN, res);
     }
 
     res += reader_.get();
   }
 
-  return Token(res, type);
+  return Token(type, res);
 }
 
 Token Lexer::lex_string() {
   size_t start = reader_.tell();
   if (!reader_.expect('"') || reader_.eof()) {
     error_ = Error(TokenType::QUOTE, start, "unterminated string");
-    return Token("", TokenType::UNKNOWN);
+    return Token(TokenType::UNKNOWN, "");
   }
 
   std::string res;
   while (!reader_.eof()) {
     if (reader_.expect('"')) {
-      return Token(std::move(res), TokenType::STRING);
+      return Token(TokenType::STRING, std::move(res));
     }
 
     if (reader_.peek() == '\\') {
@@ -118,7 +119,7 @@ Token Lexer::lex_string() {
         std::string token = res + reader_.substr(start, reader_.tell() - start);
         error_ = Error(TokenType::STRING, start,
                        "invalid control character: " + token);
-        return Token(token, TokenType::UNKNOWN);
+        return Token(TokenType::UNKNOWN, token);
       }
 
       res += *ctrl;
@@ -129,7 +130,7 @@ Token Lexer::lex_string() {
   }
 
   error_ = Error(TokenType::QUOTE, start, "unterminated string");
-  return Token(std::move(res), TokenType::UNKNOWN);
+  return Token(TokenType::UNKNOWN, std::move(res));
 }
 
 std::optional<std::string> Lexer::lex_ctrl() {
@@ -190,7 +191,7 @@ Token Lexer::lex_number() {
     return exponent;
   }
 
-  return Token(integer.value + fraction.value + exponent.value, fraction.type);
+  return Token(fraction.type, integer.value + fraction.value + exponent.value);
 }
 
 Token Lexer::lex_integer() {
@@ -202,12 +203,12 @@ Token Lexer::lex_integer() {
 
   if (reader_.eof()) {
     error_ = Error(TokenType::INTEGRAL, start, "invalid integer: " + integer);
-    return Token(integer, TokenType::UNKNOWN);
+    return Token(TokenType::UNKNOWN, integer);
   }
 
   if (reader_.peek() < '0' || reader_.peek() > '9') {
     error_ = Error(TokenType::INTEGRAL, start, "invalid integer: " + integer);
-    return Token(integer, TokenType::UNKNOWN);
+    return Token(TokenType::UNKNOWN, integer);
   }
 
   integer += reader_.get();
@@ -220,44 +221,44 @@ Token Lexer::lex_integer() {
 
     if (invalid) {
       error_ = Error(TokenType::INTEGRAL, start, "invalid integer: " + integer);
-      return Token(integer, TokenType::UNKNOWN);
+      return Token(TokenType::UNKNOWN, integer);
     }
 
-    return Token(integer, TokenType::INTEGRAL);
+    return Token(TokenType::INTEGRAL, integer);
   }
 
   while (!reader_.eof() && isdigit(reader_.peek())) {
     integer += reader_.get();
   }
 
-  return Token(integer, TokenType::INTEGRAL);
+  return Token(TokenType::INTEGRAL, integer);
 }
 
 Token Lexer::lex_fraction() {
   size_t start = reader_.tell();
   std::string fraction;
   if (reader_.peek() != '.') {
-    return Token(fraction, TokenType::INTEGRAL);
+    return Token(TokenType::INTEGRAL, fraction);
   }
 
   fraction += reader_.get();
   if (reader_.eof() || !isdigit(reader_.peek())) {
     error_ = Error(TokenType::DOUBLE, start, "invalid fraction: " + fraction);
-    return Token(fraction, TokenType::UNKNOWN);
+    return Token(TokenType::UNKNOWN, fraction);
   }
 
   while (!reader_.eof() && isdigit(reader_.peek())) {
     fraction += reader_.get();
   }
 
-  return Token(fraction, TokenType::DOUBLE);
+  return Token(TokenType::DOUBLE, fraction);
 }
 
 Token Lexer::lex_exponent() {
   size_t start = reader_.tell();
   std::string exponent;
   if (reader_.eof() || tolower(reader_.peek()) != 'e') {
-    return Token(exponent, TokenType::INTEGRAL);
+    return Token(TokenType::INTEGRAL, exponent);
   }
 
   exponent += reader_.get();
@@ -267,14 +268,14 @@ Token Lexer::lex_exponent() {
 
   if (reader_.eof() || !isdigit(reader_.peek())) {
     error_ = Error(TokenType::INTEGRAL, start, "invalid exponent: " + exponent);
-    return Token(exponent, TokenType::UNKNOWN);
+    return Token(TokenType::UNKNOWN, exponent);
   }
 
   while (!reader_.eof() && isdigit(reader_.peek())) {
     exponent += reader_.get();
   }
 
-  return Token(exponent, TokenType::INTEGRAL);
+  return Token(TokenType::INTEGRAL, exponent);
 }
 
 void Lexer::strip_whitespace() {

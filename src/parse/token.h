@@ -61,10 +61,10 @@ struct Token {
   TokenType type;
   std::string value;
 
-  explicit Token(std::string value = "", TokenType type = TokenType::UNKNOWN)
+  explicit Token(TokenType type, std::string value)
       : type(type), value(std::move(value)) {}
 
-  explicit Token(char value, TokenType type = TokenType::UNKNOWN)
+  explicit Token(TokenType type, char value)
       : type(type), value(std::string(1, value)) {}
 
   bool operator==(const Token& other) const noexcept {

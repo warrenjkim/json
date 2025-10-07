@@ -7,7 +7,7 @@
 namespace warren {
 namespace json {
 
-struct Reader {
+class Reader {
  public:
   inline explicit Reader(std::string json) : json_(std::move(json)), pos_(0) {}
 

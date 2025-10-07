@@ -31,7 +31,7 @@ TEST(LexerTest, LexInvalidNull) {
       Eq(Lexer::Error(TokenType::JSON_NULL,
                       /*pos=*/0,
                       "incomplete literal: got 'nul', expected 'null'")));
-  EXPECT_THAT(*lexer, Eq(Token("nul", TokenType::UNKNOWN)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::UNKNOWN, "nul")));
 }
 
 TEST(LexerTest, LexInvalidTrue) {
@@ -44,7 +44,7 @@ TEST(LexerTest, LexInvalidTrue) {
       Eq(Lexer::Error(TokenType::BOOLEAN,
                       /*pos=*/0,
                       "incomplete literal: got 'tru', expected 'true'")));
-  EXPECT_THAT(*lexer, Eq(Token("tru", TokenType::UNKNOWN)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::UNKNOWN, "tru")));
 }
 
 TEST(LexerTest, LexInvalidFalse) {
@@ -57,7 +57,7 @@ TEST(LexerTest, LexInvalidFalse) {
       Eq(Lexer::Error(TokenType::BOOLEAN,
                       /*pos=*/0,
                       "incomplete literal: got 'fals', expected 'false'")));
-  EXPECT_THAT(*lexer, Eq(Token("fals", TokenType::UNKNOWN)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::UNKNOWN, "fals")));
 }
 
 TEST(LexerTest, LexNull) {
@@ -65,7 +65,7 @@ TEST(LexerTest, LexNull) {
   ++lexer;
   EXPECT_TRUE(lexer);
   EXPECT_TRUE(lexer.ok());
-  EXPECT_THAT(*lexer, Eq(Token("null", TokenType::JSON_NULL)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::JSON_NULL, "null")));
 }
 
 TEST(LexerTest, LexTrue) {
@@ -73,7 +73,7 @@ TEST(LexerTest, LexTrue) {
   ++lexer;
   EXPECT_TRUE(lexer);
   EXPECT_TRUE(lexer.ok());
-  EXPECT_THAT(*lexer, Eq(Token("true", TokenType::BOOLEAN)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::BOOLEAN, "true")));
 }
 
 TEST(LexerTest, LexFalse) {
@@ -81,7 +81,7 @@ TEST(LexerTest, LexFalse) {
   ++lexer;
   EXPECT_TRUE(lexer);
   EXPECT_TRUE(lexer.ok());
-  EXPECT_THAT(*lexer, Eq(Token("false", TokenType::BOOLEAN)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::BOOLEAN, "false")));
 }
 
 TEST(LexerTest, LexInvalidUnterminatedString) {
@@ -92,7 +92,7 @@ TEST(LexerTest, LexInvalidUnterminatedString) {
   EXPECT_THAT(lexer.error(),
               Eq(Lexer::Error(TokenType::QUOTE,
                               /*pos=*/0, "unterminated string")));
-  EXPECT_THAT(*lexer, Eq(Token("hello", TokenType::UNKNOWN)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::UNKNOWN, "hello")));
 }
 
 TEST(LexerTest, LexInvalidBadEscapeChar) {
@@ -104,7 +104,7 @@ TEST(LexerTest, LexInvalidBadEscapeChar) {
       lexer.error(),
       Eq(Lexer::Error(TokenType::STRING,
                       /*pos=*/6, "invalid control character: hello\\z")));
-  EXPECT_THAT(*lexer, Eq(Token("hello\\z", TokenType::UNKNOWN)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::UNKNOWN, "hello\\z")));
 }
 
 TEST(LexerTest, LexInvalidBadUnicode) {
@@ -115,7 +115,7 @@ TEST(LexerTest, LexInvalidBadUnicode) {
   EXPECT_THAT(lexer.error(),
               Eq(Lexer::Error(TokenType::STRING,
                               /*pos=*/1, "invalid control character: \\u12")));
-  EXPECT_THAT(*lexer, Eq(Token("\\u12", TokenType::UNKNOWN)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::UNKNOWN, "\\u12")));
 }
 
 TEST(LexerTest, LexStringSimple) {
@@ -123,7 +123,7 @@ TEST(LexerTest, LexStringSimple) {
   ++lexer;
   EXPECT_TRUE(lexer);
   EXPECT_TRUE(lexer.ok());
-  EXPECT_THAT(*lexer, Eq(Token("hello", TokenType::STRING)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::STRING, "hello")));
 }
 
 TEST(LexerTest, LexStringEscapeChars) {
@@ -131,7 +131,7 @@ TEST(LexerTest, LexStringEscapeChars) {
   ++lexer;
   EXPECT_TRUE(lexer);
   EXPECT_TRUE(lexer.ok());
-  EXPECT_THAT(*lexer, Eq(Token("hello\nworld", TokenType::STRING)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::STRING, "hello\nworld")));
 }
 
 TEST(LexerTest, LexStringUnicode) {
@@ -139,7 +139,7 @@ TEST(LexerTest, LexStringUnicode) {
   ++lexer;
   EXPECT_TRUE(lexer);
   EXPECT_TRUE(lexer.ok());
-  EXPECT_THAT(*lexer, Eq(Token("\\u0041", TokenType::STRING)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::STRING, "\\u0041")));
 }
 
 TEST(LexerTest, LexInvalidNumberDash) {
@@ -149,7 +149,7 @@ TEST(LexerTest, LexInvalidNumberDash) {
   EXPECT_FALSE(lexer.ok());
   EXPECT_THAT(lexer.error(), Eq(Lexer::Error(TokenType::INTEGRAL, /*pos=*/0,
                                              "invalid integer: -")));
-  EXPECT_THAT(*lexer, Eq(Token("-", TokenType::UNKNOWN)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::UNKNOWN, "-")));
 }
 
 TEST(LexerTest, LexInvalidNumberLeadingZero) {
@@ -159,7 +159,7 @@ TEST(LexerTest, LexInvalidNumberLeadingZero) {
   EXPECT_FALSE(lexer.ok());
   EXPECT_THAT(lexer.error(), Eq(Lexer::Error(TokenType::INTEGRAL, /*pos=*/0,
                                              "invalid integer: 01")));
-  EXPECT_THAT(*lexer, Eq(Token("01", TokenType::UNKNOWN)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::UNKNOWN, "01")));
 }
 
 TEST(LexerTest, LexInvalidNumberTrailingDecimal) {
@@ -169,7 +169,7 @@ TEST(LexerTest, LexInvalidNumberTrailingDecimal) {
   EXPECT_FALSE(lexer.ok());
   EXPECT_THAT(lexer.error(), Eq(Lexer::Error(TokenType::DOUBLE, /*pos=*/1,
                                              "invalid fraction: .")));
-  EXPECT_THAT(*lexer, Eq(Token("1.", TokenType::UNKNOWN)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::UNKNOWN, "1.")));
 }
 
 TEST(LexerTest, LexInvalidNumberExponentOnly) {
@@ -179,7 +179,7 @@ TEST(LexerTest, LexInvalidNumberExponentOnly) {
   EXPECT_FALSE(lexer.ok());
   EXPECT_THAT(lexer.error(), Eq(Lexer::Error(TokenType::INTEGRAL, /*pos=*/1,
                                              "invalid exponent: e")));
-  EXPECT_THAT(*lexer, Eq(Token("1e", TokenType::UNKNOWN)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::UNKNOWN, "1e")));
 }
 
 TEST(LexerTest, LexInvalidNumberExponentSign) {
@@ -189,7 +189,7 @@ TEST(LexerTest, LexInvalidNumberExponentSign) {
   EXPECT_FALSE(lexer.ok());
   EXPECT_THAT(lexer.error(), Eq(Lexer::Error(TokenType::INTEGRAL, /*pos=*/1,
                                              "invalid exponent: e+")));
-  EXPECT_THAT(*lexer, Eq(Token("1e+", TokenType::UNKNOWN)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::UNKNOWN, "1e+")));
 }
 
 TEST(LexerTest, LexNumberIntegral) {
@@ -197,7 +197,7 @@ TEST(LexerTest, LexNumberIntegral) {
   ++lexer;
   EXPECT_TRUE(lexer);
   EXPECT_TRUE(lexer.ok());
-  EXPECT_THAT(*lexer, Eq(Token("123", TokenType::INTEGRAL)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::INTEGRAL, "123")));
 }
 
 TEST(LexerTest, LexNumberDouble) {
@@ -205,7 +205,7 @@ TEST(LexerTest, LexNumberDouble) {
   ++lexer;
   EXPECT_TRUE(lexer);
   EXPECT_TRUE(lexer.ok());
-  EXPECT_THAT(*lexer, Eq(Token("12.34", TokenType::DOUBLE)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::DOUBLE, "12.34")));
 }
 
 TEST(LexerTest, LexPunctuation) {
@@ -214,32 +214,32 @@ TEST(LexerTest, LexPunctuation) {
   ++lexer;
   EXPECT_TRUE(lexer);
   EXPECT_TRUE(lexer.ok());
-  EXPECT_THAT(*lexer, Eq(Token("{", TokenType::OBJECT_START)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::OBJECT_START, "{")));
 
   ++lexer;
   EXPECT_TRUE(lexer);
   EXPECT_TRUE(lexer.ok());
-  EXPECT_THAT(*lexer, Eq(Token("}", TokenType::OBJECT_END)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::OBJECT_END, "}")));
 
   ++lexer;
   EXPECT_TRUE(lexer);
   EXPECT_TRUE(lexer.ok());
-  EXPECT_THAT(*lexer, Eq(Token("[", TokenType::ARRAY_START)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::ARRAY_START, "[")));
 
   ++lexer;
   EXPECT_TRUE(lexer);
   EXPECT_TRUE(lexer.ok());
-  EXPECT_THAT(*lexer, Eq(Token("]", TokenType::ARRAY_END)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::ARRAY_END, "]")));
 
   ++lexer;
   EXPECT_TRUE(lexer);
   EXPECT_TRUE(lexer.ok());
-  EXPECT_THAT(*lexer, Eq(Token(",", TokenType::COMMA)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::COMMA, ",")));
 
   ++lexer;
   EXPECT_TRUE(lexer);
   EXPECT_TRUE(lexer.ok());
-  EXPECT_THAT(*lexer, Eq(Token(":", TokenType::COLON)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::COLON, ":")));
 }
 
 TEST(LexerTest, LexWhitespace) {
@@ -247,7 +247,7 @@ TEST(LexerTest, LexWhitespace) {
   ++lexer;
   EXPECT_TRUE(lexer);
   EXPECT_TRUE(lexer.ok());
-  EXPECT_THAT(*lexer, Eq(Token("123", TokenType::INTEGRAL)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::INTEGRAL, "123")));
 }
 
 TEST(LexerTest, LexUnknown) {
@@ -257,7 +257,7 @@ TEST(LexerTest, LexUnknown) {
   EXPECT_FALSE(lexer.ok());
   EXPECT_THAT(lexer.error(), Eq(Lexer::Error(TokenType::UNKNOWN, /*pos=*/0,
                                              "unknown token: @")));
-  EXPECT_THAT(*lexer, Eq(Token("@", TokenType::UNKNOWN)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::UNKNOWN, "@")));
 }
 
 TEST(LexerTest, IncrementOperator) {
@@ -267,13 +267,13 @@ TEST(LexerTest, IncrementOperator) {
   EXPECT_TRUE(lexer);
   EXPECT_FALSE(lexer.eof());
   EXPECT_TRUE(lexer.ok());
-  EXPECT_THAT(*lexer, Eq(Token("true", TokenType::BOOLEAN)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::BOOLEAN, "true")));
 
   ++lexer;
   EXPECT_TRUE(lexer);
   EXPECT_FALSE(lexer.eof());
   EXPECT_TRUE(lexer.ok());
-  EXPECT_THAT(*lexer, Eq(Token("false", TokenType::BOOLEAN)));
+  EXPECT_THAT(*lexer, Eq(Token(TokenType::BOOLEAN, "false")));
 
   ++lexer;
   EXPECT_FALSE(lexer);
