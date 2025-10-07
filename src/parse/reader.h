@@ -19,7 +19,7 @@ struct Reader {
 
   inline char get() { return json_[pos_++]; }
 
-  inline bool expect(char c) { return json_[pos_] == c && pos_++; }
+  inline bool expect(char c) { return json_[pos_] == c && ++pos_; }
 
   inline std::string substr(size_t start,
                             std::optional<size_t> length = std::nullopt) const {
