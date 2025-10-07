@@ -3,6 +3,7 @@
 #include <optional>
 #include <string>
 
+#include "warren/json/internal/parse/reader.h"
 #include "warren/json/internal/parse/token.h"
 
 namespace warren {
@@ -57,8 +58,7 @@ class Lexer {
 
   void strip_whitespace();
 
-  size_t pos_;
-  std::string json_;
+  Reader reader_;
   Token curr_;
   std::optional<Error> error_;
 };
