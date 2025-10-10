@@ -53,6 +53,8 @@ cc_library(
     deps = [
         ":reader",
         ":token",
+        "//src/trace:null_tracer",
+        "//src/trace:tracer",
     ],
 )
 

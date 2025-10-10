@@ -5,6 +5,8 @@
 
 #include "warren/json/internal/parse/reader.h"
 #include "warren/json/internal/parse/token.h"
+#include "warren/json/trace/null_tracer.h"
+#include "warren/json/trace/tracer.h"
 
 namespace warren {
 namespace json {
@@ -25,7 +27,8 @@ class Lexer {
     }
   };
 
-  explicit Lexer(std::string json);
+  explicit Lexer(std::string json,
+                 trace::Tracer* tracer = new trace::NullTracer());
 
   Lexer(Lexer&&) noexcept = default;
   Lexer& operator=(Lexer&&) noexcept = default;
@@ -59,6 +62,7 @@ class Lexer {
   void strip_whitespace();
 
   Reader reader_;
+  trace::Tracer* tracer_;
   Token curr_;
   std::optional<Error> error_;
 };

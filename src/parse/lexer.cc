@@ -4,12 +4,15 @@
 #include <optional>  // nullopt, optional
 
 #include "warren/json/internal/parse/token.h"
+#include "warren/json/trace/tracer.h"
 
 namespace warren {
 namespace json {
 
-Lexer::Lexer(std::string json)
-    : reader_(std::move(json)), curr_(TokenType::UNKNOWN, "") {}
+Lexer::Lexer(std::string json, trace::Tracer* tracer)
+    : reader_(std::move(json)),
+      tracer_(tracer),
+      curr_(TokenType::UNKNOWN, "") {}
 
 Lexer& Lexer::operator++() {
   curr_ = next_token();
