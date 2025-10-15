@@ -1,31 +1,28 @@
 #pragma once
 
 #include <string_view>
-#include <vector>
 
-#include "warren/json/trace/null_span.h"
 #include "warren/json/trace/tracer.h"
 
 namespace warren {
 namespace trace {
 
-struct Span;
-
 class NullTracer : public Tracer {
  public:
-  ~NullTracer() {
-    for (Span* span : spans_) {
-      delete span;
-    }
-  }
+  explicit NullTracer() : span_(new NullSpan()) {}
 
-  Span* make_span(std::string_view) override {
-    spans_.push_back(new NullSpan{});
-    return spans_.back();
-  }
+  ~NullTracer() { delete span_; }
+
+  Span* make_span(std::string_view) override { return span_; }
 
  private:
-  std::vector<Span*> spans_;
+  struct NullSpan : public Span {
+    void annotate(std::string_view, std::string_view) override {}
+    void event(std::string_view) override {}
+    void end() override {}
+  };
+
+  NullSpan* const span_;
 };
 
 }  // namespace trace
