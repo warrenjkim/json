@@ -2,7 +2,7 @@
 
 #include <string_view>
 
-#include "warren/json/trace/tracer.h"
+#include "warren/trace/tracer.h"
 
 namespace warren {
 namespace trace {
@@ -16,7 +16,7 @@ class NullTracer : public Tracer {
   Span* make_span(std::string_view) override { return span_; }
 
  private:
-  struct NullSpan : public Span {
+  class NullSpan : public Span {
     void annotate(std::string_view, std::string_view) override {}
     void event(std::string_view) override {}
     void end() override {}
